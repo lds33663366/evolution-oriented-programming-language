@@ -1,0 +1,30 @@
+package initiator;
+
+//编译器主类
+
+public class Compiler {
+
+	public Compiler(String xmlFile, String xsdFile) throws Exception {
+
+		// 先对XML进行有效性验证
+		new XMLValidator(xmlFile, xsdFile);
+
+		//System.out.println("XML验证通过");
+		// 解析XML创建Java对象
+		Parser parser = new Parser(xmlFile);
+		XMLSystem system = parser.parseSystem();
+
+		// 启动程序
+		system.start();
+		
+//		system.test();
+	}
+
+	public static void main(String[] args) {
+		try {
+			new Compiler("foodchain_20140629.xml", "mdl20140629.xsd");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+}
