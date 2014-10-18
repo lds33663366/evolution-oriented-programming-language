@@ -24,9 +24,15 @@ public class XMLSystem {
 	private ExecutorService executor; // 线程池
 	private InstanceManager iMgr;
 	private PrintInformation pi;
+	
+	private volatile boolean live = true;
 
 	// 存放Instance对象, 同名的对象放在同一线表中
 	// 此处存放的Instance对象是以instanceList中的元素为蓝本创建的
+
+	public void setLive(boolean live) {
+		this.live = live;
+	}
 
 	public XMLSystem(List<Instance> instanceList, List<Message> messageList,
 			List<Relation> relationList) {
@@ -71,6 +77,17 @@ public class XMLSystem {
 
 		// 将instanceMap中全部的实体放放线程池中运行
 		putInstanceToPool();
+		
+		while (live) {
+			try {
+				TimeUnit.MILLISECONDS.sleep(500);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		close();
 	}
 
 	// 将instanceMap中全部的实体放放线程池中运行
@@ -80,6 +97,8 @@ public class XMLSystem {
 //			executor = Executors.newScheduledThreadPool(20);
 //			executor = Executors.newFixedThreadPool(4000);
 			executor = Executors.newCachedThreadPool();
+		
+		executor.execute(mp);
 
 		for (Iterator<Entry<String, CopyOnWriteArrayList<Instance>>> iter = iMgr
 				.getInstanceMap().entrySet().iterator(); iter.hasNext();) {
@@ -95,8 +114,14 @@ public class XMLSystem {
 	}
 
 	public void close() {
+		
+		live = false;
 		// 所有实体关闭
 		System.out.println("结束消息已发布，系统将关闭运行！");
+		//打印端关闭
+		pi.close();
+		mp.close();
+		// 线程管理器关闭
 		for (Iterator<Entry<String, CopyOnWriteArrayList<Instance>>> i = iMgr
 				.getInstanceMap().entrySet().iterator(); i.hasNext();) {
 			Entry<String, CopyOnWriteArrayList<Instance>> entry = i.next();
@@ -107,11 +132,17 @@ public class XMLSystem {
 		}
 		System.out.println("所有实体已关闭！");
 		// 消息池关闭
-		mp.close();
-		//打印端关闭
-		pi.close();
-		// 线程管理器关闭
-		executor.shutdown();
+		
+		try {
+			TimeUnit.SECONDS.sleep(3);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.out.println("executor.isShutdown() = " + executor.isShutdown());
+		executor.shutdownNow();
+		System.out.println("executor.isShutdown() = " + executor.isShutdown());
 		System.out.println("线程管理器已关闭！");
 		
 	}
@@ -188,6 +219,7 @@ public class XMLSystem {
 	// 创建一个新实体并放入instanceMap
 	public void createInstance(Instance instance) {
 
+		if (!live) return;//如果xmlSystem已关闭，则直接返回
 		Instance instanceModel = null;
 		for (Iterator<Instance> iter=instanceList.iterator(); iter.hasNext();) {
 			instanceModel = iter.next();
@@ -232,6 +264,7 @@ public class XMLSystem {
 
 			Thread.currentThread().setPriority(priority);
 			while (isprint) {
+				System.out.println("线程数有" + Thread.activeCount() + "个");
 				sbuffer = new StringBuffer();
 				sbuffer.append(iMgr.printAllInstances());
 				printInfo();

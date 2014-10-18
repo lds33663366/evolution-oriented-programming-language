@@ -1,10 +1,10 @@
-package xmlgen;
+ï»¿package xmlgen;
 
 import javax.swing.JEditorPane;
 import javax.swing.text.EditorKit;
 
 /**
- * ÖØÔØJEditorPaneÓÃ×Ô¶¨ÒåµÄStyledEditorKitÀàµÄ¶ÔÏóÌæ»»Ô­À´µÄ·µ»ØÖµ
+ * é‡è½½JEditorPaneç”¨è‡ªå®šä¹‰çš„StyledEditorKitç±»çš„å¯¹è±¡æ›¿æ¢åŸæ¥çš„è¿”å›å€¼
  * @author heb
  *
  */

@@ -22,13 +22,13 @@ import structure.Instance;
 import structure.Message;
 
 /**系统有一个消息池MsgPool，为了所有的instance能拿到同一个消息池
- * 消息池构造为简单工厂模式。
+ * 消息池构造为单例模式。
  * exp：MsgPool mp = MsgPool.getInstance();
  * 
  * 消息池包含发送队列和等待队列
  * 等待队列处于等候状态，当等候队列中的消息满足一定条件时，将该消息移入发送队列
  */
-public class MsgPool{
+public class MsgPool implements Runnable{
 	
 	private static MsgPool msgPool = null;
 	//消息池的发送队列（由instance发来的消息）
@@ -43,7 +43,7 @@ public class MsgPool{
 	private List<Topic> topics;
 	private XMLSystem xmlSystem;
 	
-	private boolean isOpen;
+	private volatile boolean live;
 	
 	//阻止反序列化而生成新的单例
 	private Object readResolve() {
@@ -62,8 +62,7 @@ public class MsgPool{
 
 		topics = new ArrayList<Topic>();
 
-		isOpen = true;
-		new Thread(new MpRun()).start();
+		live = true;
 	}
 	
 	/**
@@ -100,6 +99,7 @@ public class MsgPool{
 	 */
 	void moveToSendingqueue() {
 
+		if (!live) return;
 		for (int i = 0; i < waitingQueue.size(); i++) {
 
 			Message m = waitingQueue.peek();
@@ -245,8 +245,8 @@ public class MsgPool{
 	private void sendTopics() {
 		
 		if (topics == null || topics.size()<=0) return;
+
 		for (int i=0, j=topics.size(); i<j; i++) {
-	//		topics.get(i).printTopicInfo();
 			topics.get(i).send();
 		}
 	}
@@ -358,40 +358,8 @@ public class MsgPool{
 	
 	*/}
 
-	/**一个管理消息池的线程，作用：
-	 * 1、隔1秒询问是否将等待队列的消息放入发送队列
-	 * 2、
-	 */
-	class MpRun implements Runnable {
-
-		@Override
-		public void run() {
-			
-			while (isOpen) {
-				moveToSendingqueue();
-				sendTopics();
-				try {
-					TimeUnit.MILLISECONDS.sleep(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				detectCloseSystem();
-
-			}
-			System.out.println("消息池已关闭！");
-		}
-		
-	}
-	
-	void detectCloseSystem() {
-		if(sendingQueue !=null && sendingQueue.peek() !=null 
-				&& sendingQueue.peek().getName().equals("END")) {
-			xmlSystem.close();
-		}
-	}
-
 	public void close() {
-		isOpen = false;
+		live = false;
 	}
 
 	private Topic takeTopic(String topic) {
@@ -404,10 +372,33 @@ public class MsgPool{
 		return null;
 	}
 	
+	/**一个管理消息池的线程，作用：
+	 * 1、隔1秒询问是否将等待队列的消息放入发送队列
+	 * 2、
+	 */
+
+		@Override
+		public void run() {
+			
+			Thread.currentThread().setPriority(10);
+			while (live) {
+				sendTopics();
+				moveToSendingqueue();
+				try {
+					TimeUnit.MILLISECONDS.sleep(200);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+	
+			}
+			System.out.println("消息池已关闭！");
+		}
+		
+
 	class Topic {
-		private String name;
-		private List<MsgHandler> msgHandlerList;
-		private Queue<Message> messages;
+		private String name; //主题名称
+		private List<MsgHandler> msgHandlerList; //订阅该主题的队列
+		private Queue<Message> messages; //主题的消息包
 		
 		public Topic(String name) {
 			this.name = name;
@@ -419,31 +410,47 @@ public class MsgPool{
 			return name;
 		}
 		
+		/**
+		 * 订阅该主题的监听器添加接口
+		 * @param msgHandler MsgHandler接口
+		 */
 		public void addMsgHandler(MsgHandler msgHandler) {
 			msgHandlerList.add(msgHandler);
 		}
 		
+		/**
+		 * 移除监听接口
+		 * @param msgHandler 要移除的MsgHandler接口
+		 */
 		public void removeMsgHandler(MsgHandler msgHandler) {
 			synchronized (msgHandlerList) {
 				msgHandlerList.remove(msgHandler);
 			}
 		}
 		
+		/**
+		 * 主题消息的添加接口
+		 */
 		public void addMessage(Message message) {
 			messages.offer(message);
 		}
 		
+		/**
+		 * 发送主题里所有的消息给所有的订阅者
+		 */
 		public void send() {
-			if (messages == null)
-				return;
+			if (messages == null || !live)	return;
 			while (!messages.isEmpty()) {
 				Message m = messages.poll();
+				if (name.equals("SYSTEM") && m.getName().equals("END")){
+					xmlSystem.setLive(false);
+				}
 
 				synchronized (msgHandlerList) {
 					for (int i = 0; i < msgHandlerList.size(); i++) {
 
 						MsgHandler msgh = msgHandlerList.get(i);
-						if (!msgh.isRunning()) {
+						if (!msgh.isLive()) {
 							removeMsgHandler(msgh);
 						} else {
 							msgh.obtainTopicMessage(m);

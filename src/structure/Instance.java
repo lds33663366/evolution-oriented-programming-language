@@ -25,7 +25,7 @@ public class Instance implements Runnable, Serializable {
 	private Property property; // property子元素
 	private MsgHandler msghandler = new MsgHandler(this); // 消息处理器
 	// private List<Message> messageList; // 该实体所能发送的消息列表
-	private boolean live; // 标记此Instance是否存活
+	private volatile boolean live; // 标记此Instance是否存活
 	private transient XMLSystem system; // 整个实体所在的系统
 	private int id;
 	ExecutorService exec = null;
@@ -51,23 +51,6 @@ public class Instance implements Runnable, Serializable {
 		this.id = id;
 	}
 
-	//	public Instance(Instance instance) {
-//
-//		this.actionList = new LinkedList<Action>();
-//		List<Action> iActionList = instance.getActionList();
-//		for (int i = 0; i < iActionList.size(); i++) {
-//			this.actionList.add(new Action(iActionList.get(i)));
-//		}
-//
-//		this.name = instance.getName();
-//
-//		this.popsize = instance.getPopsize();
-//
-//		this.property = new Property(instance.getProperty());
-//
-//		this.live = true;
-//		this.id = ID++;
-//	}
     /**
      * 深度复制instance
      * @param instance
@@ -93,7 +76,7 @@ public class Instance implements Runnable, Serializable {
 	
 	synchronized void waitForUpdate() {
 
-		while (Variable.isUpdate == false) {
+		while (Variable.isUpdate == false && live) {
 			try {
 				TimeUnit.MILLISECONDS.sleep(100);
 			} catch (InterruptedException e) {
@@ -120,7 +103,18 @@ public class Instance implements Runnable, Serializable {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		
 
+	}
+
+	public void close() {
+		live = false;
+		msghandler.setLive(false);
+
+		waitForUpdate();
+		if (exec != null) {
+			exec.shutdownNow();
+		}
 	}
 
 	private void deliverUpdate() {
@@ -133,7 +127,7 @@ public class Instance implements Runnable, Serializable {
 		return actionList;
 	}
 
-	public boolean getLive() {
+	public boolean isLive() {
 		return live;
 	}
 
@@ -169,13 +163,6 @@ public class Instance implements Runnable, Serializable {
 		this.live = live;
 	}
 	
-	public void close() {
-		live = false;
-		if (exec != null) {
-			exec.shutdown();
-		}
-	}
-
 	public void setMessageList(List<Message> messageList) {
 		msghandler.setMessageList(messageList);
 	}

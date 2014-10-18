@@ -1,4 +1,4 @@
-package xmlgen;
+ï»¿package xmlgen;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -34,28 +34,28 @@ public class EditorView extends PlainView {
 		Color attributeColor = new Color(255, 0, 0);
 		Color stringColor = new Color(160, 32, 240);
 		int ret = x;
-		int kind = 0;							//×Ö·ûÖÖÀà
-		int bracketNumber = 0;                	//Í³¼Æ¼âÀ¨ºÅµÄ¸öÊı
-		int quoteNumber = 0;					//Í³¼ÆÒıºÅµÄ¸öÊı
-		int spaceNumber = 0;					//Í³¼Æ¿Õ¸ñµÄ¸öÊı
-		int HyphenNumber=0;						//Í³¼ÆÁ¬×Ö·ûµÄ¸öÊı<!--asdf-->
+		int kind = 0;							//å­—ç¬¦ç§ç±»
+		int bracketNumber = 0;                	//ç»Ÿè®¡å°–æ‹¬å·çš„ä¸ªæ•°
+		int quoteNumber = 0;					//ç»Ÿè®¡å¼•å·çš„ä¸ªæ•°
+		int spaceNumber = 0;					//ç»Ÿè®¡ç©ºæ ¼çš„ä¸ªæ•°
+		int HyphenNumber=0;						//ç»Ÿè®¡è¿å­—ç¬¦çš„ä¸ªæ•°<!--asdf-->
 		g.setColor(defaultColor);
-		/**»ñÈ¡ÉÏÏÂÎÄ×Ö·û*/
+		/**è·å–ä¸Šä¸‹æ–‡å­—ç¬¦*/
 		Segment seg = new Segment();
 		getDocument().getText(startOffset, length, seg);
-		/*µ±Ç°×Ö·ûÔÚ¡°¡±ÄÚ²¿µÄ±êÖ¾Î»*/
+		/*å½“å‰å­—ç¬¦åœ¨â€œâ€å†…éƒ¨çš„æ ‡å¿—ä½*/
 		boolean isstring=false;
-		/*µ±Ç°×Ö·ûÊÇ×¢ÊÍµÄ±êÖ¾Î»*/
+		/*å½“å‰å­—ç¬¦æ˜¯æ³¨é‡Šçš„æ ‡å¿—ä½*/
 		boolean isannotation=false;
 		for (int wordIndex = 0; wordIndex < seg.length(); wordIndex++) {
 			kind = kindOfChar(seg, wordIndex);
 			
-			/** Óöµ½" */
+			/** é‡åˆ°" */
 			if (kind == 8||isstring) {
-				//Óöµ½"
+				//é‡åˆ°"
 				if(kind == 8){
 					quoteNumber++;
-					/* ÊôĞÔÖµµÄÑÕÉ« */
+					/* å±æ€§å€¼çš„é¢œè‰² */
 					if (quoteNumber % 2 == 1) {
 						g.setColor(stringColor);
 						isstring=true;
@@ -63,65 +63,65 @@ public class EditorView extends PlainView {
 						isstring=false;
 					}					
 				}
-				// ÔÚ¡°¡±ÄÚ²¿ ÑÕÉ«²»±ä
+				// åœ¨â€œâ€å†…éƒ¨ é¢œè‰²ä¸å˜
 			}
-			/*×¢ÊÍ*/
+			/*æ³¨é‡Š*/
 			else if (kind == 9||isannotation) {
 				if(kind==9){
 					HyphenNumber++;
 					HyphenNumber=HyphenNumber%4;
-					/*×¢ÊÍ¿ªÍ·*/
+					/*æ³¨é‡Šå¼€å¤´*/
 					g.setColor(Color.gray);
 					if(HyphenNumber==1){	
 						isannotation=true;
 					}
-					/*×¢ÊÍ½áÎ²*/
+					/*æ³¨é‡Šç»“å°¾*/
 					else if(HyphenNumber==0){
 						isannotation=false;
 					}
 				}
 			}
-			/** Óöµ½<||> */
+			/** é‡åˆ°<||> */
 			else if (kind == 0 || kind == 2) {
 				bracketNumber++;
 				g.setColor(tagColor);
 				spaceNumber = 0;
-				/** µ½ÁË×Ö·û´®Íâ²¿ */
+				/** åˆ°äº†å­—ç¬¦ä¸²å¤–éƒ¨ */
 			} else if (kind == 1) {
-				/* ÊôĞÔÃûµÄÑÕÉ« */
+				/* å±æ€§åçš„é¢œè‰² */
 				if (quoteNumber % 2 == 0 && bracketNumber % 2 == 1
 						&& spaceNumber >= 1)
 					g.setColor(attributeColor);
-				/* ±êÇ©Íâ²¿×Ö·ûµÄÑÕÉ« */
+				/* æ ‡ç­¾å¤–éƒ¨å­—ç¬¦çš„é¢œè‰² */
 				if (bracketNumber % 2 == 0)
 					g.setColor(defaultColor);
 			}
-			/** Óöµ½¿Õ¸ñ */
+			/** é‡åˆ°ç©ºæ ¼ */
 			else if (kind == 7) {
 				spaceNumber++;
 				// g.setColor(attributeColor);
 			}
-			/** Óöµ½= */
+			/** é‡åˆ°= */
 			else if (kind == 6) {
-				/* =µÄÑÕÉ« */
+				/* =çš„é¢œè‰² */
 				g.setColor(defaultColor);
 			}
-			/** Óöµ½'/' */
+			/** é‡åˆ°'/' */
 			else if (kind == 3) {
 				g.setColor(tagColor);
 			}
-			/** Óöµ½'?' */
+			/** é‡åˆ°'?' */
 			else if (kind == 4) {
 				g.setColor(defaultColor);
 			}
-			/** Óöµ½'!' */
+			/** é‡åˆ°'!' */
 			else if (kind == 5) {
 				g.setColor(Color.ORANGE);
 			}
 			Segment text = getLineBuffer();
-			/*Ñ¡È¡Òª»æÖÆµÄ×Ö·û*/
+			/*é€‰å–è¦ç»˜åˆ¶çš„å­—ç¬¦*/
 			getDocument().getText(startOffset + wordIndex, 1, text);
-			/*»æÖÆ*/
+			/*ç»˜åˆ¶*/
 			ret = Utilities.drawTabbedText(text, ret, y, g, this, startOffset
 					+ wordIndex);
 		}
@@ -129,7 +129,7 @@ public class EditorView extends PlainView {
 	}
 
 	/**
-	 * ÅĞ¶Ïµ±Ç°×Ö·ûËùÊôÖÖÀà 0£º< 1£º×Ö·û 2£º> 3£º/ 4£º? 5:! 6:= 7:¿Õ¸ñ 8:"9:-
+	 * åˆ¤æ–­å½“å‰å­—ç¬¦æ‰€å±ç§ç±» 0ï¼š< 1ï¼šå­—ç¬¦ 2ï¼š> 3ï¼š/ 4ï¼š? 5:! 6:= 7:ç©ºæ ¼ 8:"9:-
 	 * */
 	private int kindOfChar(Segment segment, int index) {
 		int kind;

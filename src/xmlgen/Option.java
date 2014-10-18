@@ -1,4 +1,4 @@
-package xmlgen;
+ï»¿package xmlgen;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,8 +19,8 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 /**
- * ÊµÏÖÃû³ÆÎª¡°Ñ¡Ïî¡±µÄ´°¿Ú
- * Õâ¸ö´°¿ÚÖ÷Òª½ÓÊÕ¹ØÓÚÒª´´½¨µÄ×Ó½ÚµãµÄÊôĞÔĞÅÏ¢
+ * å®ç°åç§°ä¸ºâ€œé€‰é¡¹â€çš„çª—å£
+ * è¿™ä¸ªçª—å£ä¸»è¦æ¥æ”¶å…³äºè¦åˆ›å»ºçš„å­èŠ‚ç‚¹çš„å±æ€§ä¿¡æ¯
  * @author heb
  *
  */
@@ -29,7 +29,7 @@ public class Option extends JDialog {
 	private JButton cancel;
 	private String name;
 	/*
-	 * ÅĞ¶Ï´°¿ÚÊÇÈ·ÈÏÍË³ö»¹ÊÇÈ¡ÏûÍË³öµÄ±êÖ¾
+	 * åˆ¤æ–­çª—å£æ˜¯ç¡®è®¤é€€å‡ºè¿˜æ˜¯å–æ¶ˆé€€å‡ºçš„æ ‡å¿—
 	 */
 	private boolean sign=false;
 	
@@ -44,7 +44,7 @@ public class Option extends JDialog {
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		getContentPane().setLayout(new BorderLayout());
 		/*
-		 * Ìí¼ÓÒªÏÔÊ¾µÄÊôĞÔÃû³ÆºÍ¶ÔÓ¦µÄÊäÈë¿ò²¢ÉèÖÃÊôĞÔ±êÇ©µÄ²¼¾Ö
+		 * æ·»åŠ è¦æ˜¾ç¤ºçš„å±æ€§åç§°å’Œå¯¹åº”çš„è¾“å…¥æ¡†å¹¶è®¾ç½®å±æ€§æ ‡ç­¾çš„å¸ƒå±€
 		 */
 		JPanel attributesPanel=new JPanel();
 		GridLayout gridLayOut = new GridLayout();
@@ -55,10 +55,10 @@ public class Option extends JDialog {
 		for(;rows<attributes.size();rows++) {
 			String attribute = attributes.get(rows);
 			this.attributes.add(attributes.get(rows));
-			//ÏÔÊ¾±êÇ©
+			//æ˜¾ç¤ºæ ‡ç­¾
 			JLabel attributeLable = new JLabel(attribute);
 			attributesPanel.add(attributeLable);
-			//ÏÔÊ¾ÊäÈë¿ò
+			//æ˜¾ç¤ºè¾“å…¥æ¡†
 			JTextField attributeTextFiled  = new JTextField(10);
 			SetDefaultValue(attribute,attributeTextFiled);
 			attributeValues.add(attributeTextFiled);
@@ -66,9 +66,9 @@ public class Option extends JDialog {
 		}
 		gridLayOut.setRows(rows);
 		
-		//È·¶¨È¡Ïû°´Å¥µÄÌí¼ÓÓëÆä¼àÌıÊÂ¼şµÄ×¢²á
-		sure = new JButton("È·ÈÏ");		
-		cancel = new JButton("È¡Ïû");		
+		//ç¡®å®šå–æ¶ˆæŒ‰é’®çš„æ·»åŠ ä¸å…¶ç›‘å¬äº‹ä»¶çš„æ³¨å†Œ
+		sure = new JButton("ç¡®è®¤");		
+		cancel = new JButton("å–æ¶ˆ");		
 		JPanel panel=new JPanel();
 		panel.add(sure);
 		panel.add(cancel);
@@ -82,7 +82,7 @@ public class Option extends JDialog {
 		setVisible(true);	
 	}
 	/**
-	 * ¸øÊôĞÔ attribute ÉèÖÃÄ¬ÈÏµÄÖµ
+	 * ç»™å±æ€§ attribute è®¾ç½®é»˜è®¤çš„å€¼
 	 * @param attribute
 	 * @param attributeTextFiled
 	 */
@@ -131,7 +131,7 @@ public class Option extends JDialog {
 		}
 	}
 	/**
-	 * ÅĞ¶Ï´°¿ÚÊÇµã»÷È·¶¨°´Å¥Ö®ºó¹Ø±ÕµÄ
+	 * åˆ¤æ–­çª—å£æ˜¯ç‚¹å‡»ç¡®å®šæŒ‰é’®ä¹‹åå…³é—­çš„
 	 * @return
 	 */
 	public boolean isSure() {
@@ -139,7 +139,7 @@ public class Option extends JDialog {
 		return sign;
 	}
 	/**
-	 * ´¦Àí´°¿ÚÖĞÊäÈëµÄÊôĞÔĞÅÏ¢
+	 * å¤„ç†çª—å£ä¸­è¾“å…¥çš„å±æ€§ä¿¡æ¯
 	 * @author heb
 	 *
 	 */
@@ -147,14 +147,14 @@ public class Option extends JDialog {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// °ÑËùÓĞµÄÊôĞÔĞÅÏ¢±£´æµ½Ö¸¶¨¼¯ºÏ
+			// æŠŠæ‰€æœ‰çš„å±æ€§ä¿¡æ¯ä¿å­˜åˆ°æŒ‡å®šé›†åˆ
 			if(e.getSource()==sure){
 				sign=true;
 				attributesValue.clear();
 				for(int index=0;index<attributeValues.size();index++){
 					if(IsRequired(attributes.get(index))&&
 							attributeValues.get(index).getText().trim().equals("")){
-						JOptionPane.showMessageDialog(Option.this, attributes.get(index)+"²»ÄÜÎª¿Õ£¡");
+						JOptionPane.showMessageDialog(Option.this, attributes.get(index)+"ä¸èƒ½ä¸ºç©ºï¼");
 						sign=false;
 						break;
 					}
@@ -173,7 +173,7 @@ public class Option extends JDialog {
 		
 	}
 	/**
-	 * ·µ»Ø°üº¬ÊôĞÔµÄÖµµÃ¼¯ºÏ
+	 * è¿”å›åŒ…å«å±æ€§çš„å€¼å¾—é›†åˆ
 	 * @return
 	 */
 	public HashMap<String, String> getAttributsValue() {
@@ -181,7 +181,7 @@ public class Option extends JDialog {
 		return attributesValue;
 	}
 	/**
-	 * ÅĞ¶ÏÊôĞÔ±ØÌî
+	 * åˆ¤æ–­å±æ€§å¿…å¡«
 	 * @param str
 	 * @return
 	 */

@@ -68,7 +68,7 @@ public class Functionbase {
 		String v = vage.getValue();
 		if (v == null || v.trim().equals("")) return false;
 		int age = Integer.parseInt(v);
-		if (vgender.getValue().equals("female") && age > 2) {
+		if (vgender.getValue().equals("female") && age > 1) {
 			return true;
 		}
 			
@@ -82,7 +82,7 @@ public class Functionbase {
 		String v = vage.getValue();
 		if (v == null || v.trim().equals("")) return false;
 		int age = Integer.parseInt(v);
-		if (vgender.getValue().equals("female") && age > 2) 
+		if (vgender.getValue().equals("female") && age > 1) 
 			return true;
 		return false;	
 	}

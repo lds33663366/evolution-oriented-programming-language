@@ -33,12 +33,24 @@ public class MsgHandler implements Runnable, Serializable{
 	List<Message> messageList = null;
 	Map<String, Message> action_message = new HashMap<String, Message>();
 	Map<String, String> topic_action = new HashMap<String, String>();
-
+	
+	private volatile boolean live = true;
+	
 	public MsgHandler(Instance instance) {
 		this.instance = instance;
 //		mp = MsgPool.getInstance();
 	}
 	
+
+	public boolean isLive() {
+		return live;
+	}
+
+	public void setLive(boolean live) {
+		this.live = live;
+	}
+
+
 
 	/** 发送消息
 	 * @param 消息包
@@ -212,28 +224,15 @@ public class MsgHandler implements Runnable, Serializable{
 			System.out.println(messageList.get(i));
 		}
 	}
-
-	/**
-	 * msgHandler运行条件判断：
-	 * 1、instance是否存活；
-	 * @return 是否运行
-	 */
-	public boolean isRunning() {
-		if (!instance.getLive()) {
-			return false;
-		}
-		else return true;
-	}
 	
 	@Override
 	public void run() {
 		
-		boolean subSystem = false;
-		while (isRunning()) {
+		while (live) {
 			try {
 				TimeUnit.SECONDS.sleep(1);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+//				e.printStackTrace();
 			} 
 //			sendMessageToPool("eat_zebra");
 //			if (!subSystem) {
@@ -255,7 +254,7 @@ public class MsgHandler implements Runnable, Serializable{
 	}
 
 	public void subscription(String topic, String actionName) {
-		System.out.println("请求订阅" + topic);
+//		System.out.println("请求订阅" + topic);
 		
 		if (topic_action == null) {
 			topic_action = new HashMap<String, String>();

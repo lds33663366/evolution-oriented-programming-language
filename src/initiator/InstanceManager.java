@@ -57,7 +57,6 @@ public class InstanceManager {
 	}
 	
 	public void remove(Instance instance) {
-//		System.out.println("remove @@@@@@");
 		CopyOnWriteArrayList<Instance> instanceList;
 		instanceList = instanceMap.get(instance.getName());
 		synchronized (instanceList) { 

@@ -1,4 +1,4 @@
-package xmlgen;
+ï»¿package xmlgen;
 
 import initiator.Compiler;
 
@@ -53,8 +53,9 @@ import javax.swing.JDesktopPane;
 
 public class XMLGenGUI extends JFrame {
 	private MyJEditorPane textArea;
+	
 	/*
-	 * XMLTreeµÄ¸ù½Úµã
+	 * XMLTreeçš„æ ¹èŠ‚ç‚¹
 	 */
 	private DefaultMutableTreeNode dmtnRoot=new DefaultMutableTreeNode("system");
 	private JMenuItem newMenuItem;
@@ -65,7 +66,7 @@ public class XMLGenGUI extends JFrame {
 	private XMLGenerator XMLGene;
 	private JTree jtree;
 	/*
-	 * ÓÒ¼üÏÔÊ¾µÄ²Ëµ¥
+	 * å³é”®æ˜¾ç¤ºçš„èœå•
 	 */
 	private JPopupMenu rightMenu=new JPopupMenu();
 	private JInternalFrame leftInternalFrame;
@@ -75,7 +76,7 @@ public class XMLGenGUI extends JFrame {
 	private JMenu compileMenu;
 	private JMenuItem runMenuItem;
 	/*
-	 * ±íÊ¾ÎÄ¼şÊÇ·ñ±»ĞŞ¸ÄµÄ×´Ì¬±äÁ¿
+	 * è¡¨ç¤ºæ–‡ä»¶æ˜¯å¦è¢«ä¿®æ”¹çš„çŠ¶æ€å˜é‡
 	 */
 	private boolean modefied;
 	private JFileChooser filechooser;
@@ -85,7 +86,7 @@ public class XMLGenGUI extends JFrame {
 	private JDesktopPane desktopPane;
 
 	public XMLGenGUI() {
-		super("Î´ÃüÃû--***±àÒëÆ÷");
+		super("æœªå‘½å--***ç¼–è¯‘å™¨");
 		modefied=false;
 		this.setSize(Toolkit.getDefaultToolkit().getScreenSize());
 		getContentPane().setLayout(new BorderLayout(5, 5));
@@ -94,66 +95,66 @@ public class XMLGenGUI extends JFrame {
 		con = getContentPane();
 		ClickedEvent itemListener = new ClickedEvent();
 		/*
-		 * ²Ëµ¥À¸
+		 * èœå•æ 
 		 */
 		JMenuBar menuBar = new JMenuBar();
 		con.add(menuBar, BorderLayout.NORTH);
 		/*
-		 * ÎÄ¼ş²Ëµ¥¼°Æä²Ëµ¥Ïî
+		 * æ–‡ä»¶èœå•åŠå…¶èœå•é¡¹
 		 */
-		JMenu fileMenu = new JMenu("ÎÄ¼ş");
+		JMenu fileMenu = new JMenu("æ–‡ä»¶");
 		menuBar.add(fileMenu);
 		
-		newMenuItem = new JMenuItem("ĞÂ½¨");
+		newMenuItem = new JMenuItem("æ–°å»º");
 		fileMenu.add(newMenuItem);
 		newMenuItem.addActionListener(itemListener);
 		
-		openMenuItem = new JMenuItem("´ò¿ª");
+		openMenuItem = new JMenuItem("æ‰“å¼€");
 		fileMenu.add(openMenuItem);
 		openMenuItem.addActionListener(itemListener);
 		
-		saveMenuItem = new JMenuItem("±£´æ");
+		saveMenuItem = new JMenuItem("ä¿å­˜");
 		fileMenu.add(saveMenuItem);
 		saveMenuItem.addActionListener(itemListener);
 		
-		saveAsMenuItem = new JMenuItem("Áí´æÎª");
+		saveAsMenuItem = new JMenuItem("å¦å­˜ä¸º");
 		fileMenu.add(saveAsMenuItem);
 		saveAsMenuItem.addActionListener(itemListener);
 		/*
-		 * ÊÓÍ¼²Ëµ¥¼°Æä²Ëµ¥Ïî
+		 * è§†å›¾èœå•åŠå…¶èœå•é¡¹
 		 */
-		JMenu viewMenu = new JMenu("ÊÓÍ¼");
+		JMenu viewMenu = new JMenu("è§†å›¾");
 		menuBar.add(viewMenu);
 		
-		showTreeMenuItem = new JMenuItem("ÏÔÊ¾XML Tree");
+		showTreeMenuItem = new JMenuItem("æ˜¾ç¤ºXML Tree");
 		viewMenu.add(showTreeMenuItem);
 		
-		resultMenuItem = new JMenuItem("ÏÔÊ¾Result");
+		resultMenuItem = new JMenuItem("æ˜¾ç¤ºResult");
 		viewMenu.add(resultMenuItem);
 		
-		compileMenu = new JMenu("±àÒë");
+		compileMenu = new JMenu("ç¼–è¯‘");
 		menuBar.add(compileMenu);
 		
-		runMenuItem = new JMenuItem("ÔËĞĞ");
+		runMenuItem = new JMenuItem("è¿è¡Œ");
 		compileMenu.add(runMenuItem);
 		/**
-		 * ²Ëµ¥ÏîÊÂ¼ş×¢²á
+		 * èœå•é¡¹äº‹ä»¶æ³¨å†Œ
 		 */
 		showTreeMenuItem.addActionListener(itemListener);
 		resultMenuItem.addActionListener(itemListener);
 		runMenuItem.addActionListener(itemListener);
-		/*¶à¸ö´°¿Ú¹ÜÀípane*/
+		/*å¤šä¸ªçª—å£ç®¡ç†pane*/
 		desktopPane = new JDesktopPane();
 		getContentPane().add(desktopPane, BorderLayout.CENTER);
 		/*
-		 * ´úÂëÏÔÊ¾ÎÄ±¾Óò
+		 * ä»£ç æ˜¾ç¤ºæ–‡æœ¬åŸŸ
 		 */
 		CodeShowInternalFrame = new JInternalFrame("Code",true,true,true,false);
 		CodeShowInternalFrame.setBounds((int) (width*0.2),0,(int) (width*0.8),(int) (height*0.7));
 		desktopPane.add(CodeShowInternalFrame);
 		CodeShowInternalFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		CodeShowInternalFrame.setBorder(UIManager.getBorder("FileChooser.listViewBorder"));
-		//ÖØÔØJEditorPaneµÄÀà¶ÔÏó£¬ÓÃÀ´ÏÔÊ¾´úÂë
+		//é‡è½½JEditorPaneçš„ç±»å¯¹è±¡ï¼Œç”¨æ¥æ˜¾ç¤ºä»£ç 
 		textArea = new MyJEditorPane();
 		JScrollPane scrollPane = new JScrollPane(textArea);
 		//CodeShowInternalFrame.getContentPane().add(scrollPane, BorderLayout.NORTH);
@@ -161,7 +162,7 @@ public class XMLGenGUI extends JFrame {
 		CodeShowInternalFrame.getContentPane().add(scrollPane, BorderLayout.CENTER);
 		textArea.setContentType("text/xml");
 		/*
-		 * µ×´°¿ÚµÄÉèÖÃ
+		 * åº•çª—å£çš„è®¾ç½®
 		 */
 		bottomInternalFrame = new JInternalFrame("Result",true,true,true,false);
 		bottomInternalFrame.setBounds(0,(int) (height*0.7),width,(int) (height*0.3));
@@ -177,7 +178,7 @@ public class XMLGenGUI extends JFrame {
 		bottomInternalFrame.getContentPane().add(scrollPane_1, BorderLayout.CENTER);
 		bottomInternalFrame.setVisible(true);
 		/*
-		 * ×ó²à´°¿ÚµÄÉèÖÃ
+		 * å·¦ä¾§çª—å£çš„è®¾ç½®
 		 */
 		leftInternalFrame = new JInternalFrame("XML Tree",true,true,true,false);
 		leftInternalFrame.setBounds(0, 0, (int)(0.2*width), (int)(0.7*height));
@@ -186,21 +187,21 @@ public class XMLGenGUI extends JFrame {
 		leftInternalFrame.setBorder(UIManager.getBorder("FileChooser.listViewBorder"));
 		leftInternalFrame.setVisible(true);
 		/*
-		 * ÔªËØ½ÚµãµÄÊ÷ĞÎ½á¹¹ÏÔÊ¾
+		 * å…ƒç´ èŠ‚ç‚¹çš„æ ‘å½¢ç»“æ„æ˜¾ç¤º
 		 */
 		jtree = new JTree(dmtnRoot);  
-		// ÉèÖÃ¸ù½ÚµãÊÇ·ñÏÔÊ¾  
+		// è®¾ç½®æ ¹èŠ‚ç‚¹æ˜¯å¦æ˜¾ç¤º  
 		jtree.setRootVisible(false);  
-		jtree.putClientProperty("JTree.lineStyle", "None");// Çå³ıÏß  
+		jtree.putClientProperty("JTree.lineStyle", "None");// æ¸…é™¤çº¿  
 		jtree.setShowsRootHandles(true);
-		// ÉèÖÃÍ¼±ê  
+		// è®¾ç½®å›¾æ ‡  
 		jtree.setCellRenderer(new MyRenderer());
 		
 		JScrollPane jscrollPane = new JScrollPane(jtree);
 		leftInternalFrame.getContentPane().add(jscrollPane);
 		jtree.addMouseListener(new RightClickedListener());
 		
-		//ÖØ¶¨Ïò
+		//é‡å®šå‘
 		System.setOut(new PrintStream(System.out){
 			public void println(String x) {
 		        resultArea.append(x + "\n");
@@ -228,7 +229,7 @@ public class XMLGenGUI extends JFrame {
 			}});
 		CodeShowInternalFrame.setVisible(true);
 		/**
-		 * ¼àÌıÎÄµµÊÇ·ñ±»¸üĞÂ
+		 * ç›‘å¬æ–‡æ¡£æ˜¯å¦è¢«æ›´æ–°
 		 */
 
 		filechooser = new JFileChooser();
@@ -241,13 +242,13 @@ public class XMLGenGUI extends JFrame {
 		return resultArea;
 	}
 	/**
-	 * ÄÚÈİ×·¼Óº¯Êı
+	 * å†…å®¹è¿½åŠ å‡½æ•°
 	 * @param str
 	 */
 	/*public void appendResultAreaText(String str) {
 		resultArea.append(str);
 	}*/
-	/**²Ëµ¥ÏîµÄÊµÊÂ¼ş¼àÌıÀà*/
+	/**èœå•é¡¹çš„å®äº‹ä»¶ç›‘å¬ç±»*/
 	private class ClickedEvent implements ActionListener {
 
 		@Override
@@ -258,14 +259,14 @@ public class XMLGenGUI extends JFrame {
 				save();
 			} else if (e.getSource() == newMenuItem) {
 				/*
-				 * ¹Ø±ÕÔ­ÓĞÎÄ¼ş
+				 * å…³é—­åŸæœ‰æ–‡ä»¶
 				 */
 				closeFile();
 				newFile();
 				createXML();
 			} else if (e.getSource() == openMenuItem) {
 				/*
-				 * ¹Ø±ÕÔ­ÓĞÎÄ¼ş
+				 * å…³é—­åŸæœ‰æ–‡ä»¶
 				 */
 				closeFile();
 				newFile();
@@ -277,10 +278,10 @@ public class XMLGenGUI extends JFrame {
 			}else if (e.getSource() == runMenuItem) {
 				bottomInternalFrame.setVisible(true);
 				/*
-				 * ¿ªÊ¼ ±àÒëÔËĞĞ 
+				 * å¼€å§‹ ç¼–è¯‘è¿è¡Œ 
 				 */
 				try {
-					new Compiler("foodchain_20140420.xml", "mdl20140420.xsd");
+					new Compiler("foodchain_20140629.xml", "mdl20140629.xsd");
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
@@ -288,22 +289,22 @@ public class XMLGenGUI extends JFrame {
 		}
 	}
 	/**
-	 * ¹Ø±Õ´ò¿ª»òĞÂ½¨µÄÎÄ¼şµÄº¯Êı
+	 * å…³é—­æ‰“å¼€æˆ–æ–°å»ºçš„æ–‡ä»¶çš„å‡½æ•°
 	 */
 	
 	private void closeFile(){
 		//System.out.println(modefied);
 		if(modefied){
 			 int option = JOptionPane.showConfirmDialog(
-					 null, "ÎÄ¼şÒÑĞŞ¸Ä£¬ÊÇ·ñ±£´æ£¿",
-					 "±£´æÎÄ¼ş£¿", JOptionPane.YES_NO_OPTION, 
+					 null, "æ–‡ä»¶å·²ä¿®æ”¹ï¼Œæ˜¯å¦ä¿å­˜ï¼Ÿ",
+					 "ä¿å­˜æ–‡ä»¶ï¼Ÿ", JOptionPane.YES_NO_OPTION, 
 					 JOptionPane.WARNING_MESSAGE, null);
 			 switch(option) { 
-			 	// È·ÈÏÎÄ¼ş±£´æ
+			 	// ç¡®è®¤æ–‡ä»¶ä¿å­˜
 			 case JOptionPane.YES_OPTION:
-				 save(); // ±£´æÎÄ¼ş
+				 save(); // ä¿å­˜æ–‡ä»¶
 				 break;
-				 // ·ÅÆúÎÄ¼ş±£´æ
+				 // æ”¾å¼ƒæ–‡ä»¶ä¿å­˜
 			 case JOptionPane.NO_OPTION:
 				 break;
 			 }
@@ -312,30 +313,30 @@ public class XMLGenGUI extends JFrame {
 		modefied=false;
 	}
 	/**
-	 * ĞÂ½¨ÎÄ¼şµÄº¯Êı
+	 * æ–°å»ºæ–‡ä»¶çš„å‡½æ•°
 	 */
 	private void newFile(){
-		this.setTitle("Î´ÃüÃû--***±àÒëÆ÷");
+		this.setTitle("æœªå‘½å--***ç¼–è¯‘å™¨");
 	}
 	/**
-	 * ´ò¿ªÎÄ¼ş²¢ÔÚ´úÂëÇøÏÔÊ¾µÄº¯Êı
+	 * æ‰“å¼€æ–‡ä»¶å¹¶åœ¨ä»£ç åŒºæ˜¾ç¤ºçš„å‡½æ•°
 	 */
 	private void open(){
 		/*
-		 * ÏÔÊ¾Ñ¡ÔñÎÄ¼şµÄ´°¿Ú
+		 * æ˜¾ç¤ºé€‰æ‹©æ–‡ä»¶çš„çª—å£
 		 */
 		int n = filechooser.showOpenDialog(con);
 		/*
-		 * µã»÷È·¶¨ºóÏÔÊ¾ÎÄ¼şÄÚÈİ
+		 * ç‚¹å‡»ç¡®å®šåæ˜¾ç¤ºæ–‡ä»¶å†…å®¹
 		 */
 		if (n == JFileChooser.APPROVE_OPTION) {
 			File file = filechooser.getSelectedFile();
-			this.setTitle(file.getPath()+"--***±àÒëÆ÷");
+			this.setTitle(file.getPath()+"--***ç¼–è¯‘å™¨");
 			textArea.setText(null);
 			try {
 				FileInputStream fis;
 				fis = new FileInputStream(file);
-				/*ÉèÖÃÎÄ¼şÊäÈëÁ÷±àÂë*/
+				/*è®¾ç½®æ–‡ä»¶è¾“å…¥æµç¼–ç */
 				InputStreamReader isr = new InputStreamReader(fis, "UTF-8"); 
 				BufferedReader in = new BufferedReader(isr);
 				String s;
@@ -346,33 +347,31 @@ public class XMLGenGUI extends JFrame {
 				fis.close();
 				isr.close();
 			} catch (FileNotFoundException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}
 	}
 	/**
-	 * ±£´æ´úÂëÇøµÄÄÚÈİµ½ÎÄ¼şµÄº¯Êı
+	 * ä¿å­˜ä»£ç åŒºçš„å†…å®¹åˆ°æ–‡ä»¶çš„å‡½æ•°
 	 */
 	private void save(){
 		String title=this.getTitle();
 		/*
-		 * ÎÄ¼şÎ´±£´æ¹ı
+		 * æ–‡ä»¶æœªä¿å­˜è¿‡
 		 */
-		if("Î´ÃüÃû".equals(title.substring(0,3))){
+		if("æœªå‘½å".equals(title.substring(0,3))){
 			saveAs();
 		}else{
 			/*
-			 * ÎÄ¼ş±£´æ¹ı
+			 * æ–‡ä»¶ä¿å­˜è¿‡
 			 */
 			String filename=title.substring(0,title.lastIndexOf("--"));
 			try {
 				FileOutputStream fos;
 				fos = new FileOutputStream(filename);
-				/*ÉèÖÃÎÄ¼şÁ÷±àÂë*/
+				/*è®¾ç½®æ–‡ä»¶æµç¼–ç */
 				OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8"); 
 				BufferedWriter out = new BufferedWriter(osw);
 
@@ -381,30 +380,29 @@ public class XMLGenGUI extends JFrame {
 				fos.close();
 				osw.close();
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			modefied=false;
 		}
 	}
 	/**
-	 * Áí´æÎª´úÂëÇøµÄÄÚÈİµ½ÎÄ¼şµÄº¯Êı
+	 * å¦å­˜ä¸ºä»£ç åŒºçš„å†…å®¹åˆ°æ–‡ä»¶çš„å‡½æ•°
 	 */
 	private void saveAs(){
 		/*
-		 * ÏÔÊ¾±£´æÎÄ¼şµÄ´°¿Ú
+		 * æ˜¾ç¤ºä¿å­˜æ–‡ä»¶çš„çª—å£
 		 */
 		int n = filechooser.showSaveDialog(con);
 		/*
-		 * µã»÷È·¶¨ºóÏÔÊ¾ÎÄ¼şÄÚÈİ
+		 * ç‚¹å‡»ç¡®å®šåæ˜¾ç¤ºæ–‡ä»¶å†…å®¹
 		 */
 		if (n == JFileChooser.APPROVE_OPTION) {
 			File file = filechooser.getSelectedFile();
-			this.setTitle(file.getPath()+"--***±àÒëÆ÷");
+			this.setTitle(file.getPath()+"--***ç¼–è¯‘å™¨");
 			try {
 				FileOutputStream fos;
 				fos = new FileOutputStream(file);
-				/*ÉèÖÃÎÄ¼şÁ÷±àÂë*/
+				/*è®¾ç½®æ–‡ä»¶æµç¼–ç */
 				OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8"); 
 				BufferedWriter out = new BufferedWriter(osw);
 
@@ -414,13 +412,12 @@ public class XMLGenGUI extends JFrame {
 				osw.close();
 				modefied=false;
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			} 
 		}
 	}
 	/**
-	 * ÓÒ¼ü²Ëµ¥ÏîµÄÊÂ¼ş¼àÌıÀà
+	 * å³é”®èœå•é¡¹çš„äº‹ä»¶ç›‘å¬ç±»
 	 * @author heb
 	 *
 	 */
@@ -430,25 +427,25 @@ public class XMLGenGUI extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			/*
-			 * ÕÒµ½Òª²åÈëÔªËØµÄ¸¸½Úµã
+			 * æ‰¾åˆ°è¦æ’å…¥å…ƒç´ çš„çˆ¶èŠ‚ç‚¹
 			 */
 			JMenuItem item = (JMenuItem) e.getSource();
 			
 			/*
-			 * ´æ´¢ÊôĞÔ¼üÖµ¶Ô  ´æ´¢ÊôĞÔÃû³Æ
+			 * å­˜å‚¨å±æ€§é”®å€¼å¯¹  å­˜å‚¨å±æ€§åç§°
 			 */
 			//HashMap<String,String> attributeList = new HashMap<String,String>();
 			ArrayList<String> attributeNames = new ArrayList<String>();
 			String itemValue=item.getText();
-			/**Éú³ÉĞÂ½¨½ÚµãµÄÑ¡Ïî´°¿Ú*/
+			/**ç”Ÿæˆæ–°å»ºèŠ‚ç‚¹çš„é€‰é¡¹çª—å£*/
 			if(itemValue.equals("instance")){
-				//ÉèÖÃÊäÈëµÄÑ¡Ïî´°¿ÚÖĞµÄÏîÄ¿Èç:instanceĞèÒªµÄnameºÍpopsize
+				//è®¾ç½®è¾“å…¥çš„é€‰é¡¹çª—å£ä¸­çš„é¡¹ç›®å¦‚:instanceéœ€è¦çš„nameå’Œpopsize
 				attributeNames.add("name");
 				attributeNames.add("popsize");
 				Option option = new Option(XMLGenGUI.this,"instance",attributeNames);
 				generateXMLElement(option,"instance");
 			}else if(itemValue.equals("message")){
-			//ÉèÖÃÊäÈëµÄÑ¡Ïî´°¿ÚÖĞµÄÏîÄ¿
+			//è®¾ç½®è¾“å…¥çš„é€‰é¡¹çª—å£ä¸­çš„é¡¹ç›®
 				attributeNames.add("name");
 				attributeNames.add("from");
 				attributeNames.add("priority");
@@ -462,75 +459,75 @@ public class XMLGenGUI extends JFrame {
 			}else if(itemValue.equals("relation")){
 				generateXMLElement("relation");
 			}else if(itemValue.equals("property")){
-			//ÉèÖÃÊäÈëµÄÑ¡Ïî´°¿ÚÖĞµÄÏîÄ¿
+			//è®¾ç½®è¾“å…¥çš„é€‰é¡¹çª—å£ä¸­çš„é¡¹ç›®
 				generateXMLElement("property");
 			}else if(itemValue.equals("action")){
-			//ÉèÖÃÊäÈëµÄÑ¡Ïî´°¿ÚÖĞµÄÏîÄ¿
+			//è®¾ç½®è¾“å…¥çš„é€‰é¡¹çª—å£ä¸­çš„é¡¹ç›®
 				attributeNames.add("function");
 				attributeNames.add("type");
 				attributeNames.add("cycle");
 				Option option = new Option(XMLGenGUI.this,"action",attributeNames);
 				generateXMLElement(option,"action");
 			}else if(itemValue.equals("relationMessage")){
-				//ÉèÖÃÊäÈëµÄÑ¡Ïî´°¿ÚÖĞµÄÏîÄ¿
+				//è®¾ç½®è¾“å…¥çš„é€‰é¡¹çª—å£ä¸­çš„é¡¹ç›®
 				attributeNames.add("name");
 				Option option = new Option(XMLGenGUI.this,"relationMessage",attributeNames);
 				generateXMLElement(option,"relationMessage");
 			}else if(itemValue.equals("node")){
-				//ÉèÖÃÊäÈëµÄÑ¡Ïî´°¿ÚÖĞµÄÏîÄ¿
+				//è®¾ç½®è¾“å…¥çš„é€‰é¡¹çª—å£ä¸­çš„é¡¹ç›®
 				attributeNames.add("iName");
 				attributeNames.add("aName");
 				Option option = new Option(XMLGenGUI.this,"relationNode",attributeNames);
 				generateXMLElement(option,"relationNode");
 			}else if(itemValue.equals("string")){
-			//ÉèÖÃÊäÈëµÄÑ¡Ïî´°¿ÚÖĞµÄÏîÄ¿
+			//è®¾ç½®è¾“å…¥çš„é€‰é¡¹çª—å£ä¸­çš„é¡¹ç›®
 				attributeNames.add("name");
 				attributeNames.add("value");
 				Option option = new Option(XMLGenGUI.this,"string",attributeNames);
 				generateXMLElement(option,"string");
 			}else if(itemValue.equals("double")){
-			//ÉèÖÃÊäÈëµÄÑ¡Ïî´°¿ÚÖĞµÄÏîÄ¿
+			//è®¾ç½®è¾“å…¥çš„é€‰é¡¹çª—å£ä¸­çš„é¡¹ç›®
 				attributeNames.add("name");
 				attributeNames.add("value");
 				Option option = new Option(XMLGenGUI.this,"double",attributeNames);
 				generateXMLElement(option,"double");
 			}else if(itemValue.equals("int")){
-			//ÉèÖÃÊäÈëµÄÑ¡Ïî´°¿ÚÖĞµÄÏîÄ¿
+			//è®¾ç½®è¾“å…¥çš„é€‰é¡¹çª—å£ä¸­çš„é¡¹ç›®
 				attributeNames.add("name");
 				attributeNames.add("value");
 				Option option = new Option(XMLGenGUI.this,"int",attributeNames);
 				generateXMLElement(option,"int");
 			}else if(itemValue.equals("boolean")){
-			//ÉèÖÃÊäÈëµÄÑ¡Ïî´°¿ÚÖĞµÄÏîÄ¿
+			//è®¾ç½®è¾“å…¥çš„é€‰é¡¹çª—å£ä¸­çš„é¡¹ç›®
 				attributeNames.add("name");
 				attributeNames.add("value");
 				Option option = new Option(XMLGenGUI.this,"boolean",attributeNames);
 				generateXMLElement(option,"boolean");
 			}else if(itemValue.equals("date")){
-			//ÉèÖÃÊäÈëµÄÑ¡Ïî´°¿ÚÖĞµÄÏîÄ¿
+			//è®¾ç½®è¾“å…¥çš„é€‰é¡¹çª—å£ä¸­çš„é¡¹ç›®
 				attributeNames.add("name");
 				attributeNames.add("value");
 				Option option = new Option(XMLGenGUI.this,"date",attributeNames);
 				generateXMLElement(option,"date");
 			}else if(itemValue.equals("input")){
-			//ÉèÖÃÊäÈëµÄÑ¡Ïî´°¿ÚÖĞµÄÏîÄ¿
+			//è®¾ç½®è¾“å…¥çš„é€‰é¡¹çª—å£ä¸­çš„é¡¹ç›®
 				attributeNames.add("name");
 				Option option = new Option(XMLGenGUI.this,"input",attributeNames);
 				generateXMLElement(option,"input");
 			}else if(itemValue.equals("output")){
-			//ÉèÖÃÊäÈëµÄÑ¡Ïî´°¿ÚÖĞµÄÏîÄ¿
+			//è®¾ç½®è¾“å…¥çš„é€‰é¡¹çª—å£ä¸­çš„é¡¹ç›®
 				attributeNames.add("name");
 				Option option = new Option(XMLGenGUI.this,"output",attributeNames);
 				generateXMLElement(option,"output");
-			}else if(item.getText().equals("delete")){/**´¦ÀíÉ¾³ıÔªËØµÄÊÂ¼ş*/
+			}else if(item.getText().equals("delete")){/**å¤„ç†åˆ é™¤å…ƒç´ çš„äº‹ä»¶*/
 				deleteXMLElement();			
-			}else if(item.getText().equals("update")){/**´¦Àí±à¼­ÔªËØµÄÊÂ¼ş*/
+			}else if(item.getText().equals("update")){/**å¤„ç†ç¼–è¾‘å…ƒç´ çš„äº‹ä»¶*/
 				setTreeView();
 			}
 		}		
 	}
 	/**
-	 * ¶ÔÊ÷½ÚµãµÄÓÒ¼üµ¥»÷ÊÂ¼ş´¦ÀíµÄÀà
+	 * å¯¹æ ‘èŠ‚ç‚¹çš„å³é”®å•å‡»äº‹ä»¶å¤„ç†çš„ç±»
 	 * @author heb
 	 *
 	 */
@@ -545,14 +542,14 @@ public class XMLGenGUI extends JFrame {
 				RightMenuItemListener rightMenuItemListener = new RightMenuItemListener();
 				JMenuItem []menuItems=new JMenuItem[8];
 				/*
-				 * Çå³ıÒÔÇ°µÄ²Ëµ¥Ñ¡Ïî
+				 * æ¸…é™¤ä»¥å‰çš„èœå•é€‰é¡¹
 				 */
 				rightMenu.removeAll();
 				String nodeValue=seletedNode.toString();
 				if("system".equals(nodeValue))
 				{
 					/*
-					 * ÉèÖÃÓÒ¼ü²Ëµ¥µÄÑ¡Ïî
+					 * è®¾ç½®å³é”®èœå•çš„é€‰é¡¹
 					 */
 					menuItems[0]=new JMenuItem("instance");
 					menuItems[1]=new JMenuItem("message");
@@ -561,62 +558,62 @@ public class XMLGenGUI extends JFrame {
 					menuItems[1].addActionListener(rightMenuItemListener);
 					menuItems[2].addActionListener(rightMenuItemListener);
 					/*
-					 * Ìí¼Ó²Ëµ¥Ïîµ½²Ëµ¥
+					 * æ·»åŠ èœå•é¡¹åˆ°èœå•
 					 */
 					rightMenu.add(menuItems[0]);
 					rightMenu.add(menuItems[1]);
 					rightMenu.add(menuItems[2]);
 				}else if("instance".equals(nodeValue)){
 					/*
-					 * ÉèÖÃÓÒ¼ü²Ëµ¥µÄÑ¡Ïî
+					 * è®¾ç½®å³é”®èœå•çš„é€‰é¡¹
 					 */
 					menuItems[0]=new JMenuItem("action");
 					menuItems[1]=new JMenuItem("property");
 					menuItems[0].addActionListener(rightMenuItemListener);
 					menuItems[1].addActionListener(rightMenuItemListener);
 					/*
-					 * Ìí¼Ó²Ëµ¥Ïîµ½²Ëµ¥
+					 * æ·»åŠ èœå•é¡¹åˆ°èœå•
 					 */
 					rightMenu.add(menuItems[0]);
 					rightMenu.add(menuItems[1]);
 				}else if("action".equals(nodeValue)){
 					/*
-					 * ÉèÖÃÓÒ¼ü²Ëµ¥µÄÑ¡Ïî
+					 * è®¾ç½®å³é”®èœå•çš„é€‰é¡¹
 					 */
 					menuItems[0]=new JMenuItem("input");
 					menuItems[1]=new JMenuItem("output");
 					menuItems[0].addActionListener(rightMenuItemListener);
 					menuItems[1].addActionListener(rightMenuItemListener);
 					/*
-					 * Ìí¼Ó²Ëµ¥Ïîµ½²Ëµ¥
+					 * æ·»åŠ èœå•é¡¹åˆ°èœå•
 					 */
 					rightMenu.add(menuItems[0]);
 					rightMenu.add(menuItems[1]);
 				}
 				else if("relation".equals(nodeValue)){
 					/*
-					 * ÉèÖÃÓÒ¼ü²Ëµ¥µÄÑ¡Ïî
+					 * è®¾ç½®å³é”®èœå•çš„é€‰é¡¹
 					 */
 					menuItems[0]=new JMenuItem("relationMessage");
 					menuItems[0].addActionListener(rightMenuItemListener);
 					/*
-					 * Ìí¼Ó²Ëµ¥Ïîµ½²Ëµ¥
+					 * æ·»åŠ èœå•é¡¹åˆ°èœå•
 					 */
 					rightMenu.add(menuItems[0]);
 				}
 				else if("relationMessage".equals(nodeValue)){
 					/*
-					 * ÉèÖÃÓÒ¼ü²Ëµ¥µÄÑ¡Ïî
+					 * è®¾ç½®å³é”®èœå•çš„é€‰é¡¹
 					 */
 					menuItems[0]=new JMenuItem("node");
 					menuItems[0].addActionListener(rightMenuItemListener);
 					/*
-					 * Ìí¼Ó²Ëµ¥Ïîµ½²Ëµ¥
+					 * æ·»åŠ èœå•é¡¹åˆ°èœå•
 					 */
 					rightMenu.add(menuItems[0]);
 				}else if("property".equals(nodeValue)){
 					/*
-					 * ÉèÖÃÓÒ¼ü²Ëµ¥µÄÑ¡Ïî
+					 * è®¾ç½®å³é”®èœå•çš„é€‰é¡¹
 					 */
 					menuItems[0]=new JMenuItem("string");
 					menuItems[0].addActionListener(rightMenuItemListener);
@@ -631,7 +628,7 @@ public class XMLGenGUI extends JFrame {
 					menuItems[5]=new JMenuItem("instance");
 					menuItems[5].addActionListener(rightMenuItemListener);
 					/*
-					 * Ìí¼Ó²Ëµ¥Ïîµ½²Ëµ¥
+					 * æ·»åŠ èœå•é¡¹åˆ°èœå•
 					 */
 					rightMenu.add(menuItems[0]);
 					rightMenu.add(menuItems[1]);
@@ -677,7 +674,7 @@ public class XMLGenGUI extends JFrame {
 		
 	}
 	/**
-	 * ´´½¨³õÊ¼µÄXML½á¹¹
+	 * åˆ›å»ºåˆå§‹çš„XMLç»“æ„
 	 */
 	private void createXML(){
 		createXMLDocument();
@@ -685,7 +682,7 @@ public class XMLGenGUI extends JFrame {
 		showXML();
 	}
 	/**
-	 * ¸ù¾İÓÃ»§µÄÊäÈëÉú³ÉXML½Úµã£¬²¢²åÈëµ½Ç¡µ±Î»ÖÃµÄº¯Êı£¬
+	 * æ ¹æ®ç”¨æˆ·çš„è¾“å…¥ç”ŸæˆXMLèŠ‚ç‚¹ï¼Œå¹¶æ’å…¥åˆ°æ°å½“ä½ç½®çš„å‡½æ•°ï¼Œ
 	 * @param option
 	 * @param name
 	 */
@@ -695,7 +692,7 @@ public class XMLGenGUI extends JFrame {
 				(DefaultMutableTreeNode)jtree.getLastSelectedPathComponent();
 		TreeNode[] nodePath = selectedNode.getPath();
 		/*
-		 * ÉèÖÃ½ÚµãµÄÂ·¾¶XPath
+		 * è®¾ç½®èŠ‚ç‚¹çš„è·¯å¾„XPath
 		 */
 		String XPath="/";
 		for(int index=0;index<nodePath.length;index++){
@@ -703,22 +700,22 @@ public class XMLGenGUI extends JFrame {
 			XPath+="/"+nodeName;
 		}
 		/*
-		 *È¡µÃÍ¬Ò»¸öÂ·¾¶ÏÂËùÓĞµÄ½Úµã¼¯ºÏÖĞ£¬±»Ñ¡ÔñµÄ½ÚµãµÄË÷Òı 
+		 *å–å¾—åŒä¸€ä¸ªè·¯å¾„ä¸‹æ‰€æœ‰çš„èŠ‚ç‚¹é›†åˆä¸­ï¼Œè¢«é€‰æ‹©çš„èŠ‚ç‚¹çš„ç´¢å¼• 
 		 */
 		int nodeNumber=indexOfNodeInList(selectedNode);
 		//
 		if(option.isSure()){
 			HashMap<String, String> attributeList = option.getAttributsValue();
 			/*
-			 *ÔÚdocumentÖĞÌí¼ÓÔªËØ
+			 *åœ¨documentä¸­æ·»åŠ å…ƒç´ 
 			 */
 			XMLGene.addElement(nodeNumber,XPath, name ,attributeList);
 			/*
-			 * ÔÚÊ÷½á¹¹Ò²Ìí¼Ó¶ÔÓ¦µÄ½Úµã
+			 * åœ¨æ ‘ç»“æ„ä¹Ÿæ·»åŠ å¯¹åº”çš„èŠ‚ç‚¹
 			 */
 			selectedNode.add(new DefaultMutableTreeNode(name));
 			/*
-			 * Õ¹¿ªĞÂ½¨µÄ½Úµã
+			 * å±•å¼€æ–°å»ºçš„èŠ‚ç‚¹
 			 */
 			jtree.updateUI();
 			jtree.expandPath(jtree.getSelectionPath());
@@ -726,7 +723,7 @@ public class XMLGenGUI extends JFrame {
 		showXML();
 	}
 	/**
-	 * ²»ĞèÒªÊäÈëĞÅÏ¢Ö±½ÓÉú³ÉXML½ÚµãµÄº¯Êı
+	 * ä¸éœ€è¦è¾“å…¥ä¿¡æ¯ç›´æ¥ç”ŸæˆXMLèŠ‚ç‚¹çš„å‡½æ•°
 	 * @param name
 	 */
 	public void generateXMLElement(String name) {
@@ -736,7 +733,7 @@ public class XMLGenGUI extends JFrame {
 		TreeNode[] nodePath = selectedNode.getPath();
 		//System.out.println(jtree.getX()+","+jtree.getY());
 		/*
-		 * ÉèÖÃ½ÚµãµÄÂ·¾¶XPath
+		 * è®¾ç½®èŠ‚ç‚¹çš„è·¯å¾„XPath
 		 */
 		String XPath="/";
 		for(int index=0;index<nodePath.length;index++){
@@ -745,19 +742,19 @@ public class XMLGenGUI extends JFrame {
 		}
 		HashMap<String, String> attributeList=new HashMap<String, String>();
 		/*
-		 *È¡µÃÍ¬Ò»¸öÂ·¾¶ÏÂËùÓĞµÄ½Úµã¼¯ºÏÖĞ£¬±»Ñ¡ÔñµÄ½ÚµãµÄË÷Òı 
+		 *å–å¾—åŒä¸€ä¸ªè·¯å¾„ä¸‹æ‰€æœ‰çš„èŠ‚ç‚¹é›†åˆä¸­ï¼Œè¢«é€‰æ‹©çš„èŠ‚ç‚¹çš„ç´¢å¼• 
 		 */
 		int nodeNumber=indexOfNodeInList(selectedNode);
 		/*
-		 *ÔÚdocumentÖĞÌí¼ÓÔªËØ
+		 *åœ¨documentä¸­æ·»åŠ å…ƒç´ 
 		 */
 		XMLGene.addElement(nodeNumber,XPath, name, attributeList);
 		/*
-		 * ÔÚÊ÷½á¹¹Ò²Ìí¼Ó¶ÔÓ¦µÄ½Úµã
+		 * åœ¨æ ‘ç»“æ„ä¹Ÿæ·»åŠ å¯¹åº”çš„èŠ‚ç‚¹
 		 */
 		selectedNode.add(new DefaultMutableTreeNode(name));	
 		/*
-		 * Õ¹¿ªĞÂ½¨µÄ½Úµã
+		 * å±•å¼€æ–°å»ºçš„èŠ‚ç‚¹
 		 */	
 		jtree.updateUI();
 		jtree.expandPath(jtree.getSelectionPath());
@@ -765,7 +762,7 @@ public class XMLGenGUI extends JFrame {
 
 	}
 	/**
-	 * É¾³ıXML½ÚµãµÄº¯Êı
+	 * åˆ é™¤XMLèŠ‚ç‚¹çš„å‡½æ•°
 	 */
 	public void deleteXMLElement() {
 		// TODO Auto-generated method stub
@@ -773,7 +770,7 @@ public class XMLGenGUI extends JFrame {
 				.getLastSelectedPathComponent();
 		TreeNode[] nodePath = selectedNode.getPath();
 		/*
-		 * ÉèÖÃ½ÚµãµÄÂ·¾¶XPath
+		 * è®¾ç½®èŠ‚ç‚¹çš„è·¯å¾„XPath
 		 */
 		String seletedNodeXPath = "/";
 		for(int index=0;index<nodePath.length;index++){
@@ -781,18 +778,18 @@ public class XMLGenGUI extends JFrame {
 			seletedNodeXPath+="/"+nodeName;
 		}
 		/*
-		 *È¡µÃÍ¬Ò»¸öÂ·¾¶ÏÂËùÓĞµÄ½Úµã¼¯ºÏÖĞ£¬±»Ñ¡ÔñµÄ½ÚµãµÄË÷Òı 
+		 *å–å¾—åŒä¸€ä¸ªè·¯å¾„ä¸‹æ‰€æœ‰çš„èŠ‚ç‚¹é›†åˆä¸­ï¼Œè¢«é€‰æ‹©çš„èŠ‚ç‚¹çš„ç´¢å¼• 
 		 */
 		int nodeNumber=indexOfNodeInList(selectedNode);
 		/*
-		 *ÔÚdocumentÖĞÉ¾³ıÔªËØ
+		 *åœ¨documentä¸­åˆ é™¤å…ƒç´ 
 		 */		
 		Element seleted = (Element) XMLGene.getDocument().selectNodes(seletedNodeXPath)
 				.get(nodeNumber);
 		Element parent=seleted.getParent();
 		XMLGene.deleteElement(parent,seleted);
 		/*
-		 * ÔÚÊ÷½á¹¹Ò²É¾³ı¶ÔÓ¦µÄ½Úµã
+		 * åœ¨æ ‘ç»“æ„ä¹Ÿåˆ é™¤å¯¹åº”çš„èŠ‚ç‚¹
 		 */
 		DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) selectedNode.getParent();
 		parentNode.remove(selectedNode);
@@ -802,11 +799,11 @@ public class XMLGenGUI extends JFrame {
 
 	}
 	/*
-	 * ²éÕÒÏàÍ¬Â·¾¶µÄÍ¬Ãû½ÚµãÔÚÊı×éÖĞµÄË÷ÒıµÄº¯Êı
+	 * æŸ¥æ‰¾ç›¸åŒè·¯å¾„çš„åŒåèŠ‚ç‚¹åœ¨æ•°ç»„ä¸­çš„ç´¢å¼•çš„å‡½æ•°
 	 */
 	private int indexOfNodeInList(DefaultMutableTreeNode selectedNode){
 		/*
-		 * selectedNode¾àÀë¸ù½ÚµãµÄÉî¶È
+		 * selectedNodeè·ç¦»æ ¹èŠ‚ç‚¹çš„æ·±åº¦
 		 */
 		int level=selectedNode.getLevel();
 		int index=0;
@@ -815,11 +812,11 @@ public class XMLGenGUI extends JFrame {
 			DefaultMutableTreeNode node = nodeList.nextElement();
 			if(node.getLevel()==level&&!node.equals(selectedNode)){
 				/*
-				 * Á½¸ö½ÚµãÂ·¾¶ÍêÈ«Ò»Ñùµ«²»ÊÇÍ¬Ò»¸ö½Úµã
-				 * ÓÖÒòÎª±éÀúË³ĞòÊÇ¹ã¶ÈÓÅÏÈ£¬ËùÒÔÕâ¸öÍ¬Â·¾¶µÄ½ÚµãÔÚÉÏ·½£¬Ë÷Òı¼Ó1
+				 * ä¸¤ä¸ªèŠ‚ç‚¹è·¯å¾„å®Œå…¨ä¸€æ ·ä½†ä¸æ˜¯åŒä¸€ä¸ªèŠ‚ç‚¹
+				 * åˆå› ä¸ºéå†é¡ºåºæ˜¯å¹¿åº¦ä¼˜å…ˆï¼Œæ‰€ä»¥è¿™ä¸ªåŒè·¯å¾„çš„èŠ‚ç‚¹åœ¨ä¸Šæ–¹ï¼Œç´¢å¼•åŠ 1
 				 */
 				if(node.toString().equals(selectedNode.toString())){
-					//ps:µ±²»Í¬µÄ¸¸½ÚµãºÍ¿ÉÒÔÓÃÓÚÍ¬ÑùµÄ×Ó½ÚµãÊ±£¬ĞèÒª½øÒ»²½Çø·Ö¸¸½Úµã
+					//ps:å½“ä¸åŒçš„çˆ¶èŠ‚ç‚¹å’Œå¯ä»¥ç”¨äºåŒæ ·çš„å­èŠ‚ç‚¹æ—¶ï¼Œéœ€è¦è¿›ä¸€æ­¥åŒºåˆ†çˆ¶èŠ‚ç‚¹
 					index++;
 				}
 			}else if(node.equals(selectedNode)){
@@ -829,20 +826,20 @@ public class XMLGenGUI extends JFrame {
 		return index;
 	}
 	/**
-	 * ´´½¨XMLÎÄµµ
+	 * åˆ›å»ºXMLæ–‡æ¡£
 	 */
 	private void createXMLDocument(){
 		XMLGene = new XMLGenerator();
 		XMLGene.createDocument("system");
 	}
 	/**
-	 * ¸ù¾İXMLÎÄµµÉú³É¶ÔÓ¦½ÚµãÊıµÄº¯Êı
+	 * æ ¹æ®XMLæ–‡æ¡£ç”Ÿæˆå¯¹åº”èŠ‚ç‚¹æ•°çš„å‡½æ•°
 	 */
 	private void setTreeView(){
 		jtree.setRootVisible(true); 
 		Element element=XMLGene.getDocument().getRootElement();
 		/*
-		 * Çå³ıÒÔÇ°µÄ½Úµã£¬ÖØĞÂÉèÖÃ×Ó½Úµã
+		 * æ¸…é™¤ä»¥å‰çš„èŠ‚ç‚¹ï¼Œé‡æ–°è®¾ç½®å­èŠ‚ç‚¹
 		 */
 		dmtnRoot.removeAllChildren();
 		
@@ -851,7 +848,7 @@ public class XMLGenGUI extends JFrame {
 		jtree.updateUI();
 	}
 	/**
-	 * ÔÚÊ÷½á¹¹ÖĞÌí¼Ó½ÚµãµÄº¯Êı
+	 * åœ¨æ ‘ç»“æ„ä¸­æ·»åŠ èŠ‚ç‚¹çš„å‡½æ•°
 	 * @param element
 	 * @param dmtnParent
 	 */
@@ -859,18 +856,18 @@ public class XMLGenGUI extends JFrame {
 		for(Iterator iterator = element.elementIterator();iterator.hasNext();){
 			element=(Element) iterator.next();
 			/*
-			 * ÎªÊ÷½á¹¹ĞÎ³ÉĞÂµÄÔªËØ½Úµã
+			 * ä¸ºæ ‘ç»“æ„å½¢æˆæ–°çš„å…ƒç´ èŠ‚ç‚¹
 			 */
 			DefaultMutableTreeNode dmtnLeaf=new DefaultMutableTreeNode(element.getName());
 			dmtnParent.add(dmtnLeaf);
 			/*
-			 * ×ÓÔªËØµİ¹éÉú³ÉÊ÷½á¹¹¶ÔÓ¦µÄ½Úµã
+			 * å­å…ƒç´ é€’å½’ç”Ÿæˆæ ‘ç»“æ„å¯¹åº”çš„èŠ‚ç‚¹
 			 */
 			addNodeToTreeFromDocument(element,dmtnLeaf);
 		}
 	}
 	/**
-	 * ÔÚ´úÂëÇøÏÔÊ¾XMLÎÄµµµÄº¯Êı
+	 * åœ¨ä»£ç åŒºæ˜¾ç¤ºXMLæ–‡æ¡£çš„å‡½æ•°
 	 */
 	public void showXML(){
 		textArea.setText(XMLGene.getXMLString());

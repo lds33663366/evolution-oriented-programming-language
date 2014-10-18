@@ -22,8 +22,8 @@ public class Compiler {
 
 	public static void main(String[] args) {
 		try {
+			new Compiler("foodchain_20140629.xml", "mdl20140629.xsd");
 		//	new Compiler("star.xml", "mdl20140629.xsd");
-			new Compiler("star.xml", "mdl20140629.xsd");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

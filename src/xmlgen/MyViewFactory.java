@@ -1,11 +1,11 @@
-package xmlgen;
+ï»¿package xmlgen;
 
 import javax.swing.text.Element;
 import javax.swing.text.View;
 import javax.swing.text.ViewFactory;
 
 /**
- * ÖØÔØViewFactoryÓÃ×Ô¶¨ÒåµÄEditorViewÀàµÄ¶ÔÏóÌæ»»Ô­À´µÄ·µ»ØÖµ(non-Javadoc)
+ * é‡è½½ViewFactoryç”¨è‡ªå®šä¹‰çš„EditorViewç±»çš„å¯¹è±¡æ›¿æ¢åŸæ¥çš„è¿”å›å€¼(non-Javadoc)
  * @author heb
  *
  */

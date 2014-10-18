@@ -28,6 +28,10 @@ public class Action implements Runnable, Serializable {
 	private boolean isSubscription = false;
 	private boolean update = true;
 
+//	public void setUpdate(boolean update) {
+//		this.update = update;
+//	}
+
 	public Action(String name, String function, List<Input> inputList,
 			List<Output> outputList, ActionType type, String cycle, String topic) {
 		this.name = name;
@@ -92,19 +96,19 @@ public class Action implements Runnable, Serializable {
 	public void run() {
 
 		synchronized (instance) {
-			while (instance.getLive()) {
+			while (instance.isLive()) {
 				switch (type) {
 				case SELF:
 					waitForUpdate();
-					callFunction();
+					if (instance.isLive())	callFunction();
 					break;
 				case NOTIFICATION:
 					waitForUpdate();
-					instance.sendMessageToPool(topic, name);
+					if (instance.isLive())	instance.sendMessageToPool(topic, name);
 					break;
 				case PUBLISH:
 					waitForUpdate();
-					instance.sendMessageToPool(name);
+					if (instance.isLive())	instance.sendMessageToPool(name);
 					break;
 				case SUBSCRIPTION:
 					doSubcription();

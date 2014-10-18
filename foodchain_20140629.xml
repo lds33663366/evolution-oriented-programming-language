@@ -3,7 +3,7 @@
 <system xsi:noNamespaceSchemaLocation="mdl20140629.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
     <!-- 定义5只狮子, 包含的属性: 年龄, 性别, 生命, 地理位置.  -->
-    <instance name="lion" popsize="4">
+    <instance name="lion" popsize="6">
         <property>
             <int name="age" value="1" /> <!--默认狮子年龄都为1-->
             <string name="gender"/> <!--狮子的性别, 需要一个action对其初始化-->
@@ -34,7 +34,7 @@
         <property>
             <int name="age" value="1"/> <!--默认斑马年龄都为1-->
             <string name="gender"/> <!--斑马的性别, 需要一个action对其初始化-->
-            <int name="life" value="4"/> <!--默认斑马生命都为10-->
+            <int name="life" value="6"/> <!--默认斑马生命都为10-->
             <instance name="position"> <!--斑马的地理位置(仅用于测试, 体现一个instance能够包含另一个instance-->
                 <property>
                     <int name="x"/>
@@ -65,7 +65,7 @@
      <message name="age_increment" from="SYSTEM" frequency="10" second="3" />
     <!--系统终止消息, 所有实体将接收到此消息, 并将数据存入数据库. 
     属性second=100: 系统将于100秒后终止程序-->
-    <message name="END" from="SYSTEM" second="50" />
+    <message name="END" from="SYSTEM" second="5" />
 
     <relation>
         <message name="eat_zebra"> <!--eat_zebra消息关联的接收接口为zebra下的lion_eat监听端-->

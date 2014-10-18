@@ -1,4 +1,4 @@
-package xmlgen;
+ï»¿package xmlgen;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -17,7 +17,7 @@ import org.dom4j.io.XMLWriter;
 public class XMLGenerator {
 	private Document document=null;
 	/**
-	 * ´´½¨Ò»¸öĞÂdocument,systemÊÇÄ¬ÈÏµÄ¸ùÔªËØ
+	 * åˆ›å»ºä¸€ä¸ªæ–°document,systemæ˜¯é»˜è®¤çš„æ ¹å…ƒç´ 
 	 * @return document
 	 */
 	public XMLGenerator(){	
@@ -25,7 +25,7 @@ public class XMLGenerator {
 	}
 	public void createDocument(String rootname) {
         /*
-		 * Éú³ÉÉùÃ÷ºÍ¸ùÔªËØ
+		 * ç”Ÿæˆå£°æ˜å’Œæ ¹å…ƒç´ 
 		 */
         //document.addDocType(rootname, "SYSTEM", "mdl20140420.xsd");
         document.addElement( rootname );
@@ -33,12 +33,12 @@ public class XMLGenerator {
 	public Document getDocument(){
 		return document;
 	}
-	/**ÔÚdocumentÖĞÉ¾³ıÔªËØ*/
+	/**åœ¨documentä¸­åˆ é™¤å…ƒç´ */
 	public void deleteElement(Element parent,
 			Element seleted){
 		parent.remove(seleted);
 	}
-	/**¸ødocumentÖĞÌí¼ÓÔªËØ*/
+	/**ç»™documentä¸­æ·»åŠ å…ƒç´ */
 	public void addElement(
 			int number,
 			String path,
@@ -46,16 +46,16 @@ public class XMLGenerator {
 			HashMap<String,String> attributeList) {
 	
 		/*
-		 * Ñ°ÕÒÒª²åÈëÔªËØµÄ¸¸½Úµã
+		 * å¯»æ‰¾è¦æ’å…¥å…ƒç´ çš„çˆ¶èŠ‚ç‚¹
 		 */
 		Element element;
 		element=(Element) document.selectNodes(path).get(number);
 			/*
-			 * ²åÈëĞÂµÄÔªËØ
+			 * æ’å…¥æ–°çš„å…ƒç´ 
 			 */
 			Element newElement=element.addElement(elementName);
 			/*
-			 * ÎªĞÂÔªËØÉèÖÃÊôĞÔ
+			 * ä¸ºæ–°å…ƒç´ è®¾ç½®å±æ€§
 			 */
 			Iterator iterator = attributeList.entrySet().iterator();
 			while(iterator.hasNext()) {
@@ -63,7 +63,7 @@ public class XMLGenerator {
 				newElement.addAttribute((String)attribute.getKey(), (String)attribute.getValue());
 			}
 	}
-	/**ÓÃ×Ö·û´®string±íÊ¾½ÚµãÊôĞÔÊ±Ìí¼Ó½ÚµãµÄ·½·¨*/
+	/**ç”¨å­—ç¬¦ä¸²stringè¡¨ç¤ºèŠ‚ç‚¹å±æ€§æ—¶æ·»åŠ èŠ‚ç‚¹çš„æ–¹æ³•*/
 	public void addElement(int number, String path, String elementName,
 			String string) {
 		HashMap<String,String> attributeList=new HashMap<String, String>();
@@ -74,7 +74,7 @@ public class XMLGenerator {
 		}
 		addElement(number, path, elementName, attributeList);
 	}
-	/**Ã»ÓĞÊôĞÔÊ±Ìí¼Ó½ÚµãµÄ·½·¨*/
+	/**æ²¡æœ‰å±æ€§æ—¶æ·»åŠ èŠ‚ç‚¹çš„æ–¹æ³•*/
 	public void addElement(int number, String path, String elementName) {
 		HashMap<String,String> attributeList=new HashMap<String, String>();
 		addElement(number, path, elementName, attributeList);
@@ -84,15 +84,15 @@ public class XMLGenerator {
 		String s = null;
 		try {
 			doc = DocumentHelper.parseText(document.asXML());
-			// Êä³ö¸ñÊ½»¯Æ÷
+			// è¾“å‡ºæ ¼å¼åŒ–å™¨
 			//OutputFormat format =OutputFormat.createPrettyPrint();
 			OutputFormat format =new OutputFormat("        ",true);
-			// ÉèÖÃ±àÂë
+			// è®¾ç½®ç¼–ç 
 			format.setEncoding("utf-8");
-			// xmlÊä³öÆ÷
+			// xmlè¾“å‡ºå™¨
 			StringWriter outer = new StringWriter();
 			XMLWriter xmlWriter = new XMLWriter(outer, format);
-			// ´òÓ¡doc
+			// æ‰“å°doc
 			xmlWriter.write(doc);
 			xmlWriter.flush();
 			s = outer.toString();

@@ -1,4 +1,4 @@
-package xmlgen;
+ï»¿package xmlgen;
 
 import java.awt.Component;
 
@@ -6,16 +6,16 @@ import javax.swing.ImageIcon;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 /**
- * Ìæ»»Ê÷ĞÎ½á¹¹Ä¬ÈÏµÄÍ¼±ê
+ * æ›¿æ¢æ ‘å½¢ç»“æ„é»˜è®¤çš„å›¾æ ‡
  * @author heb
  *
  */
 class MyRenderer extends DefaultTreeCellRenderer { 
 	public Component getTreeCellRendererComponent(JTree tree, Object value,boolean sel, boolean expanded, boolean leaf, int row,boolean hasFocus) {
 		super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf,row, hasFocus);
-		setLeafIcon(new ImageIcon(XMLGenGUI.class.getResource("/images/1.jpg")));//Ò¶×Ó½áµãÍ¼Æ¬
-		setClosedIcon(new ImageIcon(XMLGenGUI.class.getResource("/images/1.jpg")));//¹Ø±ÕÊ÷ºóÏÔÊ¾µÄÍ¼Æ¬
-		setOpenIcon(new ImageIcon(XMLGenGUI.class.getResource("/images/2.jpg")));//´ò¿ªÊ÷Ê±ÏÔÊ¾µÄÍ¼Æ¬
+		setLeafIcon(new ImageIcon(XMLGenGUI.class.getResource("/images/1.jpg")));//å¶å­ç»“ç‚¹å›¾ç‰‡
+		setClosedIcon(new ImageIcon(XMLGenGUI.class.getResource("/images/1.jpg")));//å…³é—­æ ‘åæ˜¾ç¤ºçš„å›¾ç‰‡
+		setOpenIcon(new ImageIcon(XMLGenGUI.class.getResource("/images/2.jpg")));//æ‰“å¼€æ ‘æ—¶æ˜¾ç¤ºçš„å›¾ç‰‡
 		return this;
 	}
 }
