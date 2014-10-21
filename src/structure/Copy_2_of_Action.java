@@ -11,8 +11,9 @@ import java.util.concurrent.TimeUnit;
 
 import structure.EnumType.XMLType.ActionType;
 import function.FunctionLauncher;
+import function.SystemFunctionbase;
 
-public class Action implements Runnable, Serializable {
+public class Copy_2_of_Action implements Runnable, Serializable {
 	private String name;
 	private String function; // 在执行此Action时所调用的函数名
 	private List<Input> inputList; // 子元素Input对象组成的集合
@@ -32,7 +33,7 @@ public class Action implements Runnable, Serializable {
 //		this.update = update;
 //	}
 
-	public Action(String name, String function, List<Input> inputList,
+	public Copy_2_of_Action(String name, String function, List<Input> inputList,
 			List<Output> outputList, ActionType type, String cycle, String topic) {
 		this.name = name;
 		this.function = function;
@@ -44,35 +45,6 @@ public class Action implements Runnable, Serializable {
 //		checkTopic();
 	}
 	
-//	void checkTopic() {
-//		if (type.equals(ActionType.NOTIFICATION) || 
-//				type.equals(ActionType.SUBSCRIPTION)) {
-//			if (topic.trim().equals(""))
-//				throw new RuntimeException("NOTIFICATION或SUBSCRIPTION的"
-//						+ "action需要填写topic");
-//		}
-//	}
-
-//	public Action(Action action) {
-//
-//		this.function = action.getFunction();
-//
-//		inputList = new LinkedList<Input>();
-//		List<Input> aInputList = action.getInputList();
-//		for (int i = 0; i < aInputList.size(); i++) {
-//			inputList.add(new Input(aInputList.get(i)));
-//		}
-//
-//		outputList = new LinkedList<Output>();
-//		List<Output> aOutputList = action.getOutputList();
-//		for (int i = 0; i < aOutputList.size(); i++) {
-//			outputList.add(new Output(aOutputList.get(i)));
-//		}
-//
-//		this.type = action.getType();
-//		this.cycle = action.cycle;
-//
-//	}
 	
 	/**
 	 * 等待更新：当instance的属性有变动时，唤醒所有已阻塞的action
@@ -198,53 +170,85 @@ public class Action implements Runnable, Serializable {
 
 	// 根据function属性值调用函数库中的同名函数
 	private void callFunction() {
-		if (function.trim().equals("NEW")) {// 系统函数, 新创建一实体
-			// 先判断该实体是否已达到生成新实例的条件
-//			System.out.println("尝试新建instance……");
-			boolean returnValue = false;
-			returnValue = FunctionLauncher.launch(instance.getName()
-					+ "_new", variableMap);
-			if (returnValue == true) {
-				instance.getSystem().createInstance(instance);
-			}
-		} else if (function.equals("DEAD")) {// 系统函数, 销毁一个实体
+//		if (function.trim().equals("NEW")) {// 系统函数, 新创建一实体
+//			// 先判断该实体是否已达到生成新实例的条件
+////			System.out.println("尝试新建instance……");
+//			boolean returnValue = false;
+//			returnValue = FunctionLauncher.launch(instance.getName()
+//					+ "_new", variableMap);
+//			if (returnValue == true) {
+//				instance.getSystem().createInstance(instance);
+//			}
+//		} else if (function.equals("DEAD")) {// 系统函数, 销毁一个实体
+//
+//			// 先判断该实体是否已达到死亡的条件
+//			boolean returnValue = false;
+//			//判断类型是否是监听类型，如果是，则直接调用销毁
+//			if (type == ActionType.LISTEN) returnValue = true;
+//			//其他类型通过用户编写的函数判断
+//			else returnValue = FunctionLauncher.launch(instance.getName()
+//					+ "Dieable", variableMap);
+//
+//			if (returnValue == true) {
+////				System.out.println("dead is true");
+//				endInstance();// 结束该实体的运行
+//			}
+//		} else { // 非系统函数
+//
+//			Object returnValue = null;// 函数调用的返回值
+//			switch (inputList.size()) {
+//			case 1:// 输入参数只有一个
+//				returnValue = FunctionLauncher.launch(function,
+//						variableMap.get(inputList.get(0).getName()));
+//				break;
+//			default: 
+//				FunctionLauncher.launch(function, instance, message);
+//				break;
+//			}
+//			if (returnValue != null) {
+//				if (returnValue instanceof Variable) {
+//					// 更新variableMap中的变量
+//					Variable rv = (Variable) returnValue;
+////					Variable v = variableMap.get(rv.getName());
+//					if (rv != null) {
+//						instance.updateProperty(rv.getName(), rv.getValue());
+//					}
+//				}
+//			}
+//		}
 
-			// 先判断该实体是否已达到死亡的条件
-			boolean returnValue = false;
-			//判断类型是否是监听类型，如果是，则直接调用销毁
-			if (type == ActionType.LISTEN) returnValue = true;
-			//其他类型通过用户编写的函数判断
-			else returnValue = FunctionLauncher.launch(instance.getName()
-					+ "Dieable", variableMap);
+		if (SystemFunctionbase.containFunction(function)) {
+			
+		}else doUserFunction();
+		
+	}
 
-			if (returnValue == true) {
-//				System.out.println("dead is true");
-				endInstance();// 结束该实体的运行
-			}
-		} else { // 非系统函数
-
-			Object returnValue = null;// 函数调用的返回值
-			switch (inputList.size()) {
-			case 1:// 输入参数只有一个
-				returnValue = FunctionLauncher.launch(function,
-						variableMap.get(inputList.get(0).getName()));
-				break;
-			default: 
-				FunctionLauncher.launch(function, instance, message);
-				break;
-			}
-			if (returnValue != null) {
-				if (returnValue instanceof Variable) {
-					// 更新variableMap中的变量
-					Variable rv = (Variable) returnValue;
-//					Variable v = variableMap.get(rv.getName());
-					if (rv != null) {
-						instance.updateProperty(rv.getName(), rv.getValue());
-					}
+	private void doUserFunction() {
+		Object returnValue = null;// 函数调用的返回值
+		switch (inputList.size()) {
+		case 1:// 输入参数只有一个
+			returnValue = FunctionLauncher.launch(function,
+					variableMap.get(inputList.get(0).getName()));
+			break;
+		default: 
+			FunctionLauncher.launch(function, instance, message);
+			break;
+		}
+		if (returnValue != null) {
+			if (returnValue instanceof Variable) {
+				// 更新variableMap中的变量
+				Variable rv = (Variable) returnValue;
+//				Variable v = variableMap.get(rv.getName());
+				if (rv != null) {
+					instance.updateProperty(rv.getName(), rv.getValue());
 				}
 			}
 		}
 	}
+
+
+
+
 
 	// 结束instance对象, 步骤:
 	// 1 将instance的live设置为false

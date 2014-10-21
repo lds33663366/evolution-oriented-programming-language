@@ -18,12 +18,6 @@ public class Variable implements Cloneable, Serializable{
         this.type = type;
         this.value = value;
     }
-//    
-//    public Variable(Variable variable){
-//    	this.name = variable.getName();
-//    	this.type = variable.getType();
-//    	this.value = variable.getValue();
-//    }
 
     public String getName(){
         return name;
@@ -39,16 +33,7 @@ public class Variable implements Cloneable, Serializable{
 		isUpdate = true;
 		this.value = value;
 	}
-	
-	
-
-	
-//	@Override
-//	public String toString() {
-//		return "Variable [name=" + name + ", type=" + type + ", value=" + value
-//				+ "]";
-//	}
-	
+		
 	@Override
 	public Variable clone() {
 		Variable o = null;

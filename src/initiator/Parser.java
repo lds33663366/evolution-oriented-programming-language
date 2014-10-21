@@ -16,9 +16,10 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
-import structure.Action;
 import structure.EnumType.XMLType.ActionType;
 import structure.EnumType.XMLType.VariableType;
+import structure.actionType.Action;
+import structure.actionType.ActionFactory;
 import structure.Input;
 import structure.Instance;
 import structure.Message;
@@ -84,7 +85,7 @@ public class Parser {
 			}
 		}
 		
-		return new Action(name, function, inputList, outputList, type, cycle, topic);
+		return ActionFactory.createAction(name, function, inputList, outputList, type, cycle, topic);
 	}
 
 	private Output parseOutput(Element output) {

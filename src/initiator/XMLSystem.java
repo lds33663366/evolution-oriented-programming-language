@@ -10,6 +10,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import function.SystemFunctionbase;
 import msgManager.MsgPool;
 import structure.Instance;
 import structure.Message;
@@ -63,7 +64,10 @@ public class XMLSystem {
 	 * 2.根据<relation>, 建立Message与Instance之间的联系 3.启动Instance
 	 */
 	public void start() {
+		
+		
 
+//		SystemFunctionbase.xmlSystem = this;
 		// 消息池初始化
 		mp = MsgPool.getInstance();
 		mp.setXmlSystem(this);
@@ -82,7 +86,6 @@ public class XMLSystem {
 			try {
 				TimeUnit.MILLISECONDS.sleep(500);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -109,13 +112,14 @@ public class XMLSystem {
 				executor.execute(inst);
 			}
 		}
-		pi = new PrintInformation(5);
+		pi = new PrintInformation();
 		executor.execute(pi);
 	}
 
 	public void close() {
 		
 		live = false;
+		executor.shutdown();
 		// 所有实体关闭
 		System.out.println("结束消息已发布，系统将关闭运行！");
 		//打印端关闭
@@ -127,22 +131,18 @@ public class XMLSystem {
 			Entry<String, CopyOnWriteArrayList<Instance>> entry = i.next();
 			CopyOnWriteArrayList<Instance> instanceList = entry.getValue();
 			for (int j = 0, k = instanceList.size(); j < k; j++) {
-				instanceList.get(j).close();
+				instanceList.get(j).setLive(false);
 			}
+		}
+		try {
+			if (!executor.awaitTermination(3, TimeUnit.SECONDS)) {
+				executor.shutdownNow();
+			}
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
 		}
 		System.out.println("所有实体已关闭！");
 		// 消息池关闭
-		
-		try {
-			TimeUnit.SECONDS.sleep(3);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		System.out.println("executor.isShutdown() = " + executor.isShutdown());
-		executor.shutdownNow();
-		System.out.println("executor.isShutdown() = " + executor.isShutdown());
 		System.out.println("线程管理器已关闭！");
 		
 	}
@@ -252,17 +252,13 @@ public class XMLSystem {
 
 		// 存放打印的信息
 		StringBuffer sbuffer;
-		private int priority;
 		private boolean isprint = true;
-
-		public PrintInformation(int priority) {
-			this.priority = priority;
-		}
 
 		@Override
 		public void run() {
 
-			Thread.currentThread().setPriority(priority);
+//			Thread.currentThread().setDaemon(true);
+			Thread.currentThread().setPriority(4);
 			while (isprint) {
 				System.out.println("线程数有" + Thread.activeCount() + "个");
 				sbuffer = new StringBuffer();

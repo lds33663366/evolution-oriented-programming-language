@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import structure.actionType.Action;
 import msgManager.MsgHandler;
 import msgManager.MsgPool;
 
@@ -38,8 +39,6 @@ public class Instance implements Runnable, Serializable {
 		this.property = property;
 		this.live = true;
 	}
-	
-	public void updateProperty(Instance instance){}
 	
 	public synchronized void updateProperty(String name, String value) {
 		this.property.getVariableMap().get(name).setValue(value);
@@ -91,6 +90,7 @@ public class Instance implements Runnable, Serializable {
 
 	// 实现Runnable接口的run方法
 	public void run() {
+		Thread.currentThread().setPriority(4);
 		// 将所有的Action对象放入线程池中运行
 		exec = Executors.newCachedThreadPool();
 //		ExecutorService exec = system.getExecutor();
@@ -98,22 +98,32 @@ public class Instance implements Runnable, Serializable {
 			exec.execute(actionList.get(i));
 		}
 		exec.execute(msghandler);
+		
+		while (live) {
 		try {
-			TimeUnit.SECONDS.sleep(2);
+			TimeUnit.MILLISECONDS.sleep(100);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		}
+		
+		close();
 		
 
 	}
 
 	public void close() {
 		live = false;
+		exec.shutdown();
 		msghandler.setLive(false);
 
 		waitForUpdate();
-		if (exec != null) {
-			exec.shutdownNow();
+		try {
+			if (!exec.awaitTermination(200, TimeUnit.MILLISECONDS)) {
+				exec.shutdownNow();
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 	}
 

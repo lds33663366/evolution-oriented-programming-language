@@ -380,7 +380,7 @@ public class MsgPool implements Runnable{
 		@Override
 		public void run() {
 			
-			Thread.currentThread().setPriority(10);
+			Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 			while (live) {
 				sendTopics();
 				moveToSendingqueue();
