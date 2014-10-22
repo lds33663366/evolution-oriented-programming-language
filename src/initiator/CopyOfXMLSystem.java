@@ -16,7 +16,7 @@ import structure.Instance;
 import structure.Message;
 import structure.Relation;
 
-public class XMLSystem {
+public class CopyOfXMLSystem {
 
 	private List<Instance> instanceList;// 解析<instance>得到的对象
 	private List<Message> messageList; // message组成的集合
@@ -24,7 +24,7 @@ public class XMLSystem {
 	private MsgPool mp; // 消息池
 	private ExecutorService executor; // 线程池
 	private InstancesManager iMgr;
-//	private PrintInformation pi;
+	private PrintInformation pi;
 
 	
 	private volatile boolean live = true;
@@ -36,7 +36,7 @@ public class XMLSystem {
 		this.live = live;
 	}
 
-	public XMLSystem(List<Instance> instanceList, List<Message> messageList,
+	public CopyOfXMLSystem(List<Instance> instanceList, List<Message> messageList,
 			List<Relation> relationList) {
 		this.instanceList = instanceList;
 		this.messageList = messageList;
@@ -83,43 +83,15 @@ public class XMLSystem {
 		// 将instanceMap中全部的实体放放线程池中运行
 		putInstanceToPool();
 		
-		while (live) { 
-			
-			createInstances();
-		
-			//打印instances信息
-			System.out.println(iMgr.printAllInstances());
-			
-			//1秒执行一次
+		while (live) {
 			try {
-				TimeUnit.MILLISECONDS.sleep(3000);
+				TimeUnit.MILLISECONDS.sleep(500);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
 		
 		close();
-	}
-	
-	private void createInstances() {
-		// 生成新的instance
-		for (Iterator<Entry<String, InstanceManager>> iter = iMgr
-				.getInstanceMap().entrySet().iterator(); iter.hasNext();) {
-			Entry<String, InstanceManager> entry = iter.next();
-			String instanceName = entry.getKey();
-			InstanceManager im = entry.getValue();
-			int createNewInstanceNumber = im.getNewInstanceRegister();
-			System.out.println("新生" + instanceName + "有"
-					+ createNewInstanceNumber + "个");
-			int tag = createNewInstanceNumber;
-			while (createNewInstanceNumber > 0) {
-				createInstance(instanceName);
-				createNewInstanceNumber--;
-			}
-			synchronized (im) {
-				im.setNewInstanceRegister(im.getNewInstanceRegister() - tag);
-			}
-		}
 	}
 
 	// 将instanceMap中全部的实体放放线程池中运行
@@ -132,38 +104,38 @@ public class XMLSystem {
 		
 		executor.execute(mp);
 
-		for (Iterator<Entry<String, InstanceManager>> iter = iMgr
+		for (Iterator<Entry<String, CopyOnWriteArrayList<Instance>>> iter = iMgr
 				.getInstanceMap().entrySet().iterator(); iter.hasNext();) {
-			Entry<String, InstanceManager> entry = iter.next();
-			InstanceManager im = entry.getValue();
-			CopyOnWriteArrayList<Instance> iList = im.getInstanceList();
+			Entry<String, CopyOnWriteArrayList<Instance>> entry = iter.next();
+			CopyOnWriteArrayList<Instance> iList = entry.getValue();
 			for (int j = 0; j < iList.size(); j++) {
 				Instance inst = iList.get(j);
 				executor.execute(inst);
 			}
 		}
-//		pi = new PrintInformation();
-//		executor.execute(pi);
+		pi = new PrintInformation();
+		executor.execute(pi);
 	}
 
 	public void close() {
 		
 		live = false;
-		// 线程管理器关闭		
 		executor.shutdown();
+		// 所有实体关闭
 		System.out.println("结束消息已发布，系统将关闭运行！");
 		//打印端关闭
-//		pi.close();
+		pi.close();
 		mp.close();
-		// 所有实体关闭
-		for (Iterator<Entry<String, InstanceManager>> iter = iMgr
-				.getInstanceMap().entrySet().iterator(); iter.hasNext();) {
-			Entry<String, InstanceManager> entry = iter.next();
-			InstanceManager im = entry.getValue();
-			im.close();
+		// 线程管理器关闭
+		for (Iterator<Entry<String, CopyOnWriteArrayList<Instance>>> i = iMgr
+				.getInstanceMap().entrySet().iterator(); i.hasNext();) {
+			Entry<String, CopyOnWriteArrayList<Instance>> entry = i.next();
+			CopyOnWriteArrayList<Instance> instanceList = entry.getValue();
+			for (int j = 0, k = instanceList.size(); j < k; j++) {
+				instanceList.get(j).setLive(false);
+			}
 		}
 		try {
-			//如果3秒后还没关闭，则强制关闭
 			if (!executor.awaitTermination(3, TimeUnit.SECONDS)) {
 				executor.shutdownNow();
 			}
@@ -179,11 +151,10 @@ public class XMLSystem {
 	// 初始化instanceMap中全部的Instance, 完善Instance对象的各个成员变量
 	private void initializeInstances() {
 		// 完善Action对象的成员变量, 例如variableMap, instance
-		for (Iterator<Entry<String, InstanceManager>> iter = iMgr
+		for (Iterator<Entry<String, CopyOnWriteArrayList<Instance>>> iter = iMgr
 				.getInstanceMap().entrySet().iterator(); iter.hasNext();) {
-			Entry<String, InstanceManager> entry = iter.next();
-			InstanceManager im = entry.getValue();
-			CopyOnWriteArrayList<Instance> iList = im.getInstanceList();
+			Entry<String, CopyOnWriteArrayList<Instance>> entry = iter.next();
+			CopyOnWriteArrayList<Instance> iList = entry.getValue();
 			for (int j = 0; j < iList.size(); j++) {
 				initializeInstance(iList.get(j));
 			}
@@ -247,13 +218,13 @@ public class XMLSystem {
 	}
 
 	// 创建一个新实体并放入instanceMap
-	public void createInstance(String instanceName) {
+	public void createInstance(Instance instance) {
 
 		if (!live) return;//如果xmlSystem已关闭，则直接返回
 		Instance instanceModel = null;
 		for (Iterator<Instance> iter=instanceList.iterator(); iter.hasNext();) {
 			instanceModel = iter.next();
-			if (instanceModel.getName().equals(instanceName))
+			if (instanceModel.getName().equals(instance.getName()))
 				break;
 		}
 		Instance newInstance = instanceModel.clone();
@@ -278,44 +249,42 @@ public class XMLSystem {
 	// System.out.println("zebra: " + list.size());
 	//
 	// }
-//	class PrintInformation implements Runnable {
-//
-//		// 存放打印的信息
-//		StringBuffer sbuffer;
-//		private boolean isprint = true;
-//
-//		@Override
-//		public void run() {
-//
-////			Thread.currentThread().setDaemon(true);
-//			Thread.currentThread().setPriority(4);
-//			while (isprint) {
-//				
-//				sbuffer = new StringBuffer();
-//				sbuffer.append(iMgr.printAllInstances());
-//				printInfo();
-//				try {
-//					TimeUnit.SECONDS.sleep(3);
-//				} catch (InterruptedException e) {
-//					e.printStackTrace();
-//				}
-//				Thread.yield();
-//			}
-//			System.out.println("信息显示端已关闭！");
-//		}
-//
-//		public void close() {
-//			isprint = false;
-//		}
-//
-//		private void printInfo() {
-//			System.out.println(sbuffer.toString());
-//		}
-//	}
-//
-	public void registerNEW(Instance instance) {
+	class PrintInformation implements Runnable {
 
-		iMgr.registerNEW(instance);
+		// 存放打印的信息
+		StringBuffer sbuffer;
+		private boolean isprint = true;
+
+		@Override
+		public void run() {
+
+//			Thread.currentThread().setDaemon(true);
+			Thread.currentThread().setPriority(4);
+			while (isprint) {
+				System.out.println("线程数有" + Thread.activeCount() + "个");
+				sbuffer = new StringBuffer();
+				sbuffer.append(iMgr.printAllInstances());
+				printInfo();
+				try {
+					TimeUnit.SECONDS.sleep(3);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				Thread.yield();
+			}
+			System.out.println("信息显示端已关闭！");
+		}
+
+		public void close() {
+			isprint = false;
+		}
+
+		private void printInfo() {
+			System.out.println(sbuffer.toString());
+		}
 	}
 
+//	public void printInstances() {
+//		iMgr.printAllInstances();
+//	}
 }

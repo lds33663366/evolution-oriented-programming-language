@@ -99,7 +99,8 @@ public abstract class Action implements Runnable, Serializable {
 			returnValue = FunctionLauncher.launch(instance.getName()
 					+ "_new", variableMap);
 			if (returnValue == true) {
-				instance.getSystem().createInstance(instance);
+//				instance.getSystem().createInstance(instance);
+				instance.getSystem().registerNEW(instance);
 			}
 		} else if (function.equals("DEAD")) {// 系统函数, 销毁一个实体
 

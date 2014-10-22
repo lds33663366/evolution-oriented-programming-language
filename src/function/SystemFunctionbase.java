@@ -38,7 +38,7 @@ public class SystemFunctionbase {
 	private void launchNEW(Instance instance) {
 		boolean isMeetUserRestriction = FunctionLauncher.launch(instance.getName()
 		+ "_new", instance.getProperty().getVariableMap());
-		if (isMeetUserRestriction) xmlSystem.createInstance(instance);
+//		if (isMeetUserRestriction) xmlSystem.createInstance(instance);
 	}
 	
 	
