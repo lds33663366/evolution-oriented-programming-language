@@ -65,7 +65,7 @@
      <message name="age_increment" from="SYSTEM" frequency="30" second="3" />
     <!--系统终止消息, 所有实体将接收到此消息, 并将数据存入数据库. 
     属性second=100: 系统将于100秒后终止程序-->
-    <message name="END" from="SYSTEM" second="10" />
+    <message name="END" from="SYSTEM" second="100" />
 
     <relation>
         <message name="eat_zebra"> <!--eat_zebra消息关联的接收接口为zebra下的lion_eat监听端-->

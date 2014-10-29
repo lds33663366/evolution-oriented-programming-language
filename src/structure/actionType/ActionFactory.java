@@ -8,6 +8,12 @@ import structure.Output;
 import structure.EnumType.XMLType;
 import structure.EnumType.XMLType.ActionType;
 
+/**
+ * action的工厂，根据xml标记的self、listen、publish、subscription、notification
+ * 生产对应的SelfAction、ListenAction、PublishAction、SubscriptionAction、
+ * NotificationAction对象。
+ * @author lods
+ */
 public class ActionFactory {
 	
 	public static Action createAction(String name, String function, List<Input> inputList,

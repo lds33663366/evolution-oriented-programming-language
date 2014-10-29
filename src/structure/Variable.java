@@ -25,11 +25,11 @@ public class Variable implements Cloneable, Serializable{
     public VariableType getType(){
         return type;
     }
-    public String getValue(){
+    public synchronized String getValue(){
         return value;
     }
 
-	public void setValue(String value) {
+	public synchronized void setValue(String value) {
 		isUpdate = true;
 		this.value = value;
 	}

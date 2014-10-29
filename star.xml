@@ -39,5 +39,7 @@
 		<content type="property" name="quality"/>
 		<content type="property" name="position" />
 	</message>
-
+    <!--系统终止消息, 所有实体将接收到此消息, 并将数据存入数据库. 
+    属性second=100: 系统将于100秒后终止程序-->
+    <message name="END" from="SYSTEM" second="15" />
 </system>

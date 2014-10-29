@@ -109,8 +109,8 @@ public class XMLSystem {
 			String instanceName = entry.getKey();
 			InstanceManager im = entry.getValue();
 			int createNewInstanceNumber = im.getNewInstanceRegister();
-			System.out.println("新生" + instanceName + "有"
-					+ createNewInstanceNumber + "个");
+//			System.out.println("新生" + instanceName + "有"
+//					+ createNewInstanceNumber + "个");
 			int tag = createNewInstanceNumber;
 			while (createNewInstanceNumber > 0) {
 				createInstance(instanceName);
