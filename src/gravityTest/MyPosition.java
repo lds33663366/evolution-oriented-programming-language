@@ -1,3 +1,4 @@
+package gravityTest;
 import java.awt.geom.Point2D;
 
 class MyPosition extends Point2D{
