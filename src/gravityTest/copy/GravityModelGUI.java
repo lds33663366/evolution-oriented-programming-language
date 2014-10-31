@@ -1,19 +1,21 @@
-package gravityTest;
+package gravityTest.copy;
 import java.awt.*;
 import java.awt.event.*;
 
-public class GravityModel extends Frame {
+public class GravityModelGUI extends Frame {
 	public static final int MODEL_WIDTH = 1200;
 	public static final int MODEL_HEIGHT = 850;
-	
-	int x = 50, y = 50;
 	
 	Image offScreenImage = null;
 	
 	int earth_x, earth_y;
-	Test2 test = new Test2();
+	GravityClient test = new GravityClient();
 	public void paint(Graphics g) {
+		Color c = g.getColor();
+		g.setColor(Color.WHITE);
+		g.drawString("第" + day + "天", 1100, 770);
 		test.draw(g);
+		g.setColor(c);
 	}
 	
 	public void update(Graphics g) {
@@ -46,20 +48,21 @@ public class GravityModel extends Frame {
 	}
 
 	public static void main(String[] args) {
-		GravityModel gm = new GravityModel();
+		GravityModelGUI gm = new GravityModelGUI();
 		gm.lauchFrame();
 	}
 	
+	int day = 0;
 	private class PaintThread implements Runnable {
 
 		public void run() {
-			int count = 1000;
 			while(true) {
 //				count--;
 //				if (count == 6);
+				day++;
 				repaint();
 				try {
-					Thread.sleep(100);
+					Thread.sleep(10);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
