@@ -1,5 +1,8 @@
-package gravityTest;
+package gravityTest.star;
 
+import gravityTest.MyPosition;
+
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -28,6 +31,7 @@ public class Sun extends Star {
 	@Override
 	public void paintedOnAxis(Graphics2D g, double paint_x, double paint_y,
 			String paint) {
+		g.setColor(Color.YELLOW);
 		g.drawString(paint, 10, 70);
 //		try {
 //			image = ImageIO.read(new File("./src/images/sun.png"));

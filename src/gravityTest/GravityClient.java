@@ -1,4 +1,6 @@
 package gravityTest;
+import gravityTest.star.*;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -10,10 +12,11 @@ import java.util.List;
 
 public class GravityClient {
 
-	Star sun, earth, mars;
+	Star sun, earth, mars, saturn, jupiter;
 	public static final double time = 3600 * 24;
+	public List<Star> stars = new ArrayList<Star>();
 
-	public static final double scale = 13E8;
+	public static final double scale = 35E8;
 	List<MyPosition> positions = new ArrayList<MyPosition>(10000);
 	
 //	public static void main(String[] args) {
@@ -28,41 +31,47 @@ public class GravityClient {
 	}
 	
 	private void init() {
-		sun = new Sun();
-		earth = new Earth();
-		mars = new Mars();
+		
+		stars.add(new Sun());
+//		stars.add(new Earth());
+//		stars.add(new Mars());
+		stars.add(new Jupiter());
+//		stars.add(new Saturn());
+		
+		
+	}
+	
+	void drawStars(Graphics2D g, List<Star> stars) {
+		for (int i=0; i<stars.size(); i++) {
+			stars.get(i).draw(g);
+		}
+	}
+	
+	int tag = 0;
+	void move(List<Star> stars) {
+		for (int i=0; i<stars.size(); i++) {
+			
+			Star moveStar = stars.get(i);
+
+			if ((tag++)%3!=0) moveStar.moveForwardVelocity();
+			else moveStar.moveForwardVelocity2();
+//			moveStar.moveForwardVelocity();
+			for (int j=0; j<stars.size(); j++) {
+				if (stars.get(j) == moveStar) continue;
+				moveStar.moveForwardStar(stars.get(j));
+			}
+		}
 	}
 
 	void draw(Graphics gr) {
 		Graphics2D g = (Graphics2D)gr;
 		
-		sun.draw(g, Color.YELLOW);
-		earth.draw(g, Color.BLUE);
-		mars.draw(g, Color.RED);
+		drawStars(g, stars);
 		
 		g.setColor(Color.WHITE);
-		g.drawString("比例尺：" + scale + "/1", 1100, 800);
+		g.drawString("比例尺：" + scale + ":1", 1100, 800);
 		
-		sun.moveForwardVelocity();
-		sun.moveForwardStar(earth);
-		sun.moveForwardStar(mars);
-		
-		earth.moveForwardVelocity();
-		earth.moveForwardStar(sun);
-		earth.moveForwardStar(mars);
-		
-		mars.moveForwardVelocity();
-		mars.moveForwardStar(sun);
-		mars.moveForwardStar(earth);
-//		compute(sun, earth);
-//		compute(earth, sun);
-//		compute(sun, mars);
-//		compute(mars, sun);
-//		compute(earth, mars);
-//		compute(mars, earth);
-		
-//		positions.add(new MyPosition(paint_earth_x+5, paint_earth_y+5));
-//		drawTrack(g);
+		move(stars);
 	}
 	
 	private void drawTrack(Graphics2D g) {

@@ -1,4 +1,6 @@
-package gravityTest;
+package gravityTest.star;
+
+import gravityTest.MyPosition;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -29,6 +31,7 @@ public class Mars extends Star {
 	@Override
 	public void paintedOnAxis(Graphics2D g, double paint_x, double paint_y,
 			String paint) {
+		g.setColor(Color.RED);
 		g.drawString(paint, 10, 110);
 //		Ellipse2D.Double star_draw = new Ellipse2D.Double(paint_x-7.5, paint_y-7.5, 15, 15);
 //		try {

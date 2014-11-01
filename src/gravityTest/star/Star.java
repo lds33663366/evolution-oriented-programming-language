@@ -1,4 +1,7 @@
-package gravityTest;
+package gravityTest.star;
+
+import gravityTest.GravityClient;
+import gravityTest.MyPosition;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -22,6 +25,7 @@ public abstract class Star {
 	
 	public Star() {
 		init();
+		oriPosition = position;
 	}
 	
 	protected abstract void init();
@@ -42,8 +46,7 @@ public abstract class Star {
 		this.velocity = velocity;
 	}
 
-	public void draw(Graphics2D g, Color color) {
-		g.setColor(color);
+	public void draw(Graphics2D g) {
 		
 		double paint_x = 500 + position.x / GravityClient.scale;
 		double paint_y = 500 + position.y / GravityClient.scale;
@@ -55,10 +58,12 @@ public abstract class Star {
 		String paint = axis + ori_axis + volicity;
 
 		g.drawImage(image, (int)(paint_x-image.getWidth()/2), (int)paint_y-image.getHeight()/2, null);
+		g.drawString(name, (int)(paint_x-image.getWidth()/2), (int)paint_y-image.getHeight()/2);
 		
 		paintedOnAxis(g, paint_x, paint_y, paint);
 	}
 	
+	//越转越大
 	public void moveForwardVelocity() {
 		
 		oriPosition = position.clone();
@@ -68,13 +73,21 @@ public abstract class Star {
 		position.setLocation(x, y);
 	}
 	
+	//越转越小
+	public void moveForwardVelocity2() {
+		
+		double x, y;
+		x = position.x + velocity.x * time;
+		y = position.y + velocity.y * time;
+		position.setLocation(x, y);
+		oriPosition = position.clone();
+	}
+	
 	public void moveForwardStar(Star star) {
 
 		MyPosition a_vector = getAcclVector(star);
-		System.out.println("两点之间的加速度向量a_vector=" + a_vector);
 		
 		velocity = getNextV(velocity, a_vector);//求末速度矢量
-		System.out.println("速度下一个方向向量为earth_v=" + velocity);
 		
 		position = getNextPosition(position, a_vector);
 	}
@@ -84,14 +97,13 @@ public abstract class Star {
 //	}
 	private MyPosition getAcclVector(Star star) {
 		// 求半径
-		double r = getDistance(oriPosition, star.getPosition());
+		double r = getDistance(star.getPosition());
 
 		// 求加速度
 		double a = getAccl(star.weight, r);
 		MyPosition a_vector = new MyPosition(star.getPosition().x - oriPosition.x,
 				star.getPosition().y - oriPosition.y);
 		a_vector = aFlex(a, a_vector);
-		System.out.println("两点之间的加速度向量a_vector=" + a_vector);
 		return a_vector;
 	}
 	
@@ -161,14 +173,14 @@ public abstract class Star {
 	
 	/**
 	 * 已知两点的坐标，求距离
-	 * @param sun 一个坐标点
-	 * @param earth 另一坐标点
+	 * @param star 一个坐标点
 	 * @return 距离
 	 */
-	private double getDistance(MyPosition sun, MyPosition earth) {
-		double delta_x = earth.x - sun.x;
-		double delta_y = earth.y - sun.y;
+	private double getDistance(MyPosition star) {
+		double delta_x = oriPosition.x - star.x;
+		double delta_y = oriPosition.y - star.y;
 		double distance = Math.sqrt(delta_x * delta_x + delta_y * delta_y);
+		System.out.println("两点之间距离：" + distance);
 		return distance;
 	}
 	
