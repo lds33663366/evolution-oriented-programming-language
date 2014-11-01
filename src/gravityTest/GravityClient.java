@@ -49,6 +49,7 @@ public class GravityClient {
 	
 	int tag = 0;
 	void move(List<Star> stars) {
+		
 		for (int i=0; i<stars.size(); i++) {
 			
 			Star moveStar = stars.get(i);
