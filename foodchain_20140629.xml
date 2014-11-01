@@ -3,7 +3,7 @@
 <system xsi:noNamespaceSchemaLocation="mdl20140629.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
     <!-- 定义5只狮子, 包含的属性: 年龄, 性别, 生命, 地理位置.  -->
-    <instance name="lion" popsize="0">
+    <instance name="lion" popsize="2">
         <property>
             <int name="age" value="1" /> <!--默认狮子年龄都为1-->
             <string name="gender"/> <!--狮子的性别, 需要一个action对其初始化-->

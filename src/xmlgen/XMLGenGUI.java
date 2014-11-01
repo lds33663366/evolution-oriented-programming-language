@@ -212,19 +212,16 @@ public class XMLGenGUI extends JFrame {
 
 			@Override
 			public void insertUpdate(DocumentEvent e) {
-				// TODO Auto-generated method stub
 				modefied=true;
 			}
 
 			@Override
 			public void removeUpdate(DocumentEvent e) {
-				// TODO Auto-generated method stub
 				modefied=true;
 			}
 
 			@Override
 			public void changedUpdate(DocumentEvent e) {
-				// TODO Auto-generated method stub
 				modefied=true;
 			}});
 		CodeShowInternalFrame.setVisible(true);
@@ -425,7 +422,6 @@ public class XMLGenGUI extends JFrame {
 		
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
 			/*
 			 * 找到要插入元素的父节点
 			 */
@@ -535,7 +531,6 @@ public class XMLGenGUI extends JFrame {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			// TODO Auto-generated method stub
 			DefaultMutableTreeNode seletedNode=
 					(DefaultMutableTreeNode) jtree.getLastSelectedPathComponent();
 			if(e.isMetaDown()&&seletedNode!=null){
@@ -650,25 +645,21 @@ public class XMLGenGUI extends JFrame {
 
 		@Override
 		public void mousePressed(MouseEvent e) {
-			// TODO Auto-generated method stub
 			
 		}
 
 		@Override
 		public void mouseReleased(MouseEvent e) {
-			// TODO Auto-generated method stub
 			
 		}
 
 		@Override
 		public void mouseEntered(MouseEvent e) {
-			// TODO Auto-generated method stub
 			
 		}
 
 		@Override
 		public void mouseExited(MouseEvent e) {
-			// TODO Auto-generated method stub
 			
 		}
 		
@@ -687,7 +678,6 @@ public class XMLGenGUI extends JFrame {
 	 * @param name
 	 */
 	public void generateXMLElement(Option option, String name) {
-		// TODO Auto-generated method stub
 		DefaultMutableTreeNode selectedNode = 
 				(DefaultMutableTreeNode)jtree.getLastSelectedPathComponent();
 		TreeNode[] nodePath = selectedNode.getPath();
@@ -727,7 +717,6 @@ public class XMLGenGUI extends JFrame {
 	 * @param name
 	 */
 	public void generateXMLElement(String name) {
-		// TODO Auto-generated method stub
 		DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) jtree
 				.getLastSelectedPathComponent();
 		TreeNode[] nodePath = selectedNode.getPath();
@@ -765,7 +754,6 @@ public class XMLGenGUI extends JFrame {
 	 * 删除XML节点的函数
 	 */
 	public void deleteXMLElement() {
-		// TODO Auto-generated method stub
 		DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) jtree
 				.getLastSelectedPathComponent();
 		TreeNode[] nodePath = selectedNode.getPath();
@@ -877,7 +865,6 @@ public class XMLGenGUI extends JFrame {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		new XMLGenGUI();
 	}
 }

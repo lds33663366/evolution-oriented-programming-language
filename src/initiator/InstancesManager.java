@@ -1,5 +1,6 @@
 package initiator;
 
+import java.awt.Graphics2D;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -14,8 +15,8 @@ public class InstancesManager {
 	public Map<String, InstanceManager> getInstanceMap() {
 		return instanceMap;
 	}
-	
-	public InstancesManager(){
+
+	public InstancesManager() {
 		instanceMap = new HashMap<String, InstanceManager>();
 	}
 
@@ -32,12 +33,12 @@ public class InstancesManager {
 		InstanceManager im = instanceMap.get(instance.getName());
 		im.remove(instance);
 	}
-	
+
 	public String printAllInstances() {
 		StringBuffer sb = new StringBuffer(1000);
 		sb.append("线程数有" + Thread.activeCount() + "个\n");
-		for (Iterator<Entry<String, InstanceManager>> iter=
-				instanceMap.entrySet().iterator(); iter.hasNext();) {
+		for (Iterator<Entry<String, InstanceManager>> iter = instanceMap
+				.entrySet().iterator(); iter.hasNext();) {
 			Entry<String, InstanceManager> entry = iter.next();
 			String instanceName = entry.getKey();
 			InstanceManager im = instanceMap.get(instanceName);
@@ -49,8 +50,17 @@ public class InstancesManager {
 	public void registerNEW(Instance instance) {
 		InstanceManager im = instanceMap.get(instance.getName());
 		im.registerNew();
-		
+
 	}
-	
+
+	public void draw(Graphics2D g) {
+
+		for (Iterator<Entry<String, InstanceManager>> iterator = instanceMap
+				.entrySet().iterator(); iterator.hasNext();) {
+			Entry<String, InstanceManager> entry = iterator.next();
+			InstanceManager im = entry.getValue();
+			im.draw(g);
+		}
+	}
 
 }

@@ -251,6 +251,12 @@ public class Instance implements Runnable, Serializable {
 		
 	}
 
+	/**
+	 * 取出instance的属性，如果instance里还有instance，可使用"."分隔取出
+	 * 例如：position.x, weight, life等等
+	 * @param valueName 属性名
+	 * @return 属性值
+	 */
 	public String obtainValue(String valueName) {
 
 		String str[] = valueName.split("\\.", 2);

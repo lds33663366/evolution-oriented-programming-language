@@ -10,7 +10,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import function.SystemFunctionbase;
 import msgManager.MsgPool;
 import structure.Instance;
 import structure.Message;
@@ -24,10 +23,8 @@ public class XMLSystem {
 	private MsgPool mp; // 消息池
 	private ExecutorService executor; // 线程池
 	private InstancesManager iMgr;
-//	private PrintInformation pi;
-
 	
-	private volatile boolean live = true;
+	private volatile boolean live;
 
 	// 存放Instance对象, 同名的对象放在同一线表中
 	// 此处存放的Instance对象是以instanceList中的元素为蓝本创建的
@@ -42,6 +39,7 @@ public class XMLSystem {
 		this.messageList = messageList;
 		this.relationList = relationList;
 		iMgr = new InstancesManager();
+		live = true;
 	}
 	
 	public ExecutorService getExecutor() {
@@ -65,8 +63,6 @@ public class XMLSystem {
 	 * 2.根据<relation>, 建立Message与Instance之间的联系 3.启动Instance
 	 */
 	public void start() {
-		
-		
 
 //		SystemFunctionbase.xmlSystem = this;
 		// 消息池初始化
@@ -83,6 +79,9 @@ public class XMLSystem {
 		// 将instanceMap中全部的实体放放线程池中运行
 		putInstanceToPool();
 		
+		GravityModelGUI gm = new GravityModelGUI(iMgr);
+		gm.lauchFrame();
+		
 		while (live) { 
 			
 			createInstances();
@@ -90,7 +89,7 @@ public class XMLSystem {
 			//打印instances信息
 			System.out.println(iMgr.printAllInstances());
 			
-			//1秒执行一次
+			//3秒执行一次
 			try {
 				TimeUnit.MILLISECONDS.sleep(3000);
 			} catch (InterruptedException e) {

@@ -122,49 +122,18 @@ public class Functionbase {
 	 * @param m
 	 */
 	public void centripetal_force(Instance planet, Message m) {
-		double planet_x = Double.parseDouble(planet.obtainValue("position.x"));
-		double planet_y = Double.parseDouble(planet.obtainValue("position.y"));
-		double angle = Double.parseDouble(planet.obtainValue("angle"));
-		double star_x = Double.parseDouble(m.obtainValue("star.position.x"));
-		double star_y = Double.parseDouble(m.obtainValue("star.position.y"));
-		double quality = Double.parseDouble(m.obtainValue("star.quality"));
-		
-		double xx = (planet_x - star_x) * (planet_x - star_x);
-		double yy = (planet_y - star_y) * (planet_y - star_y);
-		double r = Math.sqrt(xx + yy);
-		
-		double p = period(quality, r);
-//		double angle2 = 2*Math.PI * 3600000 / p;
-		double angle2 = 1.57 / 2;
-		double angle3 = angle - angle2;
-		
-		System.out.println("angle = " + angle);
-		System.out.println("angle2 = " + angle2);
-		System.out.println("angle3 = " + angle3);
-		
-//		double t = 1.0/365;
-//		System.out.println("1/365 = " + t);
-		
-		double planet_x1 = r * Math.cos(angle3);
-		double planet_y1 = r * Math.sin(angle3);
-		
-		
-		//计算完成后修改position的值和angle的值
-		planet.motify("position.x", planet_x1+"");
-		planet.motify("position.y", planet_y1+"");
-		planet.motify("angle", angle3+"");
-	}
-	
-	//计算转动周期，T = 2pi/(sqrt(GM/r3))
-	private double period(double quality, double r) {
-		
-		double g = 6.67 * Math.pow(10, -11);
-		double denominator = Math.sqrt(g * quality / Math.pow(r, 3));
-		
-		double period = 2 * Math.PI / denominator;
-		System.out.println("period = " + period);
-		return period;
-		
-	}
+		double this_x = Double.parseDouble(planet.obtainValue("position.x"));
+		double this_y = Double.parseDouble(planet.obtainValue("position.y"));
+		double this_weight = Double.parseDouble(planet.obtainValue("weight"));
 
+		double star_x = Double.parseDouble(m.obtainValue("sun.position.x"));
+		double star_y = Double.parseDouble(m.obtainValue("sun.position.y"));
+		double star_weight = Double.parseDouble(m.obtainValue("sun.weight"));
+
+		double x = this_x + 1E11;
+		planet.motify("position.x", x+"");
+		
+		
+		
+	}
 }
