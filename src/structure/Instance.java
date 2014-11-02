@@ -40,12 +40,12 @@ public class Instance implements Runnable, Serializable {
 		this.property = property;
 		this.live = true;
 	}
-
-	public synchronized void updateProperty(String name, String value) {
-		this.property.getVariableMap().get(name).setValue(value);
-		deliverUpdate();
-		notifyAll();
-	}
+//
+//	public synchronized void updateProperty(String name, String value) {
+//		this.property.getVariableMap().get(name).setValue(value);
+//		deliverUpdate();
+//		notifyAll();
+//	}
 
 	public void setId(int id) {
 		this.id = id;
@@ -281,7 +281,7 @@ public class Instance implements Runnable, Serializable {
 		return null;
 	}
 
-	public void motify(String valueName, String value) {
+	public synchronized void motify(String valueName, String value) {
 		// System.out.println("要修改的属性：" + valueName + "; 修改的值为：" + value);
 		String str[] = valueName.split("\\.", 2);
 		String propName = str[0];
@@ -295,6 +295,9 @@ public class Instance implements Runnable, Serializable {
 				inst.motify(str[1], value);
 			}
 		}
+		
+		deliverUpdate();
+		notifyAll();
 	}
 
 }
