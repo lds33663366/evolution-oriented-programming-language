@@ -45,11 +45,11 @@
 		</action>
 	</instance>
 	
-	<message name="gravitation" from="sun" frequency="100" second="2">
+	<message name="gravitation" from="sun" frequency="10000" second="1">
 		<content type="property" name="weight"/>
 		<content type="property" name="position" />
 	</message>
     <!--系统终止消息, 所有实体将接收到此消息, 并将数据存入数据库. 
     属性second=100: 系统将于100秒后终止程序-->
-    <message name="END" from="SYSTEM" second="15" />
+<!--    <message name="END" from="SYSTEM" second="15" /> -->
 </system>

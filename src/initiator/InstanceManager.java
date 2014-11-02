@@ -1,5 +1,6 @@
 package initiator;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.util.ArrayList;
@@ -113,13 +114,16 @@ public class InstanceManager {
 	}
 
 	public void draw(Graphics2D g) {
+		Color c = g.getColor();
+		g.setColor(Color.RED);
 		List<Point.Double> pointList = getGUIpoints();
 		for (int i=0; i<pointList.size(); i++) {
 			Point.Double point = pointList.get(i);
 			int x = (int)(500 + point.x/10E8);
 			int y = (int)(500 + point.y/10E8);
-			g.fillOval(x, y, 30, 30);
+			g.fillOval(x-8, y-8, 16, 16);
 		}
+		g.setColor(c);
 		
 	}
 }

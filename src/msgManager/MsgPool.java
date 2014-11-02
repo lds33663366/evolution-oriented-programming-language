@@ -1,5 +1,6 @@
 package msgManager;
 
+import initiator.ThreadTimeConsole;
 import initiator.XMLSystem;
 
 import java.text.ParseException;
@@ -385,7 +386,7 @@ public class MsgPool implements Runnable{
 				sendTopics();
 				moveToSendingqueue();
 				try {
-					TimeUnit.MILLISECONDS.sleep(200);
+					TimeUnit.MILLISECONDS.sleep(ThreadTimeConsole.Thread_MsgPool.getTime());
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
