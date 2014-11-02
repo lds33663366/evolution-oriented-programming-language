@@ -1,5 +1,7 @@
 package structure.actionType;
 
+import initiator.ThreadTimeConsole;
+
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -21,7 +23,7 @@ public class NotificationAction extends Action{
 	public void working() {
 		while (!update) {
 			try {
-				TimeUnit.MILLISECONDS.sleep(200);
+				TimeUnit.MILLISECONDS.sleep(ThreadTimeConsole.Thread_ListenAction.getTime());
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

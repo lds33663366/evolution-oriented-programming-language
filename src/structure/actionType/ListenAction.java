@@ -1,5 +1,7 @@
 package structure.actionType;
 
+import initiator.ThreadTimeConsole;
+
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -24,7 +26,7 @@ public class ListenAction extends Action{
 		}
 		
 		try {
-			TimeUnit.MILLISECONDS.sleep(200);
+			TimeUnit.MILLISECONDS.sleep(ThreadTimeConsole.Thread_ListenAction.getTime());
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}		

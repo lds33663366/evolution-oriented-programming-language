@@ -1,5 +1,6 @@
 package structure;
 
+import initiator.ThreadTimeConsole;
 import initiator.XMLSystem;
 
 import java.io.ByteArrayInputStream;
@@ -39,7 +40,7 @@ public class Instance implements Runnable, Serializable {
 		this.property = property;
 		this.live = true;
 	}
-	
+
 	public synchronized void updateProperty(String name, String value) {
 		this.property.getVariableMap().get(name).setValue(value);
 		deliverUpdate();
@@ -50,11 +51,12 @@ public class Instance implements Runnable, Serializable {
 		this.id = id;
 	}
 
-    /**
-     * 深度复制instance
-     * @param instance
-     * @return 复制后的instance
-     */
+	/**
+	 * 深度复制instance
+	 * 
+	 * @param instance
+	 * @return 复制后的instance
+	 */
 	public Instance clone() {// 将对象写到流里
 		ByteArrayOutputStream bo = new ByteArrayOutputStream();
 		ObjectOutputStream oo;
@@ -72,7 +74,7 @@ public class Instance implements Runnable, Serializable {
 		}
 		return inst;
 	}
-	
+
 	synchronized void waitForUpdate() {
 
 		while (Variable.isUpdate == false && live) {
@@ -93,22 +95,22 @@ public class Instance implements Runnable, Serializable {
 		Thread.currentThread().setPriority(4);
 		// 将所有的Action对象放入线程池中运行
 		exec = Executors.newCachedThreadPool();
-//		ExecutorService exec = system.getExecutor();
+		// ExecutorService exec = system.getExecutor();
 		for (int i = 0; i < actionList.size(); i++) {
 			exec.execute(actionList.get(i));
 		}
 		exec.execute(msghandler);
-		
+
 		while (live) {
-		try {
-			TimeUnit.MILLISECONDS.sleep(100);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+			try {
+				TimeUnit.MILLISECONDS.sleep(ThreadTimeConsole.Thread_Instance
+						.getTime());
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
-		}
-		
+
 		close();
-		
 
 	}
 
@@ -152,9 +154,9 @@ public class Instance implements Runnable, Serializable {
 	public String getName() {
 		return name;
 	}
-	
+
 	public String getIdName() {
-		return name+id;
+		return name + id;
 	}
 
 	public int getPopsize() {
@@ -172,11 +174,11 @@ public class Instance implements Runnable, Serializable {
 	public void setLive(boolean live) {
 		this.live = live;
 	}
-	
+
 	public void setMessageList(List<Message> messageList) {
 		msghandler.setMessageList(messageList);
 	}
-	
+
 	public void addMessage(Message message) {
 		msghandler.addMessage(message);
 	}
@@ -211,7 +213,7 @@ public class Instance implements Runnable, Serializable {
 	// 的指针
 	public void delieverInstance() {
 
-//		msghandler = new MsgHandler(this);
+		// msghandler = new MsgHandler(this);
 		for (int i = 0; i < actionList.size(); i++) {
 			actionList.get(i).setInstance(this);
 		}
@@ -227,10 +229,11 @@ public class Instance implements Runnable, Serializable {
 	public void sendMessageToPool(String messageName) {
 		msghandler.sendMessageToPool(messageName);
 	}
+
 	// 发送主题为topic, 名字为messageName的消息
 	public void sendMessageToPool(String topic, String messageName) {
 		msghandler.sendMessageToPool(topic, messageName);
-		
+
 	}
 
 	// 接收消息
@@ -248,13 +251,15 @@ public class Instance implements Runnable, Serializable {
 
 	public void subscription(String topic, String actionName) {
 		msghandler.subscription(topic, actionName);
-		
+
 	}
 
 	/**
-	 * 取出instance的属性，如果instance里还有instance，可使用"."分隔取出
-	 * 例如：position.x, weight, life等等
-	 * @param valueName 属性名
+	 * 取出instance的属性，如果instance里还有instance，可使用"."分隔取出 例如：position.x, weight,
+	 * life等等
+	 * 
+	 * @param valueName
+	 *            属性名
 	 * @return 属性值
 	 */
 	public String obtainValue(String valueName) {
@@ -262,7 +267,7 @@ public class Instance implements Runnable, Serializable {
 		String str[] = valueName.split("\\.", 2);
 		String propName = str[0];
 		Property prop = this.getProperty();
-		
+
 		if (str.length == 1) {
 			Variable v;
 			if ((v = prop.getVariable(propName)) != null)
@@ -277,11 +282,11 @@ public class Instance implements Runnable, Serializable {
 	}
 
 	public void motify(String valueName, String value) {
-//System.out.println("要修改的属性：" + valueName + "; 修改的值为：" + value);
+		// System.out.println("要修改的属性：" + valueName + "; 修改的值为：" + value);
 		String str[] = valueName.split("\\.", 2);
 		String propName = str[0];
 		Property prop = this.getProperty();
-		
+
 		if (str.length == 1) {
 			prop.setVariable(propName, value);
 		} else if (str.length == 2) {
@@ -292,5 +297,4 @@ public class Instance implements Runnable, Serializable {
 		}
 	}
 
-	
 }

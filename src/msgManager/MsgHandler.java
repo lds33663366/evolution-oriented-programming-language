@@ -1,5 +1,7 @@
 package msgManager;
 
+import initiator.ThreadTimeConsole;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -230,7 +232,7 @@ public class MsgHandler implements Runnable, Serializable{
 		
 		while (live) {
 			try {
-				TimeUnit.SECONDS.sleep(1);
+				TimeUnit.MILLISECONDS.sleep(ThreadTimeConsole.Thread_MsgHandler.getTime());
 			} catch (InterruptedException e) {
 //				e.printStackTrace();
 			} 

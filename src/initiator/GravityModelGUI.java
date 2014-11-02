@@ -78,7 +78,7 @@ public class GravityModelGUI extends Frame {
 				day++;
 				repaint();
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(ThreadTimeConsole.Thread_GUI.getTime());
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}

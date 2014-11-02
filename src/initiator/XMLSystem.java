@@ -23,7 +23,7 @@ public class XMLSystem {
 	private MsgPool mp; // 消息池
 	private ExecutorService executor; // 线程池
 	private InstancesManager iMgr;
-	
+
 	private volatile boolean live;
 
 	// 存放Instance对象, 同名的对象放在同一线表中
@@ -41,7 +41,7 @@ public class XMLSystem {
 		iMgr = new InstancesManager();
 		live = true;
 	}
-	
+
 	public ExecutorService getExecutor() {
 		return executor;
 	}
@@ -64,7 +64,7 @@ public class XMLSystem {
 	 */
 	public void start() {
 
-//		SystemFunctionbase.xmlSystem = this;
+		// SystemFunctionbase.xmlSystem = this;
 		// 消息池初始化
 		mp = MsgPool.getInstance();
 		mp.setXmlSystem(this);
@@ -78,28 +78,29 @@ public class XMLSystem {
 
 		// 将instanceMap中全部的实体放放线程池中运行
 		putInstanceToPool();
-		
+
 		GravityModelGUI gm = new GravityModelGUI(iMgr);
 		gm.lauchFrame();
-		
-		while (live) { 
-			
+
+		while (live) {
+
 			createInstances();
-		
-			//打印instances信息
+
+			// 打印instances信息
 			System.out.println(iMgr.printAllInstances());
-			
-			//3秒执行一次
+
+			// 3秒执行一次
 			try {
-				TimeUnit.MILLISECONDS.sleep(3000);
+				TimeUnit.MILLISECONDS.sleep(ThreadTimeConsole.Thread_XMLSystem
+						.getTime());
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
-		
+
 		close();
 	}
-	
+
 	private void createInstances() {
 		// 生成新的instance
 		for (Iterator<Entry<String, InstanceManager>> iter = iMgr
@@ -108,8 +109,8 @@ public class XMLSystem {
 			String instanceName = entry.getKey();
 			InstanceManager im = entry.getValue();
 			int createNewInstanceNumber = im.getNewInstanceRegister();
-//			System.out.println("新生" + instanceName + "有"
-//					+ createNewInstanceNumber + "个");
+			// System.out.println("新生" + instanceName + "有"
+			// + createNewInstanceNumber + "个");
 			int tag = createNewInstanceNumber;
 			while (createNewInstanceNumber > 0) {
 				createInstance(instanceName);
@@ -125,10 +126,10 @@ public class XMLSystem {
 	private void putInstanceToPool() {
 
 		if (executor == null)
-//			executor = Executors.newScheduledThreadPool(20);
-//			executor = Executors.newFixedThreadPool(4000);
+			// executor = Executors.newScheduledThreadPool(20);
+			// executor = Executors.newFixedThreadPool(4000);
 			executor = Executors.newCachedThreadPool();
-		
+
 		executor.execute(mp);
 
 		for (Iterator<Entry<String, InstanceManager>> iter = iMgr
@@ -141,18 +142,18 @@ public class XMLSystem {
 				executor.execute(inst);
 			}
 		}
-//		pi = new PrintInformation();
-//		executor.execute(pi);
+		// pi = new PrintInformation();
+		// executor.execute(pi);
 	}
 
 	public void close() {
-		
+
 		live = false;
-		// 线程管理器关闭		
+		// 线程管理器关闭
 		executor.shutdown();
 		System.out.println("结束消息已发布，系统将关闭运行！");
-		//打印端关闭
-//		pi.close();
+		// 打印端关闭
+		// pi.close();
 		mp.close();
 		// 所有实体关闭
 		for (Iterator<Entry<String, InstanceManager>> iter = iMgr
@@ -162,7 +163,7 @@ public class XMLSystem {
 			im.close();
 		}
 		try {
-			//如果3秒后还没关闭，则强制关闭
+			// 如果3秒后还没关闭，则强制关闭
 			if (!executor.awaitTermination(3, TimeUnit.SECONDS)) {
 				executor.shutdownNow();
 			}
@@ -172,7 +173,7 @@ public class XMLSystem {
 		System.out.println("所有实体已关闭！");
 		// 消息池关闭
 		System.out.println("线程管理器已关闭！");
-		
+
 	}
 
 	// 初始化instanceMap中全部的Instance, 完善Instance对象的各个成员变量
@@ -200,7 +201,7 @@ public class XMLSystem {
 		inst.delieverInstance();
 		inst.setSystem(this);
 		inst.setMessagePool(mp);
-		if (relationList.size()>0) {
+		if (relationList.size() > 0) {
 			inst.setRelation(relationList.get(0));
 		}
 	}
@@ -248,9 +249,10 @@ public class XMLSystem {
 	// 创建一个新实体并放入instanceMap
 	public void createInstance(String instanceName) {
 
-		if (!live) return;//如果xmlSystem已关闭，则直接返回
+		if (!live)
+			return;// 如果xmlSystem已关闭，则直接返回
 		Instance instanceModel = null;
-		for (Iterator<Instance> iter=instanceList.iterator(); iter.hasNext();) {
+		for (Iterator<Instance> iter = instanceList.iterator(); iter.hasNext();) {
 			instanceModel = iter.next();
 			if (instanceModel.getName().equals(instanceName))
 				break;
@@ -277,41 +279,41 @@ public class XMLSystem {
 	// System.out.println("zebra: " + list.size());
 	//
 	// }
-//	class PrintInformation implements Runnable {
-//
-//		// 存放打印的信息
-//		StringBuffer sbuffer;
-//		private boolean isprint = true;
-//
-//		@Override
-//		public void run() {
-//
-////			Thread.currentThread().setDaemon(true);
-//			Thread.currentThread().setPriority(4);
-//			while (isprint) {
-//				
-//				sbuffer = new StringBuffer();
-//				sbuffer.append(iMgr.printAllInstances());
-//				printInfo();
-//				try {
-//					TimeUnit.SECONDS.sleep(3);
-//				} catch (InterruptedException e) {
-//					e.printStackTrace();
-//				}
-//				Thread.yield();
-//			}
-//			System.out.println("信息显示端已关闭！");
-//		}
-//
-//		public void close() {
-//			isprint = false;
-//		}
-//
-//		private void printInfo() {
-//			System.out.println(sbuffer.toString());
-//		}
-//	}
-//
+	// class PrintInformation implements Runnable {
+	//
+	// // 存放打印的信息
+	// StringBuffer sbuffer;
+	// private boolean isprint = true;
+	//
+	// @Override
+	// public void run() {
+	//
+	// // Thread.currentThread().setDaemon(true);
+	// Thread.currentThread().setPriority(4);
+	// while (isprint) {
+	//
+	// sbuffer = new StringBuffer();
+	// sbuffer.append(iMgr.printAllInstances());
+	// printInfo();
+	// try {
+	// TimeUnit.SECONDS.sleep(3);
+	// } catch (InterruptedException e) {
+	// e.printStackTrace();
+	// }
+	// Thread.yield();
+	// }
+	// System.out.println("信息显示端已关闭！");
+	// }
+	//
+	// public void close() {
+	// isprint = false;
+	// }
+	//
+	// private void printInfo() {
+	// System.out.println(sbuffer.toString());
+	// }
+	// }
+	//
 	public void registerNEW(Instance instance) {
 
 		iMgr.registerNEW(instance);
