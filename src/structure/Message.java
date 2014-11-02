@@ -10,7 +10,7 @@ public class Message implements Cloneable, Serializable{
 	private int frequency; // 发送次数
 	private String life; // 生存时间
 	private int priority; // 优先级
-	private int second; // Message将于多长时间后发送
+	private double second; // Message将于多长时间后发送
 	private int share; // 可接收此Message的instance的最大数量
 	private static int ID = 0;
 	private int id;
@@ -19,7 +19,7 @@ public class Message implements Cloneable, Serializable{
 	private List<MessageContent> contentList;
 
 	public Message(String name, Date date, String from, int priority, int frequency, String life,
-			int second, int share, List<MessageContent> contentList) {
+			double second, int share, List<MessageContent> contentList) {
 		this.date = date;
 		this.frequency = frequency;
 		this.from = from;
@@ -72,7 +72,7 @@ public class Message implements Cloneable, Serializable{
 		return priority;
 	}
 
-	public int getSecond() {
+	public double getSecond() {
 		return second;
 	}
 
@@ -173,7 +173,7 @@ public class Message implements Cloneable, Serializable{
 		Message m = (Message)arg0;
 		if (this.getName().equals(m.getName()) 
 				&&this.getFrom().equals(m.getFrom())
-				&&this.getDate().equals(m.getDate()))
+				&&this.getDate().getTime() == m.getDate().getTime())
 			return true;
 		return super.equals(arg0);
 	}

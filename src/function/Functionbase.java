@@ -117,6 +117,7 @@ public class Functionbase {
 	}
 
 	// 引力测试
+	int count = 0;
 	/**
 	 * 已知坐标(x, y), 角度angle, 求变换了角度angle2后的坐标值(x1, y1) 先求得半径r,
 	 * x1=r.cos(angle-angle2), y1=r.sin(angle-angle2)
@@ -135,7 +136,6 @@ public class Functionbase {
 				.obtainValue("velocity.x"));
 		double this_velocity_y = Double.parseDouble(planet
 				.obtainValue("velocity.y"));
-		double this_weight = Double.parseDouble(planet.obtainValue("weight"));
 
 		double star_x = Double.parseDouble(m.obtainValue("sun.position.x"));
 		double star_y = Double.parseDouble(m.obtainValue("sun.position.y"));
@@ -147,6 +147,11 @@ public class Functionbase {
 		// 第一次坐标移动初始速度方向得到(x2, y2)
 		double this_x2 = getPosition2(this_position_x, this_velocity_x, time);
 		double this_y2 = getPosition2(this_position_y, this_velocity_y, time);
+		
+		if ((count++)%2==0) {
+			this_position_x = this_x2;
+			this_position_y = this_y2;
+		}
 
 		// 求加速度矢量
 		double r = getDistance(this_position_x, this_position_y, star_x, star_y);//距离
@@ -157,6 +162,7 @@ public class Functionbase {
 				/ (Math.sqrt(a_vector_x * a_vector_x + a_vector_y * a_vector_y));
 		double a_flex_x = para * a_vector_x;//结果
 		double a_flex_y = para * a_vector_y;
+		
 		
 		//下一次的速度矢量
 		double this_velocity_x2 = getVelocity(this_velocity_x, a_flex_x, time);
@@ -175,6 +181,7 @@ public class Functionbase {
 		
 
 	}
+
 
 	private double getVelocity(double this_velocity, double a_flex,
 			double time) {

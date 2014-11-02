@@ -106,7 +106,7 @@
 		<xs:attribute name="date" type="xs:date"/>
 		<xs:attribute name="share" type="xs:integer" default="1"/>
 		<xs:attribute name="frequency" type="xs:integer" default="1"/>
-		<xs:attribute name="second" type="xs:integer" default="0"/>
+		<xs:attribute name="second" type="xs:double" default="0"/>
 	</xs:complexType>
 	<!--定义relation中的node节点-->
 	<xs:complexType name="relationNode">

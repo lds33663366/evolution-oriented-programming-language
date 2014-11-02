@@ -20,7 +20,7 @@ public class ShortestWaitComparator implements Comparator<Message> {
 		String firstTime = d.format(arg0.getDate());
 		String secondTime = d.format(arg1.getDate());
 		
-		long time0 = 0l, time1 = 0l;
+		double time0 = 0l, time1 = 0l;
 		try {
 			// 第一时间减去第二时间 这个的除以1000得到秒，相应的60000得到分，3600000得到小时
 			time0 = d.parse(firstTime).getTime()/1000 + arg0.getSecond();

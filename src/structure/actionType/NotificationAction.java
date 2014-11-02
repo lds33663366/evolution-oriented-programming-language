@@ -23,12 +23,14 @@ public class NotificationAction extends Action{
 	public void working() {
 		while (!update) {
 			try {
-				TimeUnit.MILLISECONDS.sleep(ThreadTimeConsole.Thread_ListenAction.getTime());
+				TimeUnit.MILLISECONDS.sleep(ThreadTimeConsole.Thread_PublishAction.getTime());
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
-		if (instance.isLive())	instance.sendMessageToPool(topic, name);
+		if (instance.isLive())	{
+			instance.sendMessageToPool(topic, name);
+		}
 	}
 
 	

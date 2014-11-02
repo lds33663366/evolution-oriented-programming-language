@@ -1,5 +1,8 @@
 package structure.actionType;
 
+import initiator.ThreadTimeConsole;
+
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -17,6 +20,7 @@ public class SubcriptionAction extends Action{
 			List<Input> inputList, List<Output> outputList, ActionType type,
 			String cycle, String topic) {
 		super(name, function, inputList, outputList, type, cycle, topic);
+		
 	}
 
 	@Override
@@ -32,7 +36,7 @@ public class SubcriptionAction extends Action{
 				}
 				
 				try {
-					TimeUnit.MILLISECONDS.sleep(100);
+					TimeUnit.MILLISECONDS.sleep(ThreadTimeConsole.Thread_ListenAction.getTime());
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}		

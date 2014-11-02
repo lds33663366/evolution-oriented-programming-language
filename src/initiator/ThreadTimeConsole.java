@@ -8,8 +8,9 @@ package initiator;
  */
 public enum ThreadTimeConsole {
 	
-	Thread_MsgPool(100), Thread_MsgHandler(1000), Thread_XMLSystem(3000),
-	Thread_Instance(100), Thread_ListenAction(200), Thread_GUI(1000);
+	Thread_MsgPool(1), Thread_MsgHandler(1000), Thread_XMLSystem(3000),
+	Thread_Instance(100), Thread_ListenAction(10), Thread_PublishAction(10),
+	Thread_GUI(10);
 	private int time;
 	
 	ThreadTimeConsole(int t){

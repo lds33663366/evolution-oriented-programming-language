@@ -78,7 +78,8 @@ public class XMLSystem {
 
 		// 将instanceMap中全部的实体放放线程池中运行
 		putInstanceToPool();
-
+		
+		
 		GravityModelGUI gm = new GravityModelGUI(iMgr);
 		gm.lauchFrame();
 

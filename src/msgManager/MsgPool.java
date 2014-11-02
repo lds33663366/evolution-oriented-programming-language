@@ -276,20 +276,22 @@ public class MsgPool implements Runnable{
 	 */
 	long timeSubtract(Date d1, Date d2) {
 		
-		SimpleDateFormat d= new SimpleDateFormat("HH:mm:ss");
-		String firstTime = d.format(d1);
-		String secondTime = d.format(d2);
-		
-		long result = Long.MIN_VALUE;
-		try {
-			// 第一时间减去第二时间 这个的除以1000得到秒，相应的60000得到分，3600000得到小时
-			result = (d.parse(firstTime).getTime() - d.parse(secondTime)
-					.getTime()) / 1000;
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+//		SimpleDateFormat d= new SimpleDateFormat("HH:mm:ss");
+//		String firstTime = d.format(d1);
+//		String secondTime = d.format(d2);
+//		
+//		long result = Long.MIN_VALUE;
+//		try {
+//			// 第一时间减去第二时间 这个的除以1000得到秒，相应的60000得到分，3600000得到小时
+//			result = (d.parse(firstTime).getTime() - d.parse(secondTime)
+//					.getTime()) / 1000;
+//		} catch (ParseException e) {
+//			e.printStackTrace();
+//		}
+		long l1 = d1.getTime();
+		long l2 = d2.getTime();
 
-		return result;
+		return l1-l2;
 
 	}
 
@@ -441,6 +443,7 @@ public class MsgPool implements Runnable{
 		 */
 		public void send() {
 			if (messages == null || !live)	return;
+
 			while (!messages.isEmpty()) {
 				Message m = messages.poll();
 				if (name.equals("SYSTEM") && m.getName().equals("END")){

@@ -3,22 +3,26 @@ package structure;
 import initiator.ThreadTimeConsole;
 import initiator.XMLSystem;
 
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import structure.actionType.Action;
+import javax.imageio.ImageIO;
+
 import msgManager.MsgHandler;
 import msgManager.MsgPool;
+import structure.actionType.Action;
 
 public class Instance implements Runnable, Serializable {
 	private List<Action> actionList; // 直接子元素action组成的集合
@@ -31,6 +35,7 @@ public class Instance implements Runnable, Serializable {
 	private transient XMLSystem system; // 整个实体所在的系统
 	private int id;
 	ExecutorService exec = null;
+	BufferedImage bimage = null;
 
 	public Instance(List<Action> actionList, String name, int popsize,
 			Property property) {
@@ -40,12 +45,13 @@ public class Instance implements Runnable, Serializable {
 		this.property = property;
 		this.live = true;
 	}
-//
-//	public synchronized void updateProperty(String name, String value) {
-//		this.property.getVariableMap().get(name).setValue(value);
-//		deliverUpdate();
-//		notifyAll();
-//	}
+
+	//
+	// public synchronized void updateProperty(String name, String value) {
+	// this.property.getVariableMap().get(name).setValue(value);
+	// deliverUpdate();
+	// notifyAll();
+	// }
 
 	public void setId(int id) {
 		this.id = id;
@@ -295,9 +301,40 @@ public class Instance implements Runnable, Serializable {
 				inst.motify(str[1], value);
 			}
 		}
-		
+
 		deliverUpdate();
 		notifyAll();
+	}
+
+	List<Integer> xList = new ArrayList<Integer>();
+	List<Integer> yList = new ArrayList<Integer>();
+	public void draw(Graphics2D g) {
+		
+		if (bimage == null) {
+			try {
+				String path = "./src/images/" + name.toLowerCase().trim() + ".png";
+				bimage = ImageIO.read(new File(path));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		double x, y;
+		synchronized (this) {
+			x = Double.parseDouble(obtainValue("position.x"));
+			y = Double.parseDouble(obtainValue("position.y"));
+		}
+		int ix = (int) (500 + x / 8E8);
+		int iy = (int) (500 + y / 8E8);
+		
+		xList.add(ix);
+		yList.add(iy);
+		
+		
+		g.drawImage(bimage, (int)(ix-bimage.getWidth()/2), (int)iy-bimage.getHeight()/2, null);
+		for (int i=0 ; i<xList.size()-1; i++) {
+			g.drawLine(xList.get(i), yList.get(i), xList.get(i+1), yList.get(i+1));;
+		}
+//		g.fillOval(ix - 10, iy - 10, 20, 20);
 	}
 
 }

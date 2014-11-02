@@ -144,7 +144,8 @@ public abstract class Action implements Runnable, Serializable {
 //				Variable v = variableMap.get(rv.getName());
 				if (rv != null) {
 //					synchronized(instance){
-						instance.updateProperty(rv.getName(), rv.getValue());
+//						instance.updateProperty(rv.getName(), rv.getValue());
+					instance.motify(rv.getName(), rv.getValue());
 //					}
 				}
 			}

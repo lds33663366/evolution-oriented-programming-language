@@ -1,5 +1,7 @@
 package structure.actionType;
 
+import initiator.ThreadTimeConsole;
+
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -20,12 +22,14 @@ public class PublishAction extends Action{
 	public void working() {
 		while (!update) {
 			try {
-				TimeUnit.MILLISECONDS.sleep(200);
+				TimeUnit.MILLISECONDS.sleep(ThreadTimeConsole.Thread_PublishAction.getTime());
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
-		if (instance.isLive())	instance.sendMessageToPool(name);		
+		if (instance.isLive())	{
+			instance.sendMessageToPool(name);	
+		}
 	}
 
 }

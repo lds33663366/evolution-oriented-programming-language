@@ -4,6 +4,8 @@ import initiator.ThreadTimeConsole;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.text.AbstractDocument.Content;
@@ -33,7 +36,7 @@ public class MsgHandler implements Runnable, Serializable{
 	// 消息缓存，用于检查是否会拿到消息池的重复消息
 	Set<Message> messageCache = new HashSet<Message>();
 	List<Message> messageList = null;
-	Map<String, Message> action_message = new HashMap<String, Message>();
+	Map<String, CopyOnWriteArrayList<Message>> action_message = new HashMap<String, CopyOnWriteArrayList<Message>>();
 	Map<String, String> topic_action = new HashMap<String, String>();
 	
 	private volatile boolean live = true;
@@ -116,18 +119,22 @@ public class MsgHandler implements Runnable, Serializable{
 	 */
 	public Message sendMessageToAction(String actionName) {
 		
+		CopyOnWriteArrayList<Message> messages;
 		Message m = null;
 
 		if (action_message.containsKey(actionName)) {
-			m = action_message.get(actionName);
-			action_message.put(actionName, null);
+			messages = action_message.get(actionName);
+			if (messages != null && messages.size() != 0) {
+				m = messages.remove(0);
+			}
+			action_message.put(actionName, messages);
+
 			return m;
 		}
 
 		return null;
 		
 	}
-
 	
 	public Relation getRelation() {
 		return relation;
@@ -155,7 +162,10 @@ public class MsgHandler implements Runnable, Serializable{
 		String actionName = null;
 		if ((actionName = detectMessage()) != null) {
 			Message m = mp.sendMessage();
-			action_message.put(actionName, m);
+			CopyOnWriteArrayList<Message> mList = action_message.get(actionName);
+			if (mList == null) mList = new CopyOnWriteArrayList<Message>();
+			mList.add(m);
+			action_message.put(actionName, mList);
 			messageCache.add(m);
 			return m;
 		}
@@ -164,10 +174,12 @@ public class MsgHandler implements Runnable, Serializable{
 	
 	public Message obtainTopicMessage(Message msg) {
 
-		String actionName = null;
 		String topic = msg.getTopic();
-		actionName = topic_action.get(topic);
-		action_message.put(actionName, msg);
+		String actionName = topic_action.get(topic);
+		CopyOnWriteArrayList<Message> mList = action_message.get(actionName);
+		if (mList == null) mList = new CopyOnWriteArrayList<Message>();
+		mList.add(msg);
+		action_message.put(actionName, mList);
 //		System.out.println("已拿到主题消息" + topic + "; 关联动作是" + actionName);
 		return msg;
 	}
@@ -207,7 +219,7 @@ public class MsgHandler implements Runnable, Serializable{
 			return null;
 		// 判断是否是重复的消息
 		else if (messageCache.contains(m)) {
-	//		System.out.println("消息重复，不接收");
+			System.out.println("消息重复，不接收");
 			return null;
 		}
 		// 判断是否是需要的消息

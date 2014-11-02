@@ -31,7 +31,7 @@
             </instance> 
             <instance name="velocity"> <!--地球的速度矢量-->
             	<property>
-                    <double name="x" value="0"/>
+                    <double name="x" value="10000"/>
                     <double name="y" value="29783"/>
                 </property>
             </instance>
@@ -45,7 +45,7 @@
 		</action>
 	</instance>
 	
-	<message name="gravitation" from="sun" frequency="10000" second="1">
+	<message name="gravitation" from="sun" frequency="10000" second="0.002">
 		<content type="property" name="weight"/>
 		<content type="property" name="position" />
 	</message>
