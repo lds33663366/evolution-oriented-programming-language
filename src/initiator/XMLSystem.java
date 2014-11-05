@@ -80,7 +80,7 @@ public class XMLSystem {
 		putInstanceToPool();
 		
 		
-		GravityModelGUI gm = new GravityModelGUI(iMgr);
+		GravityModelGUI gm = new GravityModelGUI(iMgr, mp);
 		gm.lauchFrame();
 
 		while (live) {

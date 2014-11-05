@@ -9,17 +9,21 @@ import java.awt.Image;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import msgManager.MsgPool;
+
 public class GravityModelGUI extends Frame {
 	public static final int MODEL_WIDTH = 1200;
 	public static final int MODEL_HEIGHT = 850;
 	
 	InstancesManager imr;
+	MsgPool mp;
 
 	Image offScreenImage = null;
 	
 	
-	public GravityModelGUI(InstancesManager imr) {
+	public GravityModelGUI(InstancesManager imr, MsgPool mp) {
 		this.imr = imr;
+		this.mp = mp;
 	}
 	
 	public GravityModelGUI() {}
@@ -27,9 +31,10 @@ public class GravityModelGUI extends Frame {
 	public void paint(Graphics gr) {
 		Graphics2D g = (Graphics2D) gr;
 		Color c = g.getColor();
-		g.setColor(Color.WHITE);
-		g.drawString("第" + day + "天", 1100, 770);
+//		g.setColor(Color.WHITE);
+//		g.drawString("第" + day + "天", 1100, 770);
 		imr.draw(g);
+//		mp.draw(g);
 		g.setColor(c);
 	}
 

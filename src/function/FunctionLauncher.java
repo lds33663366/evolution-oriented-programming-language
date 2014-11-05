@@ -112,7 +112,7 @@ public class FunctionLauncher {
 			}
 			Variable res = (Variable) results;
 			return res;
-		}catch (SecurityException e) {
+		} catch (SecurityException e) {
 			e.printStackTrace();
 		} catch (NoSuchMethodException e) {
 			new RuntimeException("找不到" + function + "方法，请检查"
@@ -123,13 +123,13 @@ public class FunctionLauncher {
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
-		}catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		return null;
 	}
-	
+
 	public static boolean launch(String function, Map<String, Variable> map) {
 
 		if (isSysFunction(function)) {
@@ -148,7 +148,7 @@ public class FunctionLauncher {
 			}
 			Boolean res = (Boolean) results;
 			return res;
-		}catch (SecurityException e) {
+		} catch (SecurityException e) {
 			e.printStackTrace();
 		} catch (NoSuchMethodException e) {
 			new RuntimeException("找不到" + function + "方法，请检查"
@@ -159,14 +159,13 @@ public class FunctionLauncher {
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
-		}catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		return false;
 	}
-	
-	
+
 	/**
 	 * 根据function的名字调用同名函数
 	 * 
@@ -182,8 +181,8 @@ public class FunctionLauncher {
 			return null;
 		}
 		Method m;
-		List<Variable> variables = 
-				new ArrayList<Variable>(Arrays.asList(new Variable[variableList.size()]));
+		List<Variable> variables = new ArrayList<Variable>(
+				Arrays.asList(new Variable[variableList.size()]));
 		Collections.copy(variables, variableList);
 		Object results = null;
 		try {
@@ -219,9 +218,9 @@ public class FunctionLauncher {
 		if (isSysFunction(function)) {
 			return null;
 		}
-		//复制一份
-		List<Variable> variables = 
-				new ArrayList<Variable>(Arrays.asList(new Variable[variableList.size()]));
+		// 复制一份
+		List<Variable> variables = new ArrayList<Variable>(
+				Arrays.asList(new Variable[variableList.size()]));
 		Collections.copy(variables, variableList);
 		Method m;
 		Object results = null;
@@ -257,7 +256,7 @@ public class FunctionLauncher {
 		if (isSysFunction(function)) {
 			return null;
 		}
-		
+
 		Method m;
 		Variable variable = v.clone();
 		Object results = null;
@@ -288,18 +287,41 @@ public class FunctionLauncher {
 
 		return null;
 	}
-	
-	public static void launch(String function, Instance instance, Message message) {
+
+	public static void launch(String function, Instance instance,
+			Message message) {
 		Method m;
 		try {
 
 			if (message == null) {
-				m = c.getMethod(function);
+				m = c.getMethod(function, Instance.class);
 				m.invoke(functionbase, instance);
 			} else {
 				m = c.getMethod(function, Instance.class, Message.class);
 				m.invoke(functionbase, instance, message);
 			}
+
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			new RuntimeException("找不到" + function + "方法，请检查"
+					+ FUNCTION_BASE_NAME + "是否有该方法！");
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public static void launch(String function, Instance instance) {
+		Method m;
+		try {
+
+			m = c.getMethod(function);
+			m.invoke(functionbase, instance);
 
 		} catch (SecurityException e) {
 			e.printStackTrace();

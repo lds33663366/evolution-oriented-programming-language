@@ -1,5 +1,7 @@
 package structure.actionType;
 
+import initiator.ThreadTimeConsole;
+
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -18,14 +20,15 @@ public class SelfAction extends Action {
 
 	@Override
 	public void working() {
-		while (!update) {
-			try {
-				TimeUnit.MILLISECONDS.sleep(200);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+		// while (!update) {
+		try {
+			TimeUnit.MILLISECONDS.sleep(ThreadTimeConsole.Thread_SelfAction.getTime());
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
-		if (instance.isLive())	callFunction();
+		// }
+		if (instance.isLive())
+			callFunction();
 	}
 
 }

@@ -41,13 +41,13 @@ public abstract class Action implements Runnable, Serializable {
 
 	public Action(String name, String function, List<Input> inputList,
 			List<Output> outputList, ActionType type, String cycle, String topic) {
-		this.name = name;
-		this.function = function;
+		this.name = name.trim();
+		this.function = function.trim();
 		this.inputList = inputList;
 		this.outputList = outputList;
 		this.type = type;
-		this.cycle = cycle;
-		this.topic = topic;
+		this.cycle = cycle.trim();
+		this.topic = topic.trim();
 //		checkTopic();
 	}
 
@@ -92,7 +92,7 @@ public abstract class Action implements Runnable, Serializable {
 
 	// 根据function属性值调用函数库中的同名函数
 	protected void callFunction() {
-		if (function.trim().equals("NEW")) {// 系统函数, 新创建一实体
+		if (function.equals("NEW")) {// 系统函数, 新创建一实体
 			// 先判断该实体是否已达到生成新实例的条件
 //			System.out.println("尝试新建instance……");
 			boolean returnValue = false;
@@ -117,7 +117,7 @@ public abstract class Action implements Runnable, Serializable {
 				endInstance();// 结束该实体的运行
 			}
 		} else {
-			doUserFunction();
+			invokeUserFunction();
 		}
 
 //		if (SystemFunctionbase.containFunction(function)) {
@@ -126,7 +126,7 @@ public abstract class Action implements Runnable, Serializable {
 		
 	}
 
-	private void doUserFunction() {
+	private void invokeUserFunction() {
 		Object returnValue = null;// 函数调用的返回值
 		switch (inputList.size()) {
 		case 1:// 输入参数只有一个

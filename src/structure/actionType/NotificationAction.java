@@ -11,7 +11,7 @@ import structure.Output;
 import structure.EnumType.XMLType;
 import structure.EnumType.XMLType.ActionType;
 
-public class NotificationAction extends Action{
+public class NotificationAction extends Action {
 
 	public NotificationAction(String name, String function,
 			List<Input> inputList, List<Output> outputList, ActionType type,
@@ -21,17 +21,17 @@ public class NotificationAction extends Action{
 
 	@Override
 	public void working() {
-		while (!update) {
-			try {
-				TimeUnit.MILLISECONDS.sleep(ThreadTimeConsole.Thread_PublishAction.getTime());
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+		// while (!update) {
+		try {
+			TimeUnit.MILLISECONDS.sleep(ThreadTimeConsole.Thread_PublishAction
+					.getTime());
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
-		if (instance.isLive())	{
+		// }
+		if (instance.isLive()) {
 			instance.sendMessageToPool(topic, name);
 		}
 	}
 
-	
 }

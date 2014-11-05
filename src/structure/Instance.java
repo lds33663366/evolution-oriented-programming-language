@@ -1,8 +1,10 @@
 package structure;
 
+import initiator.InstanceColor;
 import initiator.ThreadTimeConsole;
 import initiator.XMLSystem;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -14,6 +16,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -308,8 +311,18 @@ public class Instance implements Runnable, Serializable {
 
 	List<Integer> xList = new ArrayList<Integer>();
 	List<Integer> yList = new ArrayList<Integer>();
+//	Random r = new Random();
+//	transient Color random_color = new Color(r.nextInt(256), r.nextInt(256), r.nextInt(256));
+	Color random_color;
 	public void draw(Graphics2D g) {
 		
+		random_color = InstanceColor.getColor(name, id);
+		Color c = g.getColor();
+		
+		double scale = 12E8;
+//		if (r.nextInt(10) > 6) {
+			g.drawString("比例尺：" + scale + ":1", 1100, 800);
+//		}
 		if (bimage == null) {
 			try {
 				String path = "./src/images/" + name.toLowerCase().trim() + ".png";
@@ -323,17 +336,25 @@ public class Instance implements Runnable, Serializable {
 			x = Double.parseDouble(obtainValue("position.x"));
 			y = Double.parseDouble(obtainValue("position.y"));
 		}
-		int ix = (int) (500 + x / 8E8);
-		int iy = (int) (500 + y / 8E8);
+		int ix = (int) (150+ x / scale);
+		int iy = (int) (150+ y / scale);
 		
-		xList.add(ix);
-		yList.add(iy);
+//		xList.add(ix);
+//		yList.add(iy);
 		
+		int map_pointx = (int)(ix-bimage.getWidth()/2);
+		int map_pointy = (int)(iy-bimage.getHeight()/2);
 		
-		g.drawImage(bimage, (int)(ix-bimage.getWidth()/2), (int)iy-bimage.getHeight()/2, null);
-		for (int i=0 ; i<xList.size()-1; i++) {
-			g.drawLine(xList.get(i), yList.get(i), xList.get(i+1), yList.get(i+1));;
-		}
+		g.setColor(random_color);
+		g.drawString(getIdName() + ":[" + ix + "," + iy + "]" , map_pointx, map_pointy);
+		g.drawImage(bimage, map_pointx, map_pointy, null);
+		
+//		g.setColor(Color.DARK_GRAY.brighter());
+		g.setColor(random_color.darker());
+//		for (int i=0 ; i<xList.size()-1; i++) {
+//			g.drawLine(xList.get(i), yList.get(i), xList.get(i+1), yList.get(i+1));;
+//		}
+		g.setColor(c);
 //		g.fillOval(ix - 10, iy - 10, 20, 20);
 	}
 

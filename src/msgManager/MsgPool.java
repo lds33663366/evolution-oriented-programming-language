@@ -3,6 +3,8 @@ package msgManager;
 import initiator.ThreadTimeConsole;
 import initiator.XMLSystem;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -104,7 +106,7 @@ public class MsgPool implements Runnable{
 		for (int i = 0; i < waitingQueue.size(); i++) {
 
 			Message m = waitingQueue.peek();
-			if (timeSubtract(new Date(), m.getDate()) >= m.getSecond()) {
+			if (timeSubtract(new Date(), m.getDate()) >= (m.getSecond()*1000)) {
 //				if (m.getName().equals("END")) {
 //					System.out.println("如果END是推送到发送列表的消息：\n");
 //					System.out.println("当前时间：" + new Date());
@@ -212,7 +214,7 @@ public class MsgPool implements Runnable{
 	boolean messageDead(Message msg) {
 		
 		if (msg == null) return false;
-		if(timeSubtract(new Date(), msg.getDate()) > msg.parseLife()) {
+		if(timeSubtract(new Date(), msg.getDate()) > (msg.parseLife()*1000)) {
 			System.out.println("该消息已过时:" + msg);
 			return true;
 		}
@@ -438,25 +440,34 @@ public class MsgPool implements Runnable{
 			messages.offer(message);
 		}
 		
+		
+		
 		/**
 		 * 发送主题里所有的消息给所有的订阅者
 		 */
 		public void send() {
+			//如果消息不存在，或者pool已关闭（时刻判断）则返回
 			if (messages == null || !live)	return;
 
 			while (!messages.isEmpty()) {
+				
 				Message m = messages.poll();
+				//如果发送的是END消息，则SYSTEM关闭
 				if (name.equals("SYSTEM") && m.getName().equals("END")){
 					xmlSystem.setLive(false);
 				}
 
+				//调用每个监听的msgHandler的obtainTopicMessage()函数
 				synchronized (msgHandlerList) {
 					for (int i = 0; i < msgHandlerList.size(); i++) {
 
 						MsgHandler msgh = msgHandlerList.get(i);
 						if (!msgh.isLive()) {
 							removeMsgHandler(msgh);
-						} else {
+							//如果消息包的监听对象是该消息的发送者，则不发送
+						} else if (m.getFrom().equals(msgh.instance.getIdName())) {
+							continue;
+						}else {
 							msgh.obtainTopicMessage(m);
 						}
 					}
@@ -471,6 +482,15 @@ public class MsgPool implements Runnable{
 					+ "; 消息列表：\n" + messages.toString());
 		}
 	}
+
+	public int day = 0;
+
+//	public void draw(Graphics2D g) {
+//		Color c = g.getColor();
+//		g.setColor(Color.WHITE);
+//		g.drawString("第" + day + "天", 1100, 770);
+//		g.setColor(c);
+//	}
 }
 
 

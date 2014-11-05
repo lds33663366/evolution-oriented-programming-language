@@ -184,11 +184,13 @@ public class Message implements Cloneable, Serializable{
 	}
 
 	public String obtainValue(String valueName) {
-		String s[] = valueName.split("\\.", 2);
-		String fromName = s[0].trim();
-		String instanceName = from.split("\\d+")[0].trim();
-		if (!fromName.equals(instanceName)) return null;
-		String str[] = s[1].split("\\.", 2);
+//		String s[] = valueName.split("\\.", 2);
+//		String fromName = s[0].trim();
+//		String instanceName = from.split("\\d+")[0].trim();
+//		if (!fromName.equals(instanceName)) {
+//			new RuntimeException(valueName + "书写有误，请检查" + fromName + "是否正确！");
+//		}
+		String str[] = valueName.split("\\.", 2);
 		String propName = str[0];
 		if (str.length == 1) {
 			Variable v = obtainVariable(propName);

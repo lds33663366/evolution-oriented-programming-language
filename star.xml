@@ -10,16 +10,24 @@
                     <double name="y" value="0"/>
                 </property>
             </instance> 
-            <instance name="velocity"><!--太阳的速度矢量-->
-            	<property>
+            <instance name="old_position"> <!--记录上一次坐标-->
+                <property>
                     <double name="x" value="0"/>
                     <double name="y" value="0"/>
                 </property>
             </instance>
+            <instance name="velocity"><!--太阳的速度矢量-->
+            	<property>
+                    <double name="x" value="1500"/>
+                    <double name="y" value="0"/>
+                </property>
+            </instance>
 		</property>
-		<action name="gravitation" function="gravitation" type="notification" topic="gravitation" cycle="only"/><!--通知引力消息主题-->
-
+		<action name="move" function="move" type="self" />
+		<action name="gravitation" function="gravitation" type="notification" topic="gravitation"/><!--通知引力消息主题-->
+		<action name="centripetal_force" function="centripetal_force" type="subscription" topic="gravitation"/><!--订阅引力消息主题-->
 	</instance>	
+	
 	<instance name="earth" >
 		<property>
 			<double name="weight" value="5.98E24" /><!--地球的质量-->
@@ -29,26 +37,98 @@
                     <double name="y" value="0"/>
                 </property>
             </instance> 
+            <instance name="old_position"> <!--记录上一次坐标-->
+                <property>
+                    <double name="x" value="1.496E11"/>
+                    <double name="y" value="0"/>
+                </property>
+            </instance> 
             <instance name="velocity"> <!--地球的速度矢量-->
             	<property>
-                    <double name="x" value="10000"/>
+                    <double name="x" value="0"/>
                     <double name="y" value="29783"/>
                 </property>
             </instance>
 		</property>
-		<action name="centripetal_force" function="centripetal_force" type="subscription" topic="gravitation"><!--订阅引力消息主题-->
-			<input name="star.weight"/>
-			<input name="weight"/>
-			<input name="star.position"/>
-			<input name="position"/>
-			<output name="position"/>
-		</action>
+		<action name="move" function="move" type="self" />
+		<action name="gravitation" function="gravitation" type="notification" topic="gravitation"/><!--通知引力消息主题-->
+		<action name="centripetal_force" function="centripetal_force" type="subscription" topic="gravitation"/><!--订阅引力消息主题-->
 	</instance>
 	
-	<message name="gravitation" from="sun" frequency="10000" second="0.002">
+	<instance name="mars" >
+		<property>
+			<double name="weight" value="6.418E23" /><!--火星的质量-->
+			<instance name="position"> <!--火星的位置-->
+                <property>
+                    <double name="x" value="-2.496E11"/>
+                    <double name="y" value="0"/>
+                </property>
+            </instance> 
+            <instance name="old_position"> <!--记录上一次坐标-->
+                <property>
+                    <double name="x" value="0"/>
+                    <double name="y" value="0"/>
+                </property>
+            </instance> 
+            <instance name="velocity"> <!--火星的速度矢量-->
+            	<property>
+                    <double name="x" value="0"/>
+                    <double name="y" value="-24000"/>
+                </property>
+            </instance>
+		</property>
+		<action name="move" function="move" type="self" />
+		<action name="gravitation" function="gravitation" type="notification" topic="gravitation"/><!--通知引力消息主题-->
+		<action name="centripetal_force" function="centripetal_force" type="subscription" topic="gravitation"/><!--订阅引力消息主题-->
+	</instance>
+	
+	<instance name="venus" >
+		<property>
+			<double name="weight" value="4.8676E24" /><!--金星的质量-->
+			<instance name="position"> <!--金星的位置-->
+                <property>
+                    <double name="x" value="0"/>
+                    <double name="y" value="1.07E11"/>
+                </property>
+            </instance> 
+            <instance name="old_position"> <!--记录上一次坐标-->
+                <property>
+                    <double name="x" value="0"/>
+                    <double name="y" value="0"/>
+                </property>
+            </instance> 
+            <instance name="velocity"> <!--金星的速度矢量-->
+            	<property>
+                    <double name="x" value="-35000"/>
+                    <double name="y" value="0"/>
+                </property>
+            </instance>
+		</property>
+		<action name="move" function="move" type="self" />
+		<action name="gravitation" function="gravitation" type="notification" topic="gravitation"/><!--通知引力消息主题-->
+		<action name="centripetal_force" function="centripetal_force" type="subscription" topic="gravitation"/><!--订阅引力消息主题-->
+	</instance>
+	
+	<message name="gravitation" from="sun">
 		<content type="property" name="weight"/>
 		<content type="property" name="position" />
 	</message>
+	
+	<message name="gravitation" from="earth">
+		<content type="property" name="weight"/>
+		<content type="property" name="position" />
+	</message>
+	
+	<message name="gravitation" from="mars">
+		<content type="property" name="weight"/>
+		<content type="property" name="position" />
+	</message>
+	
+	<message name="gravitation" from="venus">
+		<content type="property" name="weight"/>
+		<content type="property" name="position" />
+	</message>
+
     <!--系统终止消息, 所有实体将接收到此消息, 并将数据存入数据库. 
     属性second=100: 系统将于100秒后终止程序-->
 <!--    <message name="END" from="SYSTEM" second="15" /> -->

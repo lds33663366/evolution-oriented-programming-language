@@ -139,7 +139,7 @@ public class Parser {
 		String life = "1m"; // 生存时间默认1分钟
 		String name = ""; // Message的名字
 		int priority = 5; // 优先级
-		double second = 2.0; // Message将于多长时间后发送
+		double second = 0.0; // Message将于多长时间后发送
 		int share = 1; // 可接收此Message的instance的最大数量
 		
 		List<MessageContent> mc = new ArrayList<MessageContent>();
