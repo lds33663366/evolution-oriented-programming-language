@@ -1,5 +1,7 @@
 package initiator;
 
+import java.util.concurrent.TimeUnit;
+
 //编译器主类
 
 public class Compiler {
@@ -29,8 +31,8 @@ public class Compiler {
 //			e1.printStackTrace();
 //		}
 		try {
-//			new Compiler("foodchain_20140629.xml", "mdl20140629.xsd");
-			 new Compiler("star3.xml", "mdl20140629.xsd");
+			new Compiler("foodchain.xml", "mdl20140629.xsd");
+//			 new Compiler("star.xml", "mdl20140629.xsd");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

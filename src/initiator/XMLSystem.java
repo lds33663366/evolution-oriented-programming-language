@@ -71,24 +71,24 @@ public class XMLSystem {
 		// 以解析<instance>得到的对象为蓝本, 生成指定数量的Instance对象,
 		// 每个Instance对象都自己独立的数据空间与运行时间
 		messageRegister();
-		generateInstances();
+		instanceRegister();
 
 		// 初始化全部的Instance, 完善Instance对象的各个成员变量, 放入线程池中开始运行
 		initializeInstances();
 
 		// 将instanceMap中全部的实体放放线程池中运行
-		putInstanceToPool();
+		putInstanceToThreadpool();
 		
 		
-		GravityModelGUI gm = new GravityModelGUI(iMgr, mp);
-		gm.lauchFrame();
+//		GravityModelGUI gm = new GravityModelGUI(iMgr, mp);
+//		gm.lauchFrame();
 
 		while (live) {
 
 			createInstances();
 
 			// 打印instances信息
-			System.out.println(iMgr.printAllInstances());
+			displayResult();
 
 			// 3秒执行一次
 			try {
@@ -99,7 +99,12 @@ public class XMLSystem {
 			}
 		}
 
+//		gm.close();
 		close();
+	}
+	
+	void displayResult() {
+		System.out.println(iMgr.printAllInstances());
 	}
 
 	private void createInstances() {
@@ -124,7 +129,7 @@ public class XMLSystem {
 	}
 
 	// 将instanceMap中全部的实体放放线程池中运行
-	private void putInstanceToPool() {
+	private void putInstanceToThreadpool() {
 
 		if (executor == null)
 			// executor = Executors.newScheduledThreadPool(20);
@@ -150,6 +155,8 @@ public class XMLSystem {
 	public void close() {
 
 		live = false;
+		
+		
 		// 线程管理器关闭
 		executor.shutdown();
 		System.out.println("结束消息已发布，系统将关闭运行！");
@@ -174,7 +181,15 @@ public class XMLSystem {
 		System.out.println("所有实体已关闭！");
 		// 消息池关闭
 		System.out.println("线程管理器已关闭！");
+		
+		System.out.println("消息将被保存");
+//		save();
 
+	}
+
+	private void save() {
+		System.out.println("开始存储数据！");
+		iMgr.save();
 	}
 
 	// 初始化instanceMap中全部的Instance, 完善Instance对象的各个成员变量
@@ -233,7 +248,7 @@ public class XMLSystem {
 
 	// 以解析<instance>得到的对象为蓝本, 生成指定数量的Instance对象,
 	// 每个Instance对象都自己独立的数据空间与运行时间
-	private void generateInstances() {
+	private void instanceRegister() {
 
 		for (int i = 0; i < instanceList.size(); i++) {
 			generateInstance(instanceList.get(i));

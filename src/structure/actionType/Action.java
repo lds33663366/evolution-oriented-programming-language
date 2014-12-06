@@ -31,16 +31,19 @@ public abstract class Action implements Runnable, Serializable {
 	protected Instance instance; // 指向父元素<instance>
 	private String cycle;
 	protected String topic;
+	private String trigger;
 	protected Message message;
-	
+	protected int sleepTime;
+
 	public volatile boolean update = true;
 
-//	public void setUpdate(boolean update) {
-//		this.update = update;
-//	}
+	// public void setUpdate(boolean update) {
+	// this.update = update;
+	// }
 
 	public Action(String name, String function, List<Input> inputList,
-			List<Output> outputList, ActionType type, String cycle, String topic) {
+			List<Output> outputList, ActionType type, String cycle,
+			String topic, String trigger) {
 		this.name = name.trim();
 		this.function = function.trim();
 		this.inputList = inputList;
@@ -48,22 +51,53 @@ public abstract class Action implements Runnable, Serializable {
 		this.type = type;
 		this.cycle = cycle.trim();
 		this.topic = topic.trim();
-//		checkTopic();
+		this.trigger = trigger.trim();
+		this.sleepTime = getTrigger();
+		// checkTopic();
+	}
+
+	private int getTrigger() {
+		if (trigger.equals("") || trigger.equals("init")) 
+			return -1;
+		else {
+			String sign = trigger.substring(trigger.length()-1);
+			double time = Double.parseDouble(trigger.substring(0, trigger.length()-1));
+			//转化成毫秒
+			int msTime = (int) (time * 1000);
+			switch(sign) {
+			case "s":
+				return msTime;
+			case "m":
+				return msTime * 60;
+			case "h":
+				return msTime * 3600;
+			case "D":
+				return msTime * 3600 * 24;
+			case "M":
+				return msTime * 30 * 3600 * 24;
+			case "Y":
+				return msTime * 12 * 30 * 3600 * 24;
+			default:
+				throw new RuntimeException("不合法的life属性");
+			}
+		}
 	}
 
 	// 实现Runnable的run方法
 	public void run() {
 
-		while(instance.isLive()) {
+		while (instance.isLive()) {
 
 			working();
-			
-			if (cycle.equals("only")) return;
-			update = false;
+
+			if (trigger.equals("init"))
+				return;
+//			update = false;
 			Thread.yield();
 		}
+
 	}
-	
+
 	public abstract void working();
 
 	public String getFunction() {
@@ -94,36 +128,38 @@ public abstract class Action implements Runnable, Serializable {
 	protected void callFunction() {
 		if (function.equals("NEW")) {// 系统函数, 新创建一实体
 			// 先判断该实体是否已达到生成新实例的条件
-//			System.out.println("尝试新建instance……");
+			// System.out.println("尝试新建instance……");
 			boolean returnValue = false;
-			returnValue = FunctionLauncher.launch(instance.getName()
-					+ "_new", variableMap);
+			returnValue = FunctionLauncher.launch(instance.getName() + "_new",
+					variableMap);
 			if (returnValue == true) {
-//				instance.getSystem().createInstance(instance);
+				// instance.getSystem().createInstance(instance);
 				instance.getSystem().registerNEW(instance);
 			}
 		} else if (function.equals("DEAD")) {// 系统函数, 销毁一个实体
 
-			// 先判断该实体是否已达到死亡的条件
+/*			// 先判断该实体是否已达到死亡的条件
 			boolean returnValue = false;
-			//判断类型是否是监听类型，如果是，则直接调用销毁
-			if (type == ActionType.LISTEN) returnValue = true;
-			//其他类型通过用户编写的函数判断
-			else returnValue = FunctionLauncher.launch(instance.getName()
-					+ "Dieable", variableMap);
+			// 判断类型是否是监听类型，如果是，则直接调用销毁
+			if (type == ActionType.LISTEN)
+				returnValue = true;
+			// 其他类型通过用户编写的函数判断
+			else
+				returnValue = FunctionLauncher.launch(instance.getName()
+						+ "Dieable", variableMap);
 
 			if (returnValue == true) {
-//				System.out.println("dead is true");
-				endInstance();// 结束该实体的运行
-			}
+				// System.out.println("dead is true");
+*/				endInstance();// 结束该实体的运行
+//			}
 		} else {
 			invokeUserFunction();
 		}
 
-//		if (SystemFunctionbase.containFunction(function)) {
-//			
-//		}else doUserFunction();
-		
+		// if (SystemFunctionbase.containFunction(function)) {
+		//
+		// }else doUserFunction();
+
 	}
 
 	private void invokeUserFunction() {
@@ -133,7 +169,7 @@ public abstract class Action implements Runnable, Serializable {
 			returnValue = FunctionLauncher.launch(function,
 					variableMap.get(inputList.get(0).getName()));
 			break;
-		default: 
+		default:
 			FunctionLauncher.launch(function, instance, message);
 			break;
 		}
@@ -141,27 +177,23 @@ public abstract class Action implements Runnable, Serializable {
 			if (returnValue instanceof Variable) {
 				// 更新variableMap中的变量
 				Variable rv = (Variable) returnValue;
-//				Variable v = variableMap.get(rv.getName());
+				// Variable v = variableMap.get(rv.getName());
 				if (rv != null) {
-//					synchronized(instance){
-//						instance.updateProperty(rv.getName(), rv.getValue());
+					// synchronized(instance){
+					// instance.updateProperty(rv.getName(), rv.getValue());
 					instance.motify(rv.getName(), rv.getValue());
-//					}
+					// }
 				}
 			}
 		}
 	}
-
-
-
-
 
 	// 结束instance对象, 步骤:
 	// 1 将instance的live设置为false
 	// 2 将此instance从XMLSystem的instanceMap中移除
 	private void endInstance() {
 
-//		System.out.println(instance.getIdName() + "死亡");
+		// System.out.println(instance.getIdName() + "死亡");
 		// 完成第1步
 		instance.setLive(false);
 
@@ -169,9 +201,9 @@ public abstract class Action implements Runnable, Serializable {
 		instance.getSystem().remove(instance);
 
 		// 在实体离开之前检查性别是否初始化, 由于随机性, 有的实体性别还没初始化就死亡
-//		System.out.println(variableMap.get("gender").getValue());
-//		// 在实体离开之间检查年龄是否增加, 由于随机性, 有的实体年龄还没增加就死亡
-//		System.out.println(variableMap.get("age").getValue());
+		// System.out.println(variableMap.get("gender").getValue());
+		// // 在实体离开之间检查年龄是否增加, 由于随机性, 有的实体年龄还没增加就死亡
+		// System.out.println(variableMap.get("age").getValue());
 	}
 
 	public void setInstance(Instance instance) {
@@ -190,28 +222,28 @@ public abstract class Action implements Runnable, Serializable {
 	public void isUpdate() {
 		update = true;
 	}
-	
-//	private void unPackageMessage(Message message) {
-//		
-//		List<MessageContent> contentList = message.getContentList();
-//		if (contentList == null || contentList.size()<=0) return;
-//		
-//		String instanceName = message.getFrom();
-//		for (Iterator<MessageContent> i=contentList.iterator(); i.hasNext();) {
-//			MessageContent mc = i.next();
-//			
-//			String propName = mc.getName();
-//			switch (mc.getType()) {
-//			case "property":
-//				if (mc.getVariable() != null) {
-//					String valueName = instanceName + "." + propName;
-//					System.out.println("已放入" + valueName + "; 属性为" + mc.getVariable());
-//					variableMap.put(valueName, mc.getVariable());
-//				} else if (mc.getInstance() != null) {
-//					/////////////////////////
-//				}
-//				
-//			}
-//		}
-//	}
+
+	// private void unPackageMessage(Message message) {
+	//
+	// List<MessageContent> contentList = message.getContentList();
+	// if (contentList == null || contentList.size()<=0) return;
+	//
+	// String instanceName = message.getFrom();
+	// for (Iterator<MessageContent> i=contentList.iterator(); i.hasNext();) {
+	// MessageContent mc = i.next();
+	//
+	// String propName = mc.getName();
+	// switch (mc.getType()) {
+	// case "property":
+	// if (mc.getVariable() != null) {
+	// String valueName = instanceName + "." + propName;
+	// System.out.println("已放入" + valueName + "; 属性为" + mc.getVariable());
+	// variableMap.put(valueName, mc.getVariable());
+	// } else if (mc.getInstance() != null) {
+	// /////////////////////////
+	// }
+	//
+	// }
+	// }
+	// }
 }

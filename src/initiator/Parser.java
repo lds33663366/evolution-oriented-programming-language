@@ -53,6 +53,7 @@ public class Parser {
 		ActionType type = ActionType.SELF;
 		String cycle = "default";
 		String topic = "SYSTEM";
+		String trigger = "";
 
 		// 提取<action>的属性
 		for (Iterator<Attribute> actionI = action.attributeIterator(); actionI
@@ -68,6 +69,8 @@ public class Parser {
 				cycle = actionAttr.getValue();
 			}else if (actionAttr.getName().equals("topic")) {
 				topic = actionAttr.getValue();
+			}else if (actionAttr.getName().equals("trigger")) {
+				trigger = actionAttr.getValue();
 			}
 		}
 //		function = action.attribute("function").getValue();
@@ -85,7 +88,7 @@ public class Parser {
 			}
 		}
 		
-		return ActionFactory.createAction(name, function, inputList, outputList, type, cycle, topic);
+		return ActionFactory.createAction(name, function, inputList, outputList, type, cycle, topic, trigger);
 	}
 
 	private Output parseOutput(Element output) {

@@ -18,14 +18,14 @@
             </instance>
             <instance name="velocity"><!--太阳的速度矢量-->
             	<property>
-                    <double name="x" value="1500"/>
+                    <double name="x" value="0"/>
                     <double name="y" value="0"/>
                 </property>
             </instance>
 		</property>
-		<action name="move" function="move" type="self" />
-		<action name="gravitation" function="gravitation" type="notification" topic="gravitation"/><!--通知引力消息主题-->
-		<action name="centripetal_force" function="centripetal_force" type="subscription" topic="gravitation"/><!--订阅引力消息主题-->
+		<action name="move" function="move" type="self" trigger="0.1s"/>
+		<action name="gravitation" function="gravitation" type="notification" topic="gravitation" trigger="0.1s"/><!--通知引力消息主题-->
+		<action name="centripetal_force" function="centripetal_force" type="subscription" topic="gravitation" trigger="0.02s"/><!--订阅引力消息主题-->
 	</instance>	
 	
 	<instance name="earth" >
@@ -50,9 +50,9 @@
                 </property>
             </instance>
 		</property>
-		<action name="move" function="move" type="self" />
-		<action name="gravitation" function="gravitation" type="notification" topic="gravitation"/><!--通知引力消息主题-->
-		<action name="centripetal_force" function="centripetal_force" type="subscription" topic="gravitation"/><!--订阅引力消息主题-->
+		<action name="move" function="move" type="self"  trigger="0.1s"/>
+		<action name="gravitation" function="gravitation" type="notification" topic="gravitation" trigger="0.1s"/><!--通知引力消息主题-->
+		<action name="centripetal_force" function="centripetal_force" type="subscription" topic="gravitation" trigger="0.02s"/><!--订阅引力消息主题-->
 	</instance>
 	
 	<instance name="mars" >
@@ -77,9 +77,9 @@
                 </property>
             </instance>
 		</property>
-		<action name="move" function="move" type="self" />
-		<action name="gravitation" function="gravitation" type="notification" topic="gravitation"/><!--通知引力消息主题-->
-		<action name="centripetal_force" function="centripetal_force" type="subscription" topic="gravitation"/><!--订阅引力消息主题-->
+		<action name="move" function="move" type="self"  trigger="0.1s"/>
+		<action name="gravitation" function="gravitation" type="notification" topic="gravitation" trigger="0.1s"/><!--通知引力消息主题-->
+		<action name="centripetal_force" function="centripetal_force" type="subscription" topic="gravitation" trigger="0.02s"/><!--订阅引力消息主题-->
 	</instance>
 	
 	<instance name="venus" >
@@ -104,9 +104,9 @@
                 </property>
             </instance>
 		</property>
-		<action name="move" function="move" type="self" />
-		<action name="gravitation" function="gravitation" type="notification" topic="gravitation"/><!--通知引力消息主题-->
-		<action name="centripetal_force" function="centripetal_force" type="subscription" topic="gravitation"/><!--订阅引力消息主题-->
+		<action name="move" function="move" type="self" trigger="0.1s"/>
+		<action name="gravitation" function="gravitation" type="notification" topic="gravitation" trigger="0.1s"/><!--通知引力消息主题-->
+		<action name="centripetal_force" function="centripetal_force" type="subscription" topic="gravitation" trigger="0.02s"/><!--订阅引力消息主题-->
 	</instance>
 	
 	<message name="gravitation" from="sun">
@@ -130,6 +130,6 @@
 	</message>
 
     <!--系统终止消息, 所有实体将接收到此消息, 并将数据存入数据库. 
-    属性second=100: 系统将于100秒后终止程序-->
-<!--    <message name="END" from="SYSTEM" second="15" /> -->
+    属性second=100: 系统将于10秒后终止程序-->
+	<message name="END" from="SYSTEM" second="20" /> 
 </system>

@@ -14,19 +14,20 @@ import structure.EnumType.XMLType.ActionType;
 public class PublishAction extends Action{
 
 	public PublishAction(String name, String function, List<Input> inputList,
-			List<Output> outputList, ActionType type, String cycle, String topic) {
-		super(name, function, inputList, outputList, type, cycle, topic);
+			List<Output> outputList, ActionType type, String cycle, String topic, String trigger) {
+		super(name, function, inputList, outputList, type, cycle, topic, trigger);
+		if (sleepTime == -1) sleepTime = ThreadTimeConsole.Thread_PublishAction.getTime();
 	}
 
 	@Override
 	public void working() {
-		while (!update) {
+//		while (!update) {
 			try {
-				TimeUnit.MILLISECONDS.sleep(ThreadTimeConsole.Thread_PublishAction.getTime());
+				TimeUnit.MILLISECONDS.sleep(sleepTime);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+//				e.printStackTrace();
 			}
-		}
+//		}
 		if (instance.isLive())	{
 			instance.sendMessageToPool(name);	
 		}

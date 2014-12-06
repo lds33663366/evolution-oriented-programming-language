@@ -19,25 +19,6 @@ public class Property implements Serializable{
 		this.variableMap = variableMap;
 	}
 
-//	public Property(Property property) {
-//
-//		this.instanceList = new LinkedList<Instance>();
-//		List<Instance> pInstanceList = property.getInstanceList();
-//		for (int i = 0; i < pInstanceList.size(); i++) {
-//			this.instanceList.add(Instance.clone(pInstanceList.get(i)));
-//		}
-//
-//		this.variableMap = new HashMap<String, Variable>();
-//		for (Iterator<Entry<String, Variable>> iterator = property
-//				.getVariableMap().entrySet().iterator(); iterator.hasNext();) {
-//			Map.Entry<String, Variable> entry = (Map.Entry<String, Variable>) iterator
-//					.next();
-//			this.variableMap
-//					.put(entry.getKey(), new Variable(entry.getValue()));
-//		}
-//
-//	}
-
 	public List<Instance> getInstanceList() {
 		return instanceList;
 	}

@@ -250,7 +250,7 @@ public class MsgPool implements Runnable{
 		if (topics == null || topics.size()<=0) return;
 
 		for (int i=0, j=topics.size(); i<j; i++) {
-			topics.get(i).send();
+			topics.get(i).notifyMessage();
 		}
 	}
 	
@@ -402,6 +402,7 @@ public class MsgPool implements Runnable{
 
 	class Topic {
 		private String name; //主题名称
+		private int priority;
 		private List<MsgHandler> msgHandlerList; //订阅该主题的队列
 		private Queue<Message> messages; //主题的消息包
 		
@@ -445,7 +446,7 @@ public class MsgPool implements Runnable{
 		/**
 		 * 发送主题里所有的消息给所有的订阅者
 		 */
-		public void send() {
+		public void notifyMessage() {
 			//如果消息不存在，或者pool已关闭（时刻判断）则返回
 			if (messages == null || !live)	return;
 

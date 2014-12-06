@@ -63,4 +63,14 @@ public class InstancesManager {
 		}
 	}
 
+	public void save() {
+
+		for (Iterator<Entry<String, InstanceManager>> iterator = instanceMap
+				.entrySet().iterator(); iterator.hasNext();) {
+			Entry<String, InstanceManager> entry = iterator.next();
+			InstanceManager im = entry.getValue();
+			im.save();
+		}
+	}
+
 }

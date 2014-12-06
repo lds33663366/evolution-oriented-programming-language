@@ -21,6 +21,7 @@ public class InstanceManager {
 	private CopyOnWriteArrayList<Instance> instanceList;
 	private int idAssign;
 	private int newInstanceRegister;
+	private MemoryManager mMgr;
 	
 	/**
 	 * 添加instances里所有带位置position的坐标到集合里
@@ -95,8 +96,8 @@ public class InstanceManager {
 				+ "************************************************************************\n");
 		//为了打印instance信息且在打印期间不占用信息列表，复制一份列表
 		CopyOnWriteArrayList<Instance> copyInstanceList =  copyInstanceList();
-		for (int i=0, len=instanceList.size(); i<len; i++) {
-			sb.append(instanceList.get(i).toString() + "\t");
+		for (int i=0, len=copyInstanceList.size(); i<len; i++) {
+			sb.append(copyInstanceList.get(i).toString() + "\t");
 			if (i%50 == 49) sb.append("\n");
 		}
 		sb.append("\n**************************************************************************\n");
@@ -130,5 +131,18 @@ public class InstanceManager {
 //		}
 		g.setColor(c);
 		
+	}
+	
+
+
+	public void save() {
+		
+		if (instanceList == null || instanceList.size() <= 0) return;
+		mMgr = new MemoryManager();
+		mMgr.createTable(instanceList.get(0));
+
+		for (int i=0; i<instanceList.size(); i++) {
+			instanceList.get(i).save();
+		}
 	}
 }

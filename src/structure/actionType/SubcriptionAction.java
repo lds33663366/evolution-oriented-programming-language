@@ -18,9 +18,9 @@ public class SubcriptionAction extends Action{
 	
 	public SubcriptionAction(String name, String function,
 			List<Input> inputList, List<Output> outputList, ActionType type,
-			String cycle, String topic) {
-		super(name, function, inputList, outputList, type, cycle, topic);
-		
+			String cycle, String topic, String trigger) {
+		super(name, function, inputList, outputList, type, cycle, topic, trigger);
+		if (sleepTime == -1) sleepTime = ThreadTimeConsole.Thread_ListenAction.getTime();
 	}
 
 	@Override
@@ -31,14 +31,14 @@ public class SubcriptionAction extends Action{
 					isSubscription = true;
 				}
 				
-				if ((message = instance.sendMessageToAction(name)) != null) {
+				if ((message = instance.actionGetMessage(name)) != null) {
 					callFunction();
 				}
 				
 				try {
-					TimeUnit.MILLISECONDS.sleep(ThreadTimeConsole.Thread_ListenAction.getTime());
+					TimeUnit.MILLISECONDS.sleep(sleepTime);
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+//					e.printStackTrace();
 				}		
 	}
 

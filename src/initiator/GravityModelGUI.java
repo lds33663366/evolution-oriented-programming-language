@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.concurrent.TimeUnit;
 
 import msgManager.MsgPool;
 
@@ -74,10 +75,11 @@ public class GravityModelGUI extends Frame {
 //	}
 	
 	int day = 0;
+	private boolean isShowed = true;
 	private class PaintThread implements Runnable {
 
 		public void run() {
-			while(true) {
+			while(isShowed) {
 //				count--;
 //				if (count == 6);
 				day++;
@@ -89,6 +91,11 @@ public class GravityModelGUI extends Frame {
 				}
 			}
 		}
+	}
+	
+	public void close() {
+		isShowed = false;
+		dispose();
 	}
 
 }

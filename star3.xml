@@ -4,7 +4,7 @@
 
 	<instance name="earth" popsize="30">
 		<property>
-			<double name="weight" value="3E28" /><!--地球的质量-->
+			<double name="weight" value="3E26" /><!--地球的质量-->
 			<instance name="position"> <!--地球的位置-->
                 <property>
                     <double name="x" value="0"/>

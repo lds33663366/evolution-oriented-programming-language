@@ -27,7 +27,7 @@ import structure.Variable;
 /**
  * 每个instance都有个MsgHandler，用于处理消息。
  */
-public class MsgHandler implements Runnable, Serializable{
+public class MsgHandler implements Serializable{
 
 	transient MsgPool mp = null;
 	//handler拿到relation，用于检测消息是否符合要求
@@ -155,9 +155,8 @@ public class MsgHandler implements Runnable, Serializable{
 	}
 
 	/** 获取消息，并将action的名字和消息存入action_message该Map结构中
-	 * @return 消息包
 	 */
-	public Message obtainMessage() {
+	public void obtainMessage() {
 
 		String actionName = null;
 		if ((actionName = detectMessage()) != null) {
@@ -167,9 +166,7 @@ public class MsgHandler implements Runnable, Serializable{
 			mList.add(m);
 			action_message.put(actionName, mList);
 			messageCache.add(m);
-			return m;
 		}
-		return null;
 	}
 	
 	public Message obtainTopicMessage(Message msg) {
@@ -239,23 +236,23 @@ public class MsgHandler implements Runnable, Serializable{
 		}
 	}
 	
-	@Override
-	public void run() {
-		
-		while (live) {
-			try {
-				TimeUnit.MILLISECONDS.sleep(ThreadTimeConsole.Thread_MsgHandler.getTime());
-			} catch (InterruptedException e) {
-//				e.printStackTrace();
-			} 
-//			sendMessageToPool("eat_zebra");
-//			if (!subSystem) {
-//				subscription("SYSTEM", "");
-//				subSystem = true;
-//			}
-			obtainMessage();
-		}
-	}
+//	@Override
+//	public void run() {
+//		
+//		while (live) {
+//			try {
+//				TimeUnit.MILLISECONDS.sleep(ThreadTimeConsole.Thread_MsgHandler.getTime());
+//			} catch (InterruptedException e) {
+////				e.printStackTrace();
+//			} 
+////			sendMessageToPool("eat_zebra");
+////			if (!subSystem) {
+////				subscription("SYSTEM", "");
+////				subSystem = true;
+////			}
+//			obtainMessage();
+//		}
+//	}
 
 	public void addMessage(Message m) {
 		if (messageList == null) 

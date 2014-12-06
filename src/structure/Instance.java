@@ -1,27 +1,24 @@
 package structure;
 
-import initiator.InstanceColor;
+import initiator.MemoryManager;
 import initiator.ThreadTimeConsole;
 import initiator.XMLSystem;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-
-import javax.imageio.ImageIO;
 
 import msgManager.MsgHandler;
 import msgManager.MsgPool;
@@ -32,13 +29,15 @@ public class Instance implements Runnable, Serializable {
 	private String name; // 该instance的名字
 	private int popsize; // 该instance的数量
 	private Property property; // property子元素
+	
 	private MsgHandler msghandler = new MsgHandler(this); // 消息处理器
+	private InstanceDraw instanceDraw;//用于在GUI上显示instance的类
+	
 	// private List<Message> messageList; // 该实体所能发送的消息列表
 	private volatile boolean live; // 标记此Instance是否存活
 	private transient XMLSystem system; // 整个实体所在的系统
-	private int id;
+	private int id;//实体标示符，与实体名组成独一无二标识
 	ExecutorService exec = null;
-	BufferedImage bimage = null;
 
 	public Instance(List<Action> actionList, String name, int popsize,
 			Property property) {
@@ -108,7 +107,6 @@ public class Instance implements Runnable, Serializable {
 		for (int i = 0; i < actionList.size(); i++) {
 			exec.execute(actionList.get(i));
 		}
-		exec.execute(msghandler);
 
 		while (live) {
 			try {
@@ -117,10 +115,13 @@ public class Instance implements Runnable, Serializable {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+			msghandler.obtainMessage();
 		}
+		
+//		System.out.println("propertiesName = " + toPropertyNameList());
+//		System.out.println("propertiesValue = " + toPropertyValueList());
 
 		close();
-
 	}
 
 	public void close() {
@@ -130,12 +131,12 @@ public class Instance implements Runnable, Serializable {
 
 		waitForUpdate();
 		try {
-			if (!exec.awaitTermination(200, TimeUnit.MILLISECONDS)) {
+			if (!exec.awaitTermination(500, TimeUnit.MILLISECONDS)) {
 				exec.shutdownNow();
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-		}
+		} 
 	}
 
 	private void deliverUpdate() {
@@ -246,7 +247,7 @@ public class Instance implements Runnable, Serializable {
 	}
 
 	// 接收消息
-	public Message sendMessageToAction(String actionName) {
+	public Message actionGetMessage(String actionName) {
 		return msghandler.sendMessageToAction(actionName);
 	}
 
@@ -309,53 +310,79 @@ public class Instance implements Runnable, Serializable {
 		notifyAll();
 	}
 
-	List<Integer> xList = new ArrayList<Integer>();
-	List<Integer> yList = new ArrayList<Integer>();
-//	Random r = new Random();
-//	transient Color random_color = new Color(r.nextInt(256), r.nextInt(256), r.nextInt(256));
-	Color random_color;
 	public void draw(Graphics2D g) {
 		
-		random_color = InstanceColor.getColor(name, id);
-		Color c = g.getColor();
+		if (instanceDraw == null) {
+			instanceDraw = new InstanceDraw(this);
+		}
+		instanceDraw.draw(g);
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void save() {
 		
-		double scale = 12E8;
-//		if (r.nextInt(10) > 6) {
-			g.drawString("比例尺：" + scale + ":1", 1100, 800);
-//		}
-		if (bimage == null) {
-			try {
-				String path = "./src/images/" + name.toLowerCase().trim() + ".png";
-				bimage = ImageIO.read(new File(path));
-			} catch (IOException e) {
-				e.printStackTrace();
+		MemoryManager mMgr = new MemoryManager();
+		mMgr.saveInstance(this);
+		System.out.println(getIdName() + "成功存储！");
+	}
+	
+	/**
+	 * 获取这个实体的属性名称列表
+	 * @return 属性名称列表
+	 */
+	public ArrayList<String> toPropertyNameList() {
+
+		ArrayList<String> propertiesName = new ArrayList<String>();
+
+		//将根元素（即基本的数据元素）直接存入
+		Map<String, Variable> variables = property.getVariableMap();
+		for (Iterator<Entry<String, Variable>> i = variables.entrySet()
+				.iterator(); i.hasNext();) {
+			Entry<String, Variable> entry = i.next();
+			String vname = entry.getKey();
+			propertiesName.add(name + "_" + vname);
+		}
+
+		//将属性类型是instance的元素递归
+		List<Instance> instances = property.getInstanceList();
+		if (instances != null && instances.size() > 0) {
+			for (int i = 0; i < instances.size(); i++) {
+				propertiesName.addAll(instances.get(i).toPropertyNameList());
 			}
 		}
-		double x, y;
-		synchronized (this) {
-			x = Double.parseDouble(obtainValue("position.x"));
-			y = Double.parseDouble(obtainValue("position.y"));
+
+		return propertiesName;
+	}
+	
+	/**
+	 * 获取这个实体的属性值列表
+	 * @return 属性值列表
+	 */
+	public ArrayList<String> toPropertyValueList() {
+		
+		ArrayList<String> propertiesValue = new ArrayList<String>();
+
+		//将根元素（即基本的数据元素）直接存入
+		Map<String, Variable> variables = property.getVariableMap();
+		for (Iterator<Entry<String, Variable>> i = variables.entrySet()
+				.iterator(); i.hasNext();) {
+			Entry<String, Variable> entry = i.next();
+			Variable v = entry.getValue();
+			propertiesValue.add(v.getValue());
 		}
-		int ix = (int) (150+ x / scale);
-		int iy = (int) (150+ y / scale);
-		
-//		xList.add(ix);
-//		yList.add(iy);
-		
-		int map_pointx = (int)(ix-bimage.getWidth()/2);
-		int map_pointy = (int)(iy-bimage.getHeight()/2);
-		
-		g.setColor(random_color);
-		g.drawString(getIdName() + ":[" + ix + "," + iy + "]" , map_pointx, map_pointy);
-		g.drawImage(bimage, map_pointx, map_pointy, null);
-		
-//		g.setColor(Color.DARK_GRAY.brighter());
-		g.setColor(random_color.darker());
-//		for (int i=0 ; i<xList.size()-1; i++) {
-//			g.drawLine(xList.get(i), yList.get(i), xList.get(i+1), yList.get(i+1));;
-//		}
-		g.setColor(c);
-//		g.fillOval(ix - 10, iy - 10, 20, 20);
+
+		//将属性类型是instance的元素递归
+		List<Instance> instances = property.getInstanceList();
+		if (instances != null && instances.size() > 0) {
+			for (int i = 0; i < instances.size(); i++) {
+				propertiesValue.addAll(instances.get(i).toPropertyValueList());
+			}
+		}
+
+		return propertiesValue;
 	}
 
 }

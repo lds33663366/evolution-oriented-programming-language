@@ -17,22 +17,22 @@ import structure.EnumType.XMLType.ActionType;
 public class ActionFactory {
 	
 	public static Action createAction(String name, String function, List<Input> inputList,
-	List<Output> outputList, ActionType type, String cycle, String topic) {
+	List<Output> outputList, ActionType type, String cycle, String topic, String trigger) {
 		if (type.equals(ActionType.SELF)) 
 			return new SelfAction(name, function, inputList,
-					outputList, type, cycle, topic);
+					outputList, type, cycle, topic, trigger);
 		else if (type.equals(ActionType.LISTEN)) 
 			return new ListenAction(name, function, inputList,
-					outputList, type, cycle, topic);
+					outputList, type, cycle, topic, trigger);
 		else if (type.equals(ActionType.PUBLISH)) 
 			return new PublishAction(name, function, inputList,
-					outputList, type, cycle, topic);
+					outputList, type, cycle, topic, trigger);
 		else if (type.equals(ActionType.SUBSCRIPTION)) 
 			return new SubcriptionAction(name, function, inputList,
-					outputList, type, cycle, topic);
+					outputList, type, cycle, topic, trigger);
 		else if (type.equals(ActionType.NOTIFICATION)) 
 			return new NotificationAction(name, function, inputList,
-					outputList, type, cycle, topic);
+					outputList, type, cycle, topic, trigger);
 		return null;
 		
 	}
