@@ -61,22 +61,22 @@ public class Parser {
 			Attribute actionAttr = (Attribute) actionI.next();
 			if (actionAttr.getName().equals("name")) {
 				name = actionAttr.getValue();
-			}else if (actionAttr.getName().equals("function")) {
+			} else if (actionAttr.getName().equals("function")) {
 				function = actionAttr.getValue();
-			}else if (actionAttr.getName().equals("type")) {
+			} else if (actionAttr.getName().equals("type")) {
 				type = ActionType.valueOf(actionAttr.getValue().toUpperCase());
-			}else if (actionAttr.getName().equals("cycle")) {
+			} else if (actionAttr.getName().equals("cycle")) {
 				cycle = actionAttr.getValue();
-			}else if (actionAttr.getName().equals("topic")) {
+			} else if (actionAttr.getName().equals("topic")) {
 				topic = actionAttr.getValue();
-			}else if (actionAttr.getName().equals("trigger")) {
+			} else if (actionAttr.getName().equals("trigger")) {
 				trigger = actionAttr.getValue();
 			}
 		}
-//		function = action.attribute("function").getValue();
-//		Attribute typeA = action.attribute("type");
-//		if (typeA != null)
-//			type = ActionType.valueOf(typeA.getValue().toUpperCase());
+		// function = action.attribute("function").getValue();
+		// Attribute typeA = action.attribute("type");
+		// if (typeA != null)
+		// type = ActionType.valueOf(typeA.getValue().toUpperCase());
 
 		// 迭代<action>的子元素
 		for (Iterator<Element> i = action.elementIterator(); i.hasNext();) {
@@ -87,8 +87,9 @@ public class Parser {
 				outputList.add(parseOutput(sub));
 			}
 		}
-		
-		return ActionFactory.createAction(name, function, inputList, outputList, type, cycle, topic, trigger);
+
+		return ActionFactory.createAction(name, function, inputList,
+				outputList, type, cycle, topic, trigger);
 	}
 
 	private Output parseOutput(Element output) {
@@ -144,7 +145,7 @@ public class Parser {
 		int priority = 5; // 优先级
 		double second = 0.0; // Message将于多长时间后发送
 		int share = 1; // 可接收此Message的instance的最大数量
-		
+
 		List<MessageContent> mc = new ArrayList<MessageContent>();
 
 		// 提取<message>属性
@@ -169,28 +170,27 @@ public class Parser {
 				share = Integer.parseInt(messageA.getValue());
 			}
 		}
-		
-		//提取message子元素
+
+		// 提取message子元素
 		for (Iterator<Element> i = message.elementIterator(); i.hasNext();) {
 			Element sub = i.next();
 			if (sub.getName().equals("content")) {
 				mc.add(parseMessageContent(sub));
-			} 
+			}
 		}
 
 		return new Message(name, date, from, priority, frequency, life, second,
 				share, mc);
 
 	}
-	
+
 	private MessageContent parseMessageContent(Element node) throws Exception {
-		
+
 		String type = node.attribute("type").getValue();
 		String name = node.attribute("name").getValue();
-		
+
 		return new MessageContent(type, name);
-		
-		
+
 	}
 
 	// 解析<node>并返回该对象
@@ -265,6 +265,10 @@ public class Parser {
 		List<Message> messageList = new LinkedList<Message>();
 		List<Relation> relationList = new LinkedList<Relation>();
 
+		String save = "off";
+		String load = "off";
+		String timeSpeed = "1s:1s";
+
 		// 迭代<system>的直接子元素
 		for (Iterator<Element> systemSubI = doc.getRootElement()
 				.elementIterator(); systemSubI.hasNext();) {
@@ -280,7 +284,19 @@ public class Parser {
 			}
 		}
 
-		return new XMLSystem(instanceList, messageList, relationList);
+		for (Iterator<Attribute> messageAI = doc.getRootElement()
+				.attributeIterator(); messageAI.hasNext();) {
+			Attribute messageA = messageAI.next();
+			if (messageA.getName().equals("save")) {
+				save = messageA.getValue();
+			} else if (messageA.getName().equals("load")) {
+				load = messageA.getValue();
+			} else if (messageA.getName().equals("timeSpeed")) {
+				timeSpeed = messageA.getValue();
+			} 
+		}
+
+		return new XMLSystem(instanceList, messageList, relationList, save, load, timeSpeed);
 	}
 
 	// 解析int, double等定义基本类型变量的标签, 返回Variable对象

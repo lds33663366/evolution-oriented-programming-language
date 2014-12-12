@@ -1,5 +1,8 @@
 package structure.actionType;
 
+import initiator.TimeCalculater;
+import initiator.XMLSystem;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Iterator;
@@ -8,6 +11,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
+
+import log.MyLogger;
+
+import org.apache.log4j.Logger;
 
 import structure.EnumType;
 import structure.Input;
@@ -33,12 +40,18 @@ public abstract class Action implements Runnable, Serializable {
 	protected String topic;
 	private String trigger;
 	protected Message message;
-	protected int sleepTime;
+	protected long sleepTime;
+	
+	static Logger logger = MyLogger.getLogger();
 
 	public volatile boolean update = true;
 
 	// public void setUpdate(boolean update) {
 	// this.update = update;
+	// }
+	//
+	// public static Action getDaultAction(){
+	// return new Action();
 	// }
 
 	public Action(String name, String function, List<Input> inputList,
@@ -52,50 +65,53 @@ public abstract class Action implements Runnable, Serializable {
 		this.cycle = cycle.trim();
 		this.topic = topic.trim();
 		this.trigger = trigger.trim();
-		this.sleepTime = getTrigger();
 		// checkTopic();
 	}
 
-	private int getTrigger() {
-		if (trigger.equals("") || trigger.equals("init")) 
+	private long getTrigger() {
+		if (trigger.equals("") || trigger.equals("init"))
 			return -1;
 		else {
-			String sign = trigger.substring(trigger.length()-1);
-			double time = Double.parseDouble(trigger.substring(0, trigger.length()-1));
-			//转化成毫秒
-			int msTime = (int) (time * 1000);
-			switch(sign) {
-			case "s":
-				return msTime;
-			case "m":
-				return msTime * 60;
-			case "h":
-				return msTime * 3600;
-			case "D":
-				return msTime * 3600 * 24;
-			case "M":
-				return msTime * 30 * 3600 * 24;
-			case "Y":
-				return msTime * 12 * 30 * 3600 * 24;
-			default:
-				throw new RuntimeException("不合法的life属性");
-			}
+//			if (name.equals("DEAD")) {
+//				System.out.println("DEAD is " + TimeCalculater.getMillisecond(trigger));
+//				System.out.println("DEAD is " + XMLSystem.timeScale);
+//				System.out.println(Integer.MAX_VALUE);
+//			}
+			return TimeCalculater.getMillisecond(trigger) / XMLSystem.timeScale;
 		}
 	}
+	
+	protected abstract void init();
 
 	// 实现Runnable的run方法
 	public void run() {
 
+		this.sleepTime = getTrigger();
+		init();
+		
 		while (instance.isLive()) {
+
+			sleep();
 
 			working();
 
 			if (trigger.equals("init"))
 				return;
-//			update = false;
+			// update = false;
 			Thread.yield();
 		}
 
+	}
+
+	/**
+	 * 间隔一段时间之后再执行
+	 */
+	private void sleep() {
+		try {
+			TimeUnit.MILLISECONDS.sleep(sleepTime);
+		} catch (InterruptedException e) {
+			// e.printStackTrace();
+		}
 	}
 
 	public abstract void working();
@@ -134,24 +150,20 @@ public abstract class Action implements Runnable, Serializable {
 					variableMap);
 			if (returnValue == true) {
 				// instance.getSystem().createInstance(instance);
-				instance.getSystem().registerNEW(instance);
+				instance.getSystem().createInstance(instance.getName());
 			}
 		} else if (function.equals("DEAD")) {// 系统函数, 销毁一个实体
 
-/*			// 先判断该实体是否已达到死亡的条件
-			boolean returnValue = false;
-			// 判断类型是否是监听类型，如果是，则直接调用销毁
-			if (type == ActionType.LISTEN)
-				returnValue = true;
-			// 其他类型通过用户编写的函数判断
-			else
-				returnValue = FunctionLauncher.launch(instance.getName()
-						+ "Dieable", variableMap);
-
-			if (returnValue == true) {
-				// System.out.println("dead is true");
-*/				endInstance();// 结束该实体的运行
-//			}
+			/*
+			 * // 先判断该实体是否已达到死亡的条件 boolean returnValue = false; //
+			 * 判断类型是否是监听类型，如果是，则直接调用销毁 if (type == ActionType.LISTEN)
+			 * returnValue = true; // 其他类型通过用户编写的函数判断 else returnValue =
+			 * FunctionLauncher.launch(instance.getName() + "Dieable",
+			 * variableMap);
+			 * 
+			 * if (returnValue == true) { // System.out.println("dead is true");
+			 */endInstance();// 结束该实体的运行
+			// }
 		} else {
 			invokeUserFunction();
 		}

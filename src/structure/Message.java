@@ -1,4 +1,6 @@
 package structure;
+import initiator.TimeCalculater;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -147,23 +149,9 @@ public class Message implements Cloneable, Serializable{
 		return sb.toString();
 	}
 	
-	public long parseLife() {
+	public long getMillisecondLife() {
 		
-		String sign = life.trim().substring(life.length()-1);
-		long l = Long.parseLong(life.trim().substring(0, life.length()-1));
-		
-		switch(sign) {
-		case "s":
-			return l;
-		case "m":
-			return l * 60;
-		case "h":
-			return l * 3600;
-		case "d":
-			return l * 3600 * 24;
-		default:
-			throw new RuntimeException("不合法的life属性");
-		}
+		return TimeCalculater.getMillisecond(life);
 		
 	}
 

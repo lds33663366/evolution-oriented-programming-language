@@ -47,11 +47,11 @@ public class InstancesManager {
 		return sb.toString();
 	}
 
-	public void registerNEW(Instance instance) {
+/*	public void registerNEW(Instance instance) {
 		InstanceManager im = instanceMap.get(instance.getName());
 		im.registerNew();
 
-	}
+	}*/
 
 	public void draw(Graphics2D g) {
 

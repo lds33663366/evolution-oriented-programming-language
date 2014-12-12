@@ -17,22 +17,20 @@ public class NotificationAction extends Action {
 			List<Input> inputList, List<Output> outputList, ActionType type,
 			String cycle, String topic, String trigger) {
 		super(name, function, inputList, outputList, type, cycle, topic, trigger);
-		if (sleepTime == -1) sleepTime = ThreadTimeConsole.Thread_PublishAction
-				.getTime();
+		
 	}
 
 	@Override
 	public void working() {
-		// while (!update) {
-		try {
-			TimeUnit.MILLISECONDS.sleep(sleepTime);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		// }
 		if (instance.isLive()) {
-//			instance.sendMessageToPool(topic, name);
+			instance.sendMessageToPool(topic, name);
 		}
+	}
+
+	@Override
+	protected void init() {
+		if (sleepTime == -1) sleepTime = ThreadTimeConsole.Thread_PublishAction
+				.getTime();
 	}
 
 }

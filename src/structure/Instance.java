@@ -385,4 +385,8 @@ public class Instance implements Runnable, Serializable {
 		return propertiesValue;
 	}
 
+	public void obtainMessage() {
+		msghandler.obtainMessage();
+	}
+
 }

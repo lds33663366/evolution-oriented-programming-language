@@ -16,22 +16,27 @@ public class ListenAction extends Action{
 	public ListenAction(String name, String function, List<Input> inputList,
 			List<Output> outputList, ActionType type, String cycle, String topic, String trigger) {
 		super(name, function, inputList, outputList, type, cycle, topic, trigger);
-		if (sleepTime == -1) sleepTime = ThreadTimeConsole.Thread_ListenAction.getTime();
+		
 	}
+	
+	
 
 	@Override
 	public void working() {
+	
+		instance.obtainMessage();
 		
 		if ((message = instance.actionGetMessage(name)) != null) {
-			System.out.println(instance.getIdName() + "拿到消息" + message);
+			logger.debug(instance.getIdName() + "拿到消息" + message);
 			callFunction();
 		}
-		
-		try {
-			TimeUnit.MILLISECONDS.sleep(sleepTime);
-		} catch (InterruptedException e) {
-//			e.printStackTrace();
-		}		
+	}
+
+
+
+	@Override
+	protected void init() {
+		if (sleepTime == -1) sleepTime = ThreadTimeConsole.Thread_ListenAction.getTime();		
 	}
 
 }

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">  
+<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>  
+  
+    <!-- appender name="STDOUT" class="org.apache.log4j.ConsoleAppender"> <layout   
+        class="org.apache.log4j.PatternLayout"> <param name="ConversionPattern" value="%-5p   
+        %d{MM月dd号 HH:mm} %-36c %5L %m%n" /> </layout> </appender -->  
+  
+    <!-- 把INFO信息输出到控制台 -->  
+    <appender name="myConsole" class="org.apache.log4j.ConsoleAppender">  
+        <layout class="org.apache.log4j.PatternLayout">  
+            <param name="ConversionPattern" value="%5p %d{MM-dd HH:mm:ss,SSS} (%F:%L) -%m%n" />  
+        </layout>  
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">  
+            <param name="LevelMin" value="DEBUG" />  
+            <param name="LevelMax" value="ERROR" />  
+        </filter>  
+    </appender> 
+    
+    <appender name="myFile" class="org.apache.log4j.RollingFileAppender">  
+        <param name="File" value="./logs/xml.log" />  
+        <param name="Append" value="false" />  
+        <param name="MaxFileSize" value="199KB" />  
+        <param name="MaxBackupIndex" value="10" />  
+        <layout class="org.apache.log4j.PatternLayout">  
+            <param name="ConversionPattern" value="%5p %d{MM-dd HH:mm:ss,SSS} (%F:%L) -%m%n" />  
+        </layout>  
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">  
+            <param name="LevelMin" value="DEBUG" />  
+            <param name="LevelMax" value="ERROR" />  
+        </filter>  
+    </appender>  
+    
+    <root>  
+        <priority value="debug" />  
+        <!-- appender-ref ref="STDOUT" / -->  
+        <appender-ref ref="myConsole" />  
+        <appender-ref ref="myFile" />  
+    </root>  
+  
+</log4j:configuration>  

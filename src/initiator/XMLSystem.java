@@ -10,12 +10,17 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.log4j.Logger;
+
+import log.MyLogger;
 import msgManager.MsgPool;
 import structure.Instance;
 import structure.Message;
 import structure.Relation;
 
 public class XMLSystem {
+	
+	Logger logger = MyLogger.getLogger();
 
 	private List<Instance> instanceList;// 解析<instance>得到的对象
 	private List<Message> messageList; // message组成的集合
@@ -24,8 +29,13 @@ public class XMLSystem {
 	private ExecutorService executor; // 线程池
 	private InstancesManager iMgr;
 
-	private volatile boolean live;
+	private String save;
+	private String load;
+	private String timeSpeed;
+	public static long timeScale;
 
+	private volatile boolean live;
+	
 	// 存放Instance对象, 同名的对象放在同一线表中
 	// 此处存放的Instance对象是以instanceList中的元素为蓝本创建的
 
@@ -34,12 +44,31 @@ public class XMLSystem {
 	}
 
 	public XMLSystem(List<Instance> instanceList, List<Message> messageList,
-			List<Relation> relationList) {
+			List<Relation> relationList, String save, String load,
+			String timeSpeed) {
 		this.instanceList = instanceList;
 		this.messageList = messageList;
 		this.relationList = relationList;
+		this.save = save;
+		this.load = load;
+		this.timeSpeed = timeSpeed;
+		
+		obtainTimeScale();
 		iMgr = new InstancesManager();
 		live = true;
+	}
+
+	/**
+	 * 获取时间比例尺
+	 */
+	private void obtainTimeScale() {
+		
+		String[] timeStr = timeSpeed.split(":");
+		if (timeStr.length != 2) throw new RuntimeException("timeSpeed格式错误！");
+		long realTime = TimeCalculater.getMillisecond(timeStr[0]);
+		long scaleTime = TimeCalculater.getMillisecond(timeStr[1]);
+		
+		XMLSystem.timeScale = realTime / scaleTime;
 	}
 
 	public ExecutorService getExecutor() {
@@ -78,36 +107,33 @@ public class XMLSystem {
 
 		// 将instanceMap中全部的实体放放线程池中运行
 		putInstanceToThreadpool();
-		
-		
-//		GravityModelGUI gm = new GravityModelGUI(iMgr, mp);
-//		gm.lauchFrame();
+
+//		 GravityModelGUI gm = new GravityModelGUI(iMgr, mp);
+//		 gm.lauchFrame();
 
 		while (live) {
 
-			createInstances();
-
-			// 打印instances信息
-			displayResult();
-
-			// 3秒执行一次
+			// 1秒执行一次
 			try {
 				TimeUnit.MILLISECONDS.sleep(ThreadTimeConsole.Thread_XMLSystem
 						.getTime());
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+//			createInstances();
+			// 打印instances信息
+			displayResult();
 		}
 
 //		gm.close();
 		close();
 	}
-	
+
 	void displayResult() {
-		System.out.println(iMgr.printAllInstances());
+		logger.info(iMgr.printAllInstances());
 	}
 
-	private void createInstances() {
+/*	private void createInstances() {
 		// 生成新的instance
 		for (Iterator<Entry<String, InstanceManager>> iter = iMgr
 				.getInstanceMap().entrySet().iterator(); iter.hasNext();) {
@@ -126,7 +152,7 @@ public class XMLSystem {
 				im.setNewInstanceRegister(im.getNewInstanceRegister() - tag);
 			}
 		}
-	}
+	}*/
 
 	// 将instanceMap中全部的实体放放线程池中运行
 	private void putInstanceToThreadpool() {
@@ -155,11 +181,10 @@ public class XMLSystem {
 	public void close() {
 
 		live = false;
-		
-		
+
 		// 线程管理器关闭
 		executor.shutdown();
-		System.out.println("结束消息已发布，系统将关闭运行！");
+		logger.info("结束消息已发布，系统将关闭运行！");
 		// 打印端关闭
 		// pi.close();
 		mp.close();
@@ -178,17 +203,17 @@ public class XMLSystem {
 		} catch (InterruptedException e1) {
 			e1.printStackTrace();
 		}
-		System.out.println("所有实体已关闭！");
+		logger.info("所有实体已关闭！");
 		// 消息池关闭
-		System.out.println("线程管理器已关闭！");
-		
-		System.out.println("消息将被保存");
-//		save();
+		logger.info("线程管理器已关闭！");
+
+		logger.info("消息将被保存");
+		// save();
 
 	}
 
 	private void save() {
-		System.out.println("开始存储数据！");
+		logger.info("开始存储数据！");
 		iMgr.save();
 	}
 
@@ -282,57 +307,6 @@ public class XMLSystem {
 	// 从instanceMap中移除一个Instance对象
 	public void remove(Instance instance) {
 		iMgr.remove(instance);
-	}
-
-	//
-	// // 测试方法
-	// public void test() throws Exception {
-	// executor.shutdown();
-	// executor.awaitTermination(10, TimeUnit.SECONDS);
-	// List<Instance> list = instanceMap.get("lion");
-	// System.out.println("lion: " + list.size());
-	// list = instanceMap.get("zebra");
-	// System.out.println("zebra: " + list.size());
-	//
-	// }
-	// class PrintInformation implements Runnable {
-	//
-	// // 存放打印的信息
-	// StringBuffer sbuffer;
-	// private boolean isprint = true;
-	//
-	// @Override
-	// public void run() {
-	//
-	// // Thread.currentThread().setDaemon(true);
-	// Thread.currentThread().setPriority(4);
-	// while (isprint) {
-	//
-	// sbuffer = new StringBuffer();
-	// sbuffer.append(iMgr.printAllInstances());
-	// printInfo();
-	// try {
-	// TimeUnit.SECONDS.sleep(3);
-	// } catch (InterruptedException e) {
-	// e.printStackTrace();
-	// }
-	// Thread.yield();
-	// }
-	// System.out.println("信息显示端已关闭！");
-	// }
-	//
-	// public void close() {
-	// isprint = false;
-	// }
-	//
-	// private void printInfo() {
-	// System.out.println(sbuffer.toString());
-	// }
-	// }
-	//
-	public void registerNEW(Instance instance) {
-
-		iMgr.registerNEW(instance);
 	}
 
 }

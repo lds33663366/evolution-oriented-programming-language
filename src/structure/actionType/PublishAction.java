@@ -16,7 +16,7 @@ public class PublishAction extends Action{
 	public PublishAction(String name, String function, List<Input> inputList,
 			List<Output> outputList, ActionType type, String cycle, String topic, String trigger) {
 		super(name, function, inputList, outputList, type, cycle, topic, trigger);
-		if (sleepTime == -1) sleepTime = ThreadTimeConsole.Thread_PublishAction.getTime();
+		
 	}
 
 	@Override
@@ -31,6 +31,11 @@ public class PublishAction extends Action{
 		if (instance.isLive())	{
 			instance.sendMessageToPool(name);	
 		}
+	}
+
+	@Override
+	protected void init() {
+		if (sleepTime == -1) sleepTime = ThreadTimeConsole.Thread_PublishAction.getTime();
 	}
 
 }

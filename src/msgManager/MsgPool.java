@@ -21,6 +21,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import log.MyLogger;
+
+import org.apache.log4j.Logger;
+
 import structure.Instance;
 import structure.Message;
 
@@ -35,6 +39,7 @@ public class MsgPool implements Runnable{
 	
 	private static MsgPool msgPool = null;
 	//消息池的发送队列（由instance发来的消息）
+	Logger logger = MyLogger.getLogger();
 	
 	private Queue<Message> sendingQueue;
 	//等待队列，当达到一定条件时，将放入发送队列
@@ -214,8 +219,8 @@ public class MsgPool implements Runnable{
 	boolean messageDead(Message msg) {
 		
 		if (msg == null) return false;
-		if(timeSubtract(new Date(), msg.getDate()) > (msg.parseLife()*1000)) {
-			System.out.println("该消息已过时:" + msg);
+		if(timeSubtract(new Date(), msg.getDate()) > (msg.getMillisecondLife())) {
+			logger.debug("该消息已过时:" + msg);
 			return true;
 		}
 		return false;
@@ -297,7 +302,7 @@ public class MsgPool implements Runnable{
 
 	}
 
-	public void printWaitingMessage() {
+/*	public void printWaitingMessage() {
 		System.out.println("消息等待列表：");
 		for (Iterator<Message> i=waitingQueue.iterator(); i.hasNext();) {
 			System.out.println(i.next());
@@ -316,7 +321,7 @@ public class MsgPool implements Runnable{
 		for (Iterator<Message> i=messageCache.iterator(); i.hasNext();) {
 			System.out.println(i.next());
 		}
-	}
+	}*/
 
 	public static void main(String[] args) {/*
 	
@@ -394,9 +399,10 @@ public class MsgPool implements Runnable{
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
+				Thread.yield();
 	
 			}
-			System.out.println("消息池已关闭！");
+			logger.info("消息池已关闭！");
 		}
 		
 
@@ -477,11 +483,11 @@ public class MsgPool implements Runnable{
 			}
 		}
 		
-		public void printTopicInfo() {
-			System.out.println("消息主题：" + name
-					+ "; 订阅实体数: " + msgHandlerList.size() 
-					+ "; 消息列表：\n" + messages.toString());
-		}
+//		public void printTopicInfo() {
+//			System.out.println("消息主题：" + name
+//					+ "; 订阅实体数: " + msgHandlerList.size() 
+//					+ "; 消息列表：\n" + messages.toString());
+//		}
 	}
 
 	public int day = 0;

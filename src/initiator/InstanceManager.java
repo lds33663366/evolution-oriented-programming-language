@@ -9,6 +9,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.apache.log4j.Logger;
+
+import log.MyLogger;
 import structure.Instance;
 
 /**
@@ -20,14 +23,19 @@ public class InstanceManager {
 	private String instanceName;
 	private CopyOnWriteArrayList<Instance> instanceList;
 	private int idAssign;
-	private int newInstanceRegister;
+//	private int newInstanceRegister;
 	private MemoryManager mMgr;
+	
+	private int deadNumber = 0;
+	private int newNumber = 0;
+
+	Logger logger = MyLogger.getLogger();
 	
 	/**
 	 * 添加instances里所有带位置position的坐标到集合里
 	 * @return 坐标集合
 	 */
-	public List<Point.Double> getGUIpoints() {
+/*	public List<Point.Double> getGUIpoints() {
 		
 		List<Point.Double> points = new ArrayList<Point.Double>();
 		CopyOnWriteArrayList<Instance> copyInstanceList = copyInstanceList();
@@ -38,15 +46,15 @@ public class InstanceManager {
 			points.add(new Point.Double(x,y));
 		}
 		return points;
-	}
+	}*/
 
-	public void setNewInstanceRegister(int newInstanceRegister) {
+/*	public void setNewInstanceRegister(int newInstanceRegister) {
 		this.newInstanceRegister = newInstanceRegister;
 	}
 
 	public int getNewInstanceRegister() {
 		return newInstanceRegister;
-	}
+	}*/
 
 	public CopyOnWriteArrayList<Instance> getInstanceList() {
 		return instanceList;
@@ -54,7 +62,7 @@ public class InstanceManager {
 	
 	public InstanceManager(){
 		instanceList = new CopyOnWriteArrayList<Instance>();
-		newInstanceRegister = 0;
+//		newInstanceRegister = 0;
 		idAssign = 1;
 	}
 
@@ -68,7 +76,9 @@ public class InstanceManager {
 		}
 		instanceList.add(instance);
 		instance.setId(idAssign);
+/*logger.debug("诞生了" + instanceName + idAssign);*/
 		idAssign++;
+		++newNumber;
 	}
 	
 	public int getSize() {
@@ -78,6 +88,7 @@ public class InstanceManager {
 	public void remove(Instance instance) {
 		synchronized (instanceList) { 
 			instanceList.remove(instance);
+			++deadNumber;
 		}
 	}
 	
@@ -91,17 +102,29 @@ public class InstanceManager {
 	}
 	
 	public String printInstance() {
+		
 		StringBuffer sb = new StringBuffer(1000);
-		sb.append(instanceName + "有" + getSize() + "个："
-				+ "************************************************************************\n");
+		/*sb.append(instanceName + "有" + getSize() + "个："
+				+ "************************************************************************\n");*/
+		sb.append(otherInfo());
 		//为了打印instance信息且在打印期间不占用信息列表，复制一份列表
-		CopyOnWriteArrayList<Instance> copyInstanceList =  copyInstanceList();
+		/*CopyOnWriteArrayList<Instance> copyInstanceList =  copyInstanceList();
 		for (int i=0, len=copyInstanceList.size(); i<len; i++) {
 			sb.append(copyInstanceList.get(i).toString() + "\t");
 			if (i%50 == 49) sb.append("\n");
 		}
 		sb.append("\n**************************************************************************\n");
+		*/
 		return sb.toString();
+	}
+	
+	public String otherInfo() {
+		
+		String info = instanceName + "数量：" + getSize() + ";\t诞生数-->"
+				+ newNumber + ";\t死亡数-->" + deadNumber + "\n";
+		newNumber = 0;
+		deadNumber = 0;
+		return info;
 	}
 
 	public void close() {
@@ -110,9 +133,9 @@ public class InstanceManager {
 		}
 	}
 
-	public synchronized void registerNew() {
+/*	public synchronized void registerNew() {
 		newInstanceRegister++;
-	}
+	}*/
 
 	public void draw(Graphics2D g) {
 		Color c = g.getColor();
