@@ -43,11 +43,11 @@ public class Functionbase {
 
 		Variable age = new Variable("age", VariableType.STRING, "int");
 
-		Random r = new Random();
-		// int i = r.nextInt(13);
+/*		Random r = new Random();
+		int i = r.nextInt(13);
 
-		int i = 0;
-		age.setValue(i + "");
+		int i = 0;*/
+		age.setValue(0 + "");
 
 		return age;
 	}
@@ -59,6 +59,13 @@ public class Functionbase {
 		age++;
 		v.setValue(age + "");
 		return v;
+	}
+
+	public void hunger_decrease(Instance instance) {
+
+		int hunger = instance.obtainIntValue("hunger");
+		hunger -= 20;
+		instance.motify("hunger", hunger + "");
 	}
 
 	public boolean zebra_new(Map<String, Variable> map) {
@@ -115,50 +122,44 @@ public class Functionbase {
 		}
 		return false;
 	}
-	
+
 	public void initialize(Instance planet) {
 
 		Random random = new Random();
 		double x = random.nextDouble();
 		double y = random.nextDouble();
-		
+
 		int vx = random.nextInt(10000);
 		int vy = random.nextInt(10000);
-		
+
 		String px = x + "E12";
 		String py = y + "E12";
-		
-		String vxx = vx+"", vyy = vy+"";
-		if (x >0.6) vxx = "-" + vxx;
-		if (y >0.6) vyy = "-" + vyy;
+
+		String vxx = vx + "", vyy = vy + "";
+		if (x > 0.6)
+			vxx = "-" + vxx;
+		if (y > 0.6)
+			vyy = "-" + vyy;
 		System.out.println("(" + px + ", " + py + ")");
 		planet.motify("position.x", px);
 		planet.motify("position.y", py);
 		planet.motify("velocity.x", vxx + "");
 		planet.motify("velocity.y", vyy + "");
-		
-		
-		
+
 	}
 
 	public void move(Instance planet) {
 		double time = 3600 * 24;
-		double this_position_x = Double.parseDouble(planet
-				.obtainValue("position.x"));
-		double this_position_y = Double.parseDouble(planet
-				.obtainValue("position.y"));
-		double this_velocity_x = Double.parseDouble(planet
-				.obtainValue("velocity.x"));
-		double this_velocity_y = Double.parseDouble(planet
-				.obtainValue("velocity.y"));
-		
-			planet.motify("old_position.x", this_position_x + "");
-			planet.motify("old_position.y", this_position_y + "");
+		double this_position_x = planet.obtainDoubleValue("position.x");
+		double this_position_y = planet.obtainDoubleValue("position.y");
+		double this_velocity_x = planet.obtainDoubleValue("velocity.x");
+		double this_velocity_y = planet.obtainDoubleValue("velocity.y");
 
-			double this_x2 = getPosition2(this_position_x, this_velocity_x,
-					time);
-			double this_y2 = getPosition2(this_position_y, this_velocity_y,
-					time);
+		planet.motify("old_position.x", this_position_x + "");
+		planet.motify("old_position.y", this_position_y + "");
+
+		double this_x2 = getPosition2(this_position_x, this_velocity_x, time);
+		double this_y2 = getPosition2(this_position_y, this_velocity_y, time);
 
 		synchronized (planet) {
 			planet.motify("position.x", this_x2 + "");
@@ -180,22 +181,16 @@ public class Functionbase {
 	public void centripetal_force(Instance planet, Message m) {
 
 		double time = 3600 * 24;
-		double this_position_x = Double.parseDouble(planet
-				.obtainValue("position.x"));
-		double this_position_y = Double.parseDouble(planet
-				.obtainValue("position.y"));
-		double this_velocity_x = Double.parseDouble(planet
-				.obtainValue("velocity.x"));
-		double this_velocity_y = Double.parseDouble(planet
-				.obtainValue("velocity.y"));
-		double this_oldposition_x = Double.parseDouble(planet
-				.obtainValue("old_position.x"));
-		double this_oldposition_y = Double.parseDouble(planet
-				.obtainValue("old_position.y"));
+		double this_position_x = planet.obtainDoubleValue("position.x");
+		double this_position_y = planet.obtainDoubleValue("position.y");
+		double this_velocity_x = planet.obtainDoubleValue("velocity.x");
+		double this_velocity_y = planet.obtainDoubleValue("velocity.y");
+		double this_oldposition_x = planet.obtainDoubleValue("old_position.x");
+		double this_oldposition_y = planet.obtainDoubleValue("old_position.y");
 
-		double star_x = Double.parseDouble(m.obtainValue("position.x"));
-		double star_y = Double.parseDouble(m.obtainValue("position.y"));
-		double star_weight = Double.parseDouble(m.obtainValue("weight"));
+		double star_x = m.obtainDoubleValue("position.x");
+		double star_y = m.obtainDoubleValue("position.y");
+		double star_weight = m.obtainDoubleValue("weight");
 
 		// 第一次坐标移动初始速度方向得到(x2, y2)
 		// double this_x2 = getPosition2(this_position_x, this_velocity_x,
@@ -204,16 +199,16 @@ public class Functionbase {
 		// time);
 
 		// if ((count++)%2==0) {
-//		this_position_x = this_oldposition_x;
-//		this_position_y = this_oldposition_y;
+		// this_position_x = this_oldposition_x;
+		// this_position_y = this_oldposition_y;
 		// }
 
-		//用于计算加速度矢量的点，可以是老点或新点
-		double pointxa=0, pointya=0;
-		if ((count++)%2==0) {
+		// 用于计算加速度矢量的点，可以是老点或新点
+		double pointxa = 0, pointya = 0;
+		if ((count++) % 2 == 0) {
 			pointxa = this_oldposition_x;
 			pointya = this_oldposition_y;
-		}else {
+		} else {
 			pointxa = this_position_x;
 			pointya = this_position_y;
 		}

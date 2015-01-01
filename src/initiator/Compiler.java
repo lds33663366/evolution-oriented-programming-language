@@ -15,7 +15,8 @@ public class Compiler {
 	
 	public static final String XML_PATH = "xml/";
 	public static final String SCHEMA_NAME = "mdl20140629.xsd";
-	public static final String XML_NAME = "foodchain.xml";
+//	public static final String XML_NAME = "foodchain.xml";
+	public static final String XML_NAME = "star.xml";
 	
 	public Compiler(String xmlFile, String xsdFile) throws Exception {
 
@@ -42,7 +43,7 @@ public class Compiler {
 		Appender appender = Logger.getRootLogger().getAppender("myFile");
 		if (appender instanceof RollingFileAppender) {
 			RollingFileAppender fappender = (RollingFileAppender) appender;
-			String logs = logDir + name + ".log";
+			String logs = logDir + name + "6.log";
 			fappender.setFile(logs);
 			fappender.activateOptions();
 			

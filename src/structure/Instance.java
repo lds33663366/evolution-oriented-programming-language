@@ -290,6 +290,18 @@ public class Instance implements Runnable, Serializable {
 		}
 		return null;
 	}
+	
+	public double obtainDoubleValue(String valueName) {
+		return Double.parseDouble(obtainValue(valueName));
+	}
+	
+	public int obtainIntValue(String valueName) {
+		return Integer.parseInt(obtainValue(valueName));
+	}
+	
+	public boolean obtainBooleanValue(String valueName) {
+		return Boolean.parseBoolean(obtainValue(valueName));
+	}
 
 	public synchronized void motify(String valueName, String value) {
 		// System.out.println("要修改的属性：" + valueName + "; 修改的值为：" + value);

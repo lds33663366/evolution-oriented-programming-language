@@ -192,6 +192,18 @@ public class Message implements Cloneable, Serializable{
 		return null;
 	}
 	
+	public double obtainDoubleValue(String valueName) {
+		return Double.parseDouble(obtainValue(valueName));
+	}
+	
+	public int obtainIntValue(String valueName) {
+		return Integer.parseInt(obtainValue(valueName));
+	}
+	
+	public boolean obtainBooleanValue(String valueName) {
+		return Boolean.parseBoolean(obtainValue(valueName));
+	}
+	
 	private Variable obtainVariable(String name) {
 		
 		for (int i=0; i<contentList.size(); i++) {

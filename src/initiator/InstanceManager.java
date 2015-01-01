@@ -93,9 +93,11 @@ public class InstanceManager {
 	}
 	
 	CopyOnWriteArrayList<Instance> copyInstanceList() {
-		CopyOnWriteArrayList<Instance> copyInstanceList =  new CopyOnWriteArrayList<Instance>(
-				Arrays.asList(new Instance[instanceList.size()]));
+		
+		CopyOnWriteArrayList<Instance> copyInstanceList = null;
 		synchronized(instanceList) {
+		copyInstanceList =  new CopyOnWriteArrayList<Instance>(
+				Arrays.asList(new Instance[instanceList.size()]));
 			Collections.copy(copyInstanceList, instanceList);
 		}
 		return copyInstanceList;
@@ -106,15 +108,15 @@ public class InstanceManager {
 		StringBuffer sb = new StringBuffer(1000);
 		/*sb.append(instanceName + "有" + getSize() + "个："
 				+ "************************************************************************\n");*/
-		sb.append(otherInfo());
+//		sb.append(otherInfo());
 		//为了打印instance信息且在打印期间不占用信息列表，复制一份列表
-		/*CopyOnWriteArrayList<Instance> copyInstanceList =  copyInstanceList();
+		CopyOnWriteArrayList<Instance> copyInstanceList =  copyInstanceList();
 		for (int i=0, len=copyInstanceList.size(); i<len; i++) {
 			sb.append(copyInstanceList.get(i).toString() + "\t");
 			if (i%50 == 49) sb.append("\n");
 		}
 		sb.append("\n**************************************************************************\n");
-		*/
+		
 		return sb.toString();
 	}
 	

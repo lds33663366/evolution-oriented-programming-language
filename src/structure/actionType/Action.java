@@ -77,7 +77,9 @@ public abstract class Action implements Runnable, Serializable {
 //				System.out.println("DEAD is " + XMLSystem.timeScale);
 //				System.out.println(Integer.MAX_VALUE);
 //			}
-			return TimeCalculater.getMillisecond(trigger) / XMLSystem.timeScale;
+			long s = TimeCalculater.getMillisecond(trigger) / XMLSystem.timeScale;
+			System.out.println(name + " sleeptime = " + s);
+			return s;
 		}
 	}
 	
@@ -97,7 +99,6 @@ public abstract class Action implements Runnable, Serializable {
 
 			if (trigger.equals("init"))
 				return;
-			// update = false;
 			Thread.yield();
 		}
 
@@ -110,7 +111,7 @@ public abstract class Action implements Runnable, Serializable {
 		try {
 			TimeUnit.MILLISECONDS.sleep(sleepTime);
 		} catch (InterruptedException e) {
-			// e.printStackTrace();
+			logger.warn("instance name = " + instance.getIdName() + "; action name = " + name + ":被迫中断睡眠状态！");
 		}
 	}
 

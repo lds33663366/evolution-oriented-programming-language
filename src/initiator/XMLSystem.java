@@ -29,9 +29,9 @@ public class XMLSystem {
 	private ExecutorService executor; // 线程池
 	private InstancesManager iMgr;
 
-	private String save;
-	private String load;
-	private String timeSpeed;
+	private String save; //记录存储位置
+	private String load; //记录读取位置
+	private String timeSpeed; //时钟加速设置
 	public static long timeScale;
 
 	private volatile boolean live;
@@ -108,8 +108,8 @@ public class XMLSystem {
 		// 将instanceMap中全部的实体放放线程池中运行
 		putInstanceToThreadpool();
 
-//		 GravityModelGUI gm = new GravityModelGUI(iMgr, mp);
-//		 gm.lauchFrame();
+		 GravityModelGUI gm = new GravityModelGUI(iMgr, mp);
+		 gm.lauchFrame();
 
 		while (live) {
 
@@ -125,7 +125,7 @@ public class XMLSystem {
 			displayResult();
 		}
 
-//		gm.close();
+		gm.close();
 		close();
 	}
 

@@ -12,7 +12,7 @@ import javax.imageio.ImageIO;
 
 public class InstanceDraw {
 
-	public static final double SCALE = 12E8;
+	public static final double SCALE = 8E8;
 	Instance instance;
 	Color instanceColor;
 	BufferedImage bimage;
@@ -61,6 +61,9 @@ public class InstanceDraw {
 		g.setColor(instanceColor);
 		//显示instance在坐标图上的坐标
 		g.drawString(instance.getIdName() + ":[" + ix + "," + iy + "]" , map_pointx, map_pointy);
+		if (instance.getName().equals("sun")){
+			g.drawString( "[" + x + "," + y + "]" , map_pointx+100, map_pointy);
+		}
 		//显示instance在坐标图上的图片
 		g.drawImage(bimage, map_pointx, map_pointy, null);
 

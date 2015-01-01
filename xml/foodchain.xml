@@ -4,11 +4,11 @@
 timeSpeed="1Y:1s">
 
     <!-- 定义5只狮子, 包含的属性: 年龄, 性别, 生命, 地理位置.  -->
-    <instance name="lion" popsize="4">
+    <instance name="lion" popsize="5">
         <property>
             <int name="age" value="1" /> <!--默认狮子年龄都为1-->
             <string name="gender"/> <!--狮子的性别, 需要一个action对其初始化-->
-<!--             <int name="life" value="6"/> 默认狮子生命都为15 -->
+            <int name="hunger" value="100"/><!-- 狮子的饥饿值,低于60将开始进食 -->
             <instance name="position"> <!--狮子的地理位置(仅用于测试, 体现一个instance能够包含另一个instance-->
                 <property>
                     <int name="x"/>
@@ -22,16 +22,18 @@ timeSpeed="1Y:1s">
 			<output name="gender"/>
         </action> 
         <action name="NEW" function="NEW" type="self" trigger="1Y"/>
-        <action name="DEAD" function="DEAD" type="self" trigger="6Y"/> <!--狮子死亡, 死亡判断条件由用户编写函数时定义好-->
         <action name="age_increment" function="age_increment" type="self" trigger="1Y"><!--狮子收到系统消息时, 年龄将+1. 函数体由用户定义-->
 			<input name="age"/>
 			<output name="age"/>
         </action> 
+        <action name="hunger_decrease" function="hunger_decrease" type="self" trigger="2M" /><!-- 狮子的饥饿值较小 -->
+        <!-- <action name="tooHunger" function="DEAD" type="self" /> -->
+        <action name="tooOld" function="DEAD" type="self" trigger="6Y"/> <!--狮子死亡, 死亡判断条件由用户编写函数时定义好-->
         <action name="eat_zebra" function="eat_zebra" type="publish" trigger="0.4Y"/> <!--发出吃斑马的消息, 类型规定为publish时将发出消息.该消息内容为空-->
     </instance>
 
     <!-- 定义100只斑马, 包含的属性: 年龄, 性别, 生命, 地理位置.  -->
-    <instance name="zebra" popsize="30">
+    <instance name="zebra" popsize="50">
         <property>
             <int name="age" value="1"/> <!--默认斑马年龄都为1-->
             <string name="gender"/> <!--斑马的性别, 需要一个action对其初始化-->
@@ -49,7 +51,7 @@ timeSpeed="1Y:1s">
 			<output name="gender"/>
         </action> 
         <action name="NEW" function="NEW" type="self" trigger="1Y"/>
-        <action name="DEAD" function="DEAD" type="self" trigger="6Y"/> <!--斑马死亡, 死亡判断条件由用户编写函数时定义好-->
+        <action name="tooOld" function="DEAD" type="self" trigger="6Y"/> <!--斑马死亡, 死亡判断条件由用户编写函数时定义好-->
         <action name="age_increment" function="age_increment" type="self" trigger="1Y"><!--狮子收到系统消息时, 年龄将+1. 函数体由用户定义-->
 			<input name="age"/>
 			<output name="age"/>
@@ -66,7 +68,7 @@ timeSpeed="1Y:1s">
 <!--      <message name="age_increment" from="SYSTEM" frequency="30" second="1" /> -->
     <!--系统终止消息, 所有实体将接收到此消息, 并将数据存入数据库. 
     属性second=100: 系统将于100秒后终止程序-->
-    <message name="END" from="SYSTEM" second="11" />
+    <message name="END" from="SYSTEM" second="300" />
 
     <relation>
         <message name="eat_zebra"> <!--eat_zebra消息关联的接收接口为zebra下的lion_eat监听端-->
