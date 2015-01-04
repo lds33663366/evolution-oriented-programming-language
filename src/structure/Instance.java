@@ -127,7 +127,7 @@ public class Instance implements Runnable, Serializable {
 	public void close() {
 		live = false;
 		exec.shutdown();
-		msghandler.setLive(false);
+		msghandler.unsubscribeAll();
 
 		waitForUpdate();
 		try {
@@ -166,7 +166,7 @@ public class Instance implements Runnable, Serializable {
 	}
 
 	public String getIdName() {
-		return name + id;
+		return name + "@" + id;
 	}
 
 	public int getPopsize() {
@@ -260,7 +260,7 @@ public class Instance implements Runnable, Serializable {
 	}
 
 	public void subscription(String topic, String actionName) {
-		msghandler.subscription(topic, actionName);
+		msghandler.subscribe(topic, actionName);
 
 	}
 

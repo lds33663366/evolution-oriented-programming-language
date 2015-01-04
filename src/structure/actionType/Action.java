@@ -78,7 +78,6 @@ public abstract class Action implements Runnable, Serializable {
 //				System.out.println(Integer.MAX_VALUE);
 //			}
 			long s = TimeCalculater.getMillisecond(trigger) / XMLSystem.timeScale;
-			System.out.println(name + " sleeptime = " + s);
 			return s;
 		}
 	}

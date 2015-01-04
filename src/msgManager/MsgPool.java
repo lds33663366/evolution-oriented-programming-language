@@ -1,19 +1,18 @@
 package msgManager;
 
 import initiator.ThreadTimeConsole;
+import initiator.TopicSubscriber;
+import initiator.XMLServer;
 import initiator.XMLSystem;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -25,7 +24,6 @@ import log.MyLogger;
 
 import org.apache.log4j.Logger;
 
-import structure.Instance;
 import structure.Message;
 
 /**系统有一个消息池MsgPool，为了所有的instance能拿到同一个消息池
@@ -53,6 +51,9 @@ public class MsgPool implements Runnable{
 	
 	private volatile boolean live;
 	
+	private XMLServer server;
+	
+	
 	//阻止反序列化而生成新的单例
 	private Object readResolve() {
 		if (msgPool == null) {
@@ -69,6 +70,9 @@ public class MsgPool implements Runnable{
 				new PriorityBlockingQueue<Message>(100, new ShortestWaitComparator());
 
 		topics = new ArrayList<Topic>();
+		
+		server = new XMLServer();
+		new Thread(server).start();
 
 		live = true;
 	}
@@ -79,14 +83,31 @@ public class MsgPool implements Runnable{
 	 * @param msgHandler 监听对象
 	 * @return 是否注册成功
 	 */
-	public boolean addListener(String topic, MsgHandler msgHandler) {
+	public boolean addListener(String topic, TopicSubscriber subscriber) {
 
 		Topic t = takeTopic(topic);
 		if (t == null) {
-			return false;
-		}else {
-			t.addMsgHandler(msgHandler);
+			t = createTopic(topic);
+			if (!topics.contains(t)) {
+				topics.add(t);
+			}
+		}
+		t.addTopicSubscriber(subscriber);
+		return true;
+	}
+	
+	private synchronized Topic createTopic(String topic) {
+		Topic t = takeTopic(topic);
+		if (t == null) return new Topic(topic);
+		else return t;
+	}
+	
+	public boolean removeListener(String topic, TopicSubscriber subscriber) {
+		Topic t = takeTopic(topic);
+		if (t == null) {
 			return true;
+		}else {
+			return t.removeTopicSubscriber(subscriber);
 		}
 	}
 	
@@ -194,8 +215,10 @@ public class MsgPool implements Runnable{
 	public void obtainTopicMessage(String topic, Message message) {
 		Topic t = takeTopic(topic);
 		if (t == null) {
-			t = new Topic(topic);
-			topics.add(new Topic(topic));
+			t = createTopic(topic);
+			if (!topics.contains(t)) {
+				topics.add(createTopic(topic));
+			}
 		}
 		message.setTopic(topic);
 		obtainMessage(message);
@@ -409,12 +432,12 @@ public class MsgPool implements Runnable{
 	class Topic {
 		private String name; //主题名称
 		private int priority;
-		private List<MsgHandler> msgHandlerList; //订阅该主题的队列
+		private List<TopicSubscriber> topicSubscribers; //订阅该主题的队列
 		private Queue<Message> messages; //主题的消息包
 		
 		public Topic(String name) {
 			this.name = name;
-			msgHandlerList = new CopyOnWriteArrayList<MsgHandler>();
+			topicSubscribers = new CopyOnWriteArrayList<TopicSubscriber>();
 			messages = new ArrayBlockingQueue<Message>(10);
 		}
 		
@@ -426,17 +449,17 @@ public class MsgPool implements Runnable{
 		 * 订阅该主题的监听器添加接口
 		 * @param msgHandler MsgHandler接口
 		 */
-		public void addMsgHandler(MsgHandler msgHandler) {
-			msgHandlerList.add(msgHandler);
+		public void addTopicSubscriber(TopicSubscriber topicSubscriber) {
+			topicSubscribers.add(topicSubscriber);
 		}
 		
 		/**
 		 * 移除监听接口
 		 * @param msgHandler 要移除的MsgHandler接口
 		 */
-		public void removeMsgHandler(MsgHandler msgHandler) {
-			synchronized (msgHandlerList) {
-				msgHandlerList.remove(msgHandler);
+		public boolean removeTopicSubscriber(TopicSubscriber subscriber) {
+			synchronized (topicSubscribers) {
+				return topicSubscribers.remove(subscriber);
 			}
 		}
 		
@@ -455,8 +478,9 @@ public class MsgPool implements Runnable{
 		public void notifyMessage() {
 			//如果消息不存在，或者pool已关闭（时刻判断）则返回
 			if (messages == null || !live)	return;
-
+			
 			while (!messages.isEmpty()) {
+				
 				
 				Message m = messages.poll();
 				//如果发送的是END消息，则SYSTEM关闭
@@ -464,19 +488,16 @@ public class MsgPool implements Runnable{
 					xmlSystem.setLive(false);
 				}
 
+				if (name.equals("DISPLAY")) {
+					server.send(m.deepClone());
+				}
+				
 				//调用每个监听的msgHandler的obtainTopicMessage()函数
-				synchronized (msgHandlerList) {
-					for (int i = 0; i < msgHandlerList.size(); i++) {
+				synchronized (topicSubscribers) {
+					for (int i = 0; i < topicSubscribers.size(); i++) {
 
-						MsgHandler msgh = msgHandlerList.get(i);
-						if (!msgh.isLive()) {
-							removeMsgHandler(msgh);
-							//如果消息包的监听对象是该消息的发送者，则不发送
-						} else if (m.getFrom().equals(msgh.instance.getIdName())) {
-							continue;
-						}else {
-							msgh.obtainTopicMessage(m);
-						}
+						TopicSubscriber tsub = topicSubscribers.get(i);
+						tsub.obtainTopicMessage(m);
 					}
 				}
 				moveToWaitingQueue(m);
@@ -489,15 +510,6 @@ public class MsgPool implements Runnable{
 //					+ "; 消息列表：\n" + messages.toString());
 //		}
 	}
-
-	public int day = 0;
-
-//	public void draw(Graphics2D g) {
-//		Color c = g.getColor();
-//		g.setColor(Color.WHITE);
-//		g.drawString("第" + day + "天", 1100, 770);
-//		g.setColor(c);
-//	}
 }
 
 

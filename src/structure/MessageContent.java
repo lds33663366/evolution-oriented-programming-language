@@ -50,7 +50,7 @@ public class MessageContent implements Serializable{
 	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
-		sb.append( "content (type=" + type + ", name=" + name );
+		sb.append( "content (type=" + type + ", name=" + name + ", value=" + instance );
 		if (variable != null) sb.append(variable);
 		sb.append(")");
 		return sb.toString();

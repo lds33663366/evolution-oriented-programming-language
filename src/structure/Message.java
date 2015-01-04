@@ -1,6 +1,11 @@
 package structure;
 import initiator.TimeCalculater;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -44,6 +49,24 @@ public class Message implements Cloneable, Serializable{
 			e.printStackTrace();
 		}
 		return o;
+	}
+	
+	public Message deepClone() {
+		ByteArrayOutputStream bo = new ByteArrayOutputStream();
+		ObjectOutputStream oo;
+		Message message = null;
+		try {
+			oo = new ObjectOutputStream(bo);
+			oo.writeObject(this);// 从流里读出来
+			ByteArrayInputStream bi = new ByteArrayInputStream(bo.toByteArray());
+			ObjectInputStream oi = new ObjectInputStream(bi);
+			message = (Message) oi.readObject();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return message;
 	}
 	
 	public int getId() {
